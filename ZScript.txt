@@ -1,0 +1,3 @@
+version "4.15.1"
+//$GZDB_Skip
+#include "ZGhoul/Base.zsc"

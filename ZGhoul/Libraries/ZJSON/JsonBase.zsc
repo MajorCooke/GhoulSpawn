@@ -1,0 +1,155 @@
+class GFJsonElementOrError {}
+
+class GFJsonElement : GFJsonElementOrError abstract
+{
+	abstract string Serialize();
+	abstract string GetPrettyName();
+}
+
+class GFJsonNumber : GFJsonElement abstract
+{
+	abstract GFJsonNumber Negate();
+	abstract double  asDouble();
+	abstract int asInt();
+	
+	override string GetPrettyName()
+	{
+		return "Number";
+	}
+}
+
+class GFJsonInt : GFJsonNumber
+{
+	int i;
+	
+	static GFJsonInt make(int i = 0)
+	{
+		let elem = new("GFJsonInt");
+		elem.i = i;
+		return elem;
+	}
+	override GFJsonNumber Negate()
+	{
+		i = -i;
+		return self;
+	}
+	override string Serialize()
+	{
+		return ""..i;
+	}
+	
+	override double asDouble()
+	{
+		return double(i);
+	}
+	
+	override int asInt()
+	{
+		return i;
+	}
+}
+
+class GFJsonDouble : GFJsonNumber
+{
+	double d;
+	
+	static GFJsonDouble Make(double d = 0)
+	{
+		GFJsonDouble elem = new("GFJsonDouble");
+		elem.d = d;
+		return elem;
+	}
+	override GFJsonNumber Negate()
+	{
+		d = -d;
+		return self;
+	}
+	override string Serialize()
+	{
+		return ""..d;
+	}
+	
+	override double asDouble()
+	{
+		return d;
+	}
+	
+	override int asInt()
+	{
+		return int(d);
+	}
+}
+
+class GFJsonBool : GFJsonElement
+{
+	bool b;
+	
+	static GFJsonBool Make(bool b = false)
+	{
+		GFJsonBool elem = new("GFJsonBool");
+		elem.b = b;
+		return elem;
+	}
+	
+	override string Serialize()
+	{
+		return b? "true" : "false";
+	}
+	
+	override string GetPrettyName()
+	{
+		return "Bool";
+	}
+}
+
+class GFJsonString : GFJsonElement
+{
+	string s;
+	
+	static GFJsonString make(string s = "")
+	{
+		GFJsonString elem = new("GFJsonString");
+		elem.s=s;
+		return elem;
+	}
+	
+	override string Serialize()
+	{
+		return GFJSON.serialize_string(s);
+	}
+	
+	override string GetPrettyName()
+	{
+		return "String";
+	}
+}
+
+class GFJsonNull : GFJsonElement
+{
+	static GFJsonNull Make()
+	{
+		return new("GFJsonNull");
+	}
+	
+	override string Serialize()
+	{
+		return "null";
+	}
+	
+	override string GetPrettyName()
+	{
+		return "Null";
+	}
+}
+
+class GFJsonError : GFJsonElementOrError
+{
+	String what;
+	
+	static GFJsonError make(string s)
+	{
+		GFJsonError err = new("GFJsonError");
+		err.what = s;
+		return err;
+	}
+}

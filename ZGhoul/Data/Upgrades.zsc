@@ -1,0 +1,22 @@
+Class GFUpgradeData
+{
+	Map<Name, Int> Cost;		// Needs these items to purchase.
+	Map<Name, Int> Required;	// Like Cost but doesn't take items away.
+	Map<Name, Int> Restrictors; // Prevents certain selections under certain conditions.
+}
+
+extend Class GFUpgradeData
+{
+	static GFUpgradeData Deserialize(GFJsonElement elem)
+	{
+		if (!elem)		ThrowAbortException("GFUpgradeData: Expected a GFJsonObject, got null");
+		let obj = GFJsonObject(elem);
+		if (!obj)		ThrowAbortException("GFUpgradeData: Expected a GFJsonObject, got "..elem.GetClassName());
+		return new('GFUpgradeData').ProcessObject(obj);
+	}
+	
+	private GFUpgradeData ProcessObject(GFJsonObject obj)
+	{
+		return self;
+	}
+}

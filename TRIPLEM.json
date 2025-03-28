@@ -1,0 +1,34 @@
+// Defines the base traits of of everything.
+
+// actor names, damage types
+{
+	"mod_id": "GhoulSpawn",
+	
+	// "clear" removes all data
+	// "replace" replaces existing data
+	// "add" adds onto it, but replaces existing properties
+	"current_data": "add",
+	
+	"actors":
+	[
+		{
+			"name": "TM_Creeper",
+			"relations":
+			{
+				"hate":
+				[
+					"GFCreeper"
+				]
+			}
+		},
+		"TM_Fire_Block":
+		{
+			"immune":
+			[
+				"Jitter|Explosive",
+				"Sjas|Explosive",
+				"CreeperBoo"
+			]
+		}
+	]
+}

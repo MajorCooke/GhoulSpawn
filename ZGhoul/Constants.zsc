@@ -1,0 +1,10 @@
+enum EGFTraitRank
+{
+	GFTT_NORMAL = 0,
+	GFTT_UNCOMMON,
+	GFTT_RARE,
+	GFTT_LEGENDARY
+};
+
+const FFRACUNIT = 1 << 16;
+const DFRACUNIT = 1.0 / FFRACUNIT;

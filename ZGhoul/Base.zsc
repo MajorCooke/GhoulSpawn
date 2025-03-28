@@ -1,0 +1,511 @@
+#include "./Constants.zsc"
+
+#include "./Global.zsc"
+
+// Libraries include ZJSON (so far).
+#include "./Libraries/Include.zsc"
+
+// Event handlers are located here.
+#include "./Handlers/Event.zsc"
+
+// All ghoul definitions are located here.
+#include "./Ghouls/Include.zsc"
+
+// All information regarding the parsed content is here.
+#include "./Data/Include.zsc"
+
+class GFCarryToken : Inventory
+{
+	Default
+	{
+		+INVENTORY.UNDROPPABLE
+		+INVENTORY.UNTOSSABLE
+		Inventory.InterhubAmount 1;
+	}
+}
+
+
+
+class GFGhoulBase : Actor abstract
+{
+	
+
+	meta bool NormalSpawn;
+	Property NormalSpawn: NormalSpawn;
+	
+	protected int DmgThreshold, DmgTic, PainDelay;
+	Property DmgThreshold: DmgThreshold;
+	Property DmgTic: DmgTic;
+	Property PainDelay: PainDelay;
+	
+	double PainVolume;
+	Property PainVolume: PainVolume;
+	Default
+	{
+		GFGhoulBase.DmgThreshold 10;
+		GFGhoulBase.PainVolume 1.0;
+		GFGhoulBase.PainDelay 10;		// How many ticks to wait before sounding pain again.
+		GFGhoulBase.DmgTic 2;
+		GFGhoulBase.NormalSpawn true;
+		Monster;
+		+DONTTHRUST
+		-COUNTKILL
+		+DONTCORPSE
+		+NEVERFAST
+		+NEVERRESPAWN
+		+LOOKALLAROUND
+		+DONTGIB
+		+NOTRIGGER
+		-ACTIVATEMCROSS
+		+NOICEDEATH
+		MaxSlopeSteepness 0;
+		DamageFactor "Crushing", 20.0; // An easy way to kill them.
+		DamageFactor "Drowning", 0.0;
+		DropItem "Megasphere";
+		DropItem "Backpack";
+		DropItem "Backpack";
+		DropItem "Backpack";
+		DropItem "Backpack";
+		DropItem "Backpack";
+		DropItem "Backpack";
+		DropItem "Backpack";
+		DropItem "Backpack";
+		DropItem "Backpack";
+		DropItem "Backpack";
+	}
+	
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		flashtimer = -1;
+	}
+	
+	override bool Morph(Actor a, class<PlayerPawn> b, class<Actor> c, int d, EMorphFlags e, class<Actor> f, class<Actor> g)
+	{	return false;	}
+	
+	override bool MorphMonster(class<Actor> a, int b, EMorphFlags c, class<Actor> d, class<Actor> e)
+	{	return false;	}
+	
+	override bool OkayToSwitchTarget(Actor o)
+	{
+		if (o && !o.bKILLED && o.bSHOOTABLE && !o.bNEVERTARGET && !IsTeamMate(o) &&
+			o != master && !bNOTARGETSWITCH && !bNOINFIGHTING && !(o is 'GFYurei'))
+		{
+			
+			return true;
+		}
+		return false;
+	}
+	
+	protected int flashtimer;
+	void SetFlashTimer(int amt)	{ flashtimer = amt;	}
+	
+	protected bool invert;
+	protected virtual void DamageFlash(bool on = true)
+	{
+		if (on)
+		{
+			if (!invert)	A_SetTranslation('GDamage1');
+			else			A_SetTranslation('GDamage2');
+			invert = !invert;
+		}
+		else
+		{
+			A_SetTranslation('');
+			invert = false;
+		}
+		bBRIGHT = on;
+	}
+	
+	protected int CurDmg;
+	override int DamageMobj(Actor i, Actor s, int damage, Name mod, int flags, double angle)
+	{
+		if (bKILLED)	return -1;
+		
+		int dmg = Super.DamageMobj(i, s, damage, mod, flags|DMG_NO_PAIN, angle);
+		
+		if (bKILLED || dmg < 1)	return dmg;
+		
+		if (!bNOPAIN && !(flags & DMG_NO_PAIN) && (!i || !i.bPAINLESS))
+		{
+			if ((i && i.bFORCEPAIN) || (s && s.bFORCEPAIN) || (CurDmg + dmg >= DmgThreshold))
+			{
+				CurDmg = 0;
+				let st = ResolveState("Pain");
+				if (st) SetState(st);				
+			}
+			else 
+			{
+				if (dmg > 0 || bALLOWPAIN || (i && i.bCAUSEPAIN) || (!i && s && s.bCAUSEPAIN))
+				{
+					HandlePainSound(i, s, damage, mod, flags);
+				}
+				CurDmg += max(0,dmg);
+			}
+		}
+		
+		return dmg;
+	}
+	
+	override void Die(Actor s, Actor i, int flags, Name mod)
+	{
+		A_SetTranslation('');
+		bNOICEDEATH = true; // Do not allow ice deaths!
+		Super.Die(s, i, flags, mod);
+		bSOLID = false;
+	}
+	
+	protected int PainTimer;
+	virtual void HandlePainSound(Actor i, Actor s, int damage, Name mod, int flags)
+	{
+		if (PainTimer > 0)
+			return;
+			
+		PainTimer = PainDelay;
+		A_StartSound(PainSound, CHAN_VOICE, CHANF_OVERLAP, PainVolume);
+	}
+	
+	override void Tick()
+	{
+		
+		Super.Tick();
+		if (bKILLED || bDESTROYED)	return;
+		
+		if (!GS_GhoulSpawn && GS_Despawn)
+		{
+			Destroy();
+			return;
+		}
+		if (IsFrozen())	return;
+		if (PainTimer > 0)	PainTimer--;
+		
+		if (CurDmg > 0 && DmgTic > 0)
+			CurDmg -= DmgTic;
+			
+		if (flashtimer > -1)
+		{
+			if (flashtimer > 0)
+			{
+				DamageFlash((--flashtimer > 0));
+			}
+		}
+		
+	}
+	GFEvent ev;
+	override void Deactivate(Actor mo)
+	{
+		Super.Deactivate(mo);
+		if (ev)
+		{
+			A_UnsetShootable();
+			bINVISIBLE = true;
+			bSOLID = false;
+		}
+	}
+	
+	override void Activate(Actor mo)
+	{
+		Super.Activate(mo);
+		Threshold = 0;
+		bSOLID = true;
+		bINVISIBLE = false;
+		A_SetShootable();
+		if (OkayToSwitchTarget(mo))
+		{
+			Target = mo;
+			Threshold = DefThreshold;
+			SetState(FindState("See"));
+		}
+	}
+	
+	void Materialize(Actor trg)
+	{
+		if (!bDORMANT || bKILLED)	return;
+		let mo = Spawn("GFMaterializer", pos, ALLOW_REPLACE);
+		if (mo)
+		{
+			mo.target = target = trg;
+			mo.master = self;
+		}
+	}
+}
+
+Class GFMaterializer : Actor
+{
+	const fadetime = (1.0 / (35.0 * 4.0));
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		Alpha 0.0;
+		RenderStyle "Stencil";
+		StencilColor "Black";
+	}
+	private int count;
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		if (master)
+		{
+			scale = master.scale;
+			bXFLIP = master.bXFLIP;
+			bYFLIP = master.bYFLIP;
+			A_FadeOut(1.0, FTF_CLAMP);
+			A_SetSize(master.radius, master.height);
+			A_StartSound("Yurei/Warning", 5, 0, 1, ATTN_NONE, 1.0);
+		}
+		else Destroy();
+	}
+	
+	private void Fade()
+	{
+		if (!Master)
+		{
+			Destroy();
+			return;
+		}
+		
+		Sprite = Master.Sprite;
+		Frame = Master.Frame;
+		Scale = Master.Scale;
+		Roll = Master.Roll;
+		bROLLSPRITE = Master.bROLLSPRITE;
+				
+		if (alpha < 1.0)
+		{
+			if (count > 34)
+				A_FadeIn(fadetime, FTF_CLAMP);
+			else	count++;
+			Master.A_SpawnItemEx("GFMatFlame", 
+				random(0, radius), 0, random(0, height * 0.75),
+				frandom(2,10), 0, 0, random(0,359), SXF_NOCHECKPOSITION);
+			SetOrigin(Master.pos, true);
+		}
+		else
+		{
+			Master.Activate(target);
+			A_StartSound("brain/spit",CHAN_VOICE);
+			A_Burst("GFBlackParticle");
+		}
+	}
+	
+	States
+	{
+	Spawn:
+		TNT1 A 35;
+		---- A 1 Fade();
+		Wait;
+	}
+}
+
+
+
+Class GFGhoulFX : Actor abstract
+{
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+	}
+}
+
+Class GFBlackParticle : GFGhoulFX
+{
+	Default
+	{
+		Radius 1;
+		Height 1;
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+NOSECTOR
+	}
+	
+	States
+	{
+	Spawn:
+		TNT1 A 1 NoDelay 
+		{
+			A_SpawnParticle(000000, SPF_RELATIVE|SPF_FULLBRIGHT, random(30, 60), random(20, 40), random(0,359),
+				0,0,0,random(30,60),0,0,-1, 0, 0.1,1, -1, 0.2);
+		}
+		Stop;
+	}
+}
+
+Class GFMatFlame : GFGhoulFX
+{
+	Default
+	{
+		RenderStyle "Subtract";
+		Alpha 0.25;
+		+BRIGHT
+	}
+	States
+	{
+	Spawn:
+		FIRE A 4 NoDelay A_StartSound ("vile/firecrkl", CHAN_BODY, 0, 1.0);
+		FIRE BCDEFGH 4;
+		Stop;
+	}
+}
+
+Class GhoulDeathExplo : GFGhoulFX
+{
+	private int count;
+	int Jitterchips;
+	bool Big, Silent;
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+ROLLSPRITE
+		+BRIGHT
+		Scale 1.3;
+		Renderstyle "Add";
+	}
+	
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		roll = frandom[rng](0,359);
+		if (random(0,1)) bXFLIP = true;
+		if (random(0,1)) bYFLIP = true;
+		if (!Silent)
+		{
+			if (Big) 
+			{
+				Scale *= frandom[rng](3.0, 4.0);
+			//	SetStateLabel("Huge");
+				A_StartSound("Ghoul/Explode2");
+			}
+			else 
+				A_StartSound("Ghoul/Explode1");
+		}
+	}
+	
+	private void SpawnExtra()
+	{
+		if (Jitterchips < 1)	return;
+		
+		while (Jitterchips-- > 0)
+		{
+			double  a = frandom[rng](0,359),
+					p = frandom[rng](-90, 30),
+					d = frandom[rng](3, 25),
+					v = frandom[rng](8, 30),
+					c = cos(p),
+					s = -sin(p);
+			A_SpawnItemEx("GFJitterChip", 
+				c * d,	0,	s * d,
+				c * v,	0,	s * v,
+				a,
+				SXF_NOCHECKPOSITION);
+		}
+	}
+	
+	private void DoLight(int which)
+	{
+	}
+	
+	States
+	{
+	Spawn:
+		TNT1 A 0 NoDelay 
+		{
+			SpawnExtra();
+			return A_Jump(256,"S1", "S2", "S3");
+		}
+	S1:
+		X003 A 2 DoLight(1);
+		X003 BCDEFGHIJKLMNOPQRSTUVWXYZ 2;
+		Stop;
+	S2:
+		X004 A 2 DoLight(2);
+		X004 BCDEFGHIJKLMNOPQ 2;
+		Stop;
+	S3:
+		X207 A 2 DoLight(3);
+		X207 BCDEFGHIJKLMNOPQRSTUVWX 2;
+		Stop;
+	
+	Huge:
+		---- A 0 
+		{
+			SpawnExtra();
+			return A_Jump(256,"S4", "S5", "S6");
+		}
+	S4:
+		X003 A 4 DoLight(1);
+		X003 BCDEFGHIJKLMNOPQRSTUVWXYZ 4;
+		Stop;
+	S5:
+		X004 A 4 DoLight(2);
+		X004 BCDEFGHIJKLMNOPQ 4;
+		Stop;
+	S6:
+		X207 A 4 DoLight(3);
+		X207 BCDEFGHIJKLMNOPQRSTUVWX 4;
+		Stop;
+	/*
+	Huge:
+		X119 A 1 DoLight(4);
+		X119 BCDEFGHIJKLMNOPQRSTUVWXYZ 1;
+		X120 ABCDEFGHIJKLMNOPQRSTUVW 1;
+		Stop;
+	*/
+	}
+}
+/*
+Class tf : Actor
+{
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+NOSECTOR
+	}
+	
+	void DoFountain()
+	{
+		let vt = level.SpawnVisualThinker('vtt');
+		if (vt)	vt.pos = pos;
+	}
+	
+	States
+	{
+	Spawn:
+		TNT1 A 1 DoFountain();
+		Wait;
+	}
+}
+
+Class vtt : VisualThinker
+{
+	private double RollAdd;
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		prev = pos;
+		RollAdd = frandom(5, 25) * frandompick(-1,1);
+		Scale.X = frandom(20, 100);
+		vel = (frandom(-10,10), frandom(-10, 10), frandom(5, 20));
+		flags |= SPF_FULLBRIGHT|SPF_ROLL;
+		scolor = Color(0, 255, 0);
+		SetParticleType(random(0,2));
+	}
+	
+	override void Tick()
+	{
+		if (IsFrozen())
+			return;
+		Super.Tick();
+		
+		roll += RollAdd;
+		vel.z -= 0.5;
+		alpha -= 0.05;
+		
+		if (alpha <= 0.0)
+			Destroy();
+	}
+}
+*/

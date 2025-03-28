@@ -1,0 +1,108 @@
+// Main Ghoul Information
+Class GFGhoulData
+{
+	Name ID;						// Name of the ghoul
+	String Tag;						// For mods like TargetSpy
+	Map<Name, GFTraitData> Traits;	// Applicable traits
+	Map<Name, GFDropData> Drops;	// item drops
+	Map<Name, GFDamageData> Damages;// Special damage interactions
+	int Weight;						// Spawn Chance, Max Chance (X/Y)
+	
+	void Init()
+	{
+		ID = '';
+		Tag = "";
+		Traits.Clear();
+		Drops.Clear();
+		Damages.Clear();
+		Weight = 50;
+	}
+
+	static GFGhoulData Deserialize(GFJsonElement elem)
+	{
+		if (!elem)		ThrowAbortException("GFGhoulData: Expected a GFJsonObject, got null");
+		
+		let obj = GFJsonObject(elem);
+		if (!obj)		ThrowAbortException("GFGhoulData: Expected a GFJsonObject, got "..elem.GetClassName());
+		return new('GFGhoulData').ProcessObject(obj);
+	}
+	
+	private GFGhoulData ProcessObject(GFJsonObject obj)
+	{
+		// "class" variable
+		/*
+		let gp = GFGlobalParser.Make("GFGhoulData");
+		
+		let typeCls = gp.GetJsonObjString(obj, "class", GFErr_Abort);
+		Class<Actor> check = typeCls.s;
+		if (!check)
+		{
+			Console.Printf("\cf"..typeCls.s.."doesn't exist, skipping.")
+			return null;
+		}
+		ID = typeCls.s;
+		
+		
+		bool prop = false;
+		// "chances" 
+		GFJsonArray tChances = gp.GetJsonObjArray(obj, "chances", GFErr_AbortWrongType);
+		if (tChances)
+		{
+			prop = true;
+		}
+		*/
+		String vid = "actor";
+		GFJsonElement elemCls = obj.Get(vid);
+		if (!elemCls)	ThrowAbortException("GFGhoulData: Expected '"..vid.."' definition, is missing.");
+		let typeCls = GFJsonString(elemCls);
+		if (!typeCls)	ThrowAbortException ("GFGhoulData: expected '"..vid.."' as string, got "..elemCls.GetClassName());
+		
+		vid = "weight";
+		let eW = obj.Get(vid);
+		if (eW)
+		{
+			let dw = GFJsonInt(eW);
+			if (!dw)	ThrowAbortException("GFGhoulData: Expected '"..vid.."' as int, got "..eW.GetClassName());
+			Weight = dw.AsInt();
+		}
+		else Weight = 50;
+		/*
+		GFJsonElement elemChances = obj.Get("chances");
+		if (elemChances)
+		{
+			GFJsonArray typeChances = GFJsonArray(elemChances);
+			if (!typeChances)	ThrowAbortException("GFGhoulData: expected 'chances' as an array, got "..elemChances.GetClassName());
+			prop = true;
+		}
+		*/
+		// "traits":
+		GFJsonElement elemTraits = obj.Get("traits");
+		if (elemTraits)
+		{
+			GFJsonArray arr = GFJsonArray(elemTraits);
+			if (!arr)	ThrowAbortException("GFGhoulData: expected 'traits' an an object array, got "..elemTraits.GetClassName());
+			
+			// see GFTraitData below
+			for (uint i = 0; i < arr.Size(); i++)
+			{
+				GFTraitData td = GFTraitData.Deserialize(arr.Get(i));
+				if (td)	Traits.Insert(td.ID, td);
+			}
+			if (Traits.Size() > 0) 
+				prop = true;
+		}
+		
+		// "tag" override
+		GFJsonElement elemTag = obj.Get("tag");
+		if (elemTag)
+		{
+			GFJsonString typeTag = GFJsonString(elemTag);
+			if (!typeTag)	ThrowAbortException("GFGhoulData: expected 'tag' as a string, got "..elemTag.GetClassName());
+			Tag = typeTag.s;
+			prop = true;
+		}
+		
+		// Don't return anything if no properties are defined for it.
+		return (prop) ? self : null;
+	}
+}

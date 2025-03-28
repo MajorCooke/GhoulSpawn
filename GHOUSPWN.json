@@ -1,0 +1,129 @@
+/*------------------------------------------------------------------------------
+
+Notes for addon makers:
+
+- JSON is case sensitive with the variable names, make sure they're all lower case.
+Specifically everything with a : AFTER it. Values stored after it are insensitive.
+
+------------------------------------------------------------------------------*/
+
+{
+	// IMPORTANT: Make sure to give your mod_id the same name as your package!
+	// This will make it easier to debug if the JSON parser detects problems!
+	// Do NOT set it as the same as GhoulSpawn!
+	"mod_id": "GhoulSpawn", 
+	
+	//--------------------------------------------------------------------------
+	// Upgrades
+	//--------------------------------------------------------------------------
+	/*
+	"categories":
+	[
+		{
+			"category": "light",
+		//	"desc": "$GSC_LIGHT_DESC", //generally assumes it's "$GSC_<descName>_DESC", only needed if it's not matching.
+			"icon":	"LightCategory.png", // Tries searching in Graphics/Upgrades/Icons first, and if not, uses the whole string.
+			"pos": [ 0, 0 ]			// position of button on menu
+		},
+		{
+			"category": "dark",
+			"icon": "DarkCategory.png",
+			"pos": [ 0, 0 ]
+		},
+		{
+			"category": "chaos",
+			"icon": "ChaosCategory.png",
+			"pos": [ 0, 0 ]
+		},
+		{
+			"category": "death",
+			"icon": "DeathCategory.png",
+			"pos": [ 0, 0 ]
+		}
+	],
+	
+	"upgrades":
+	[
+		{
+			"name":	"",			// Name of upgrade
+			"cate":	"",			// Category as defined above
+			"desc":	"",			// Description
+			"pos":	[0,0],		// Menu position in category
+			"item":	"",			// item or behavior to give, if any (behaviors need a <Set/Get>Power() function)
+			"levels": 5,		// max levels
+			"cost": 1000,		// cost of aurora essence
+			"reqs":				// required purchases to have first, can be with 
+			[
+				"nameOfUpgrade",	// defined this way, they are assumed to be needing just 1
+				[	"nameOfUpgrade", 1	] // for specific level requirements
+			]
+		},
+	],
+	*/
+	//--------------------------------------------------------------------------
+	// Ghoul Definitions
+	//--------------------------------------------------------------------------
+
+	"ghouls":
+	[
+		{
+			"actor":		"GFSjas", 	// Actor name
+			"tag":			"Sjas", 	// Nice name. If not specified, internal tag is used.
+			"traits":
+			[
+				{
+					"name": "",	// Mandatory, but the only one. Needs a unique name, no spaces in it.
+					"tag"; "",	// similar to Actor tags, acts as a 'nice' name when viewed in a codex
+					"icon": "",	// location of the graphic
+					"desc": "",	// description for codex
+					"rank": "Normal", //normal, uncommon, rare, or legendary. Defaults to normal if not specified.
+					"items": // string array/variable of inventory actors or behaviors to give
+					[
+						
+					]
+				},
+				
+			],
+			/*
+			"damage":
+			{
+				"from":
+				{
+				}
+				"to":
+				[
+				]
+				"types":
+			}
+			*/
+		},
+		{
+			"actor": 		"GFJitterskull",
+		},
+		{
+			
+			"actor": 		"GFCreeper",
+		},
+		{
+			"actor": 		"GFChoke",
+		},
+		{
+			"actor": 		"GFFrostbite",
+		},
+		{
+			"actor":		"GFMisty",
+		},
+		{
+			"actor":		"GFChoke",
+		},
+		{
+			"actor":		"GFChoke",
+		},
+		{
+			"actor":		"GFChoke",
+		},
+		{
+			"actor":		"GFChoke",
+		},
+	]
+}

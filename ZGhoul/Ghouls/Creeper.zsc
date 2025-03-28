@@ -1,0 +1,500 @@
+/*==============================================================================
+	Creeper
+	
+An abandoned baby left floating down a river in a crib, he had no one to tend to
+him. The Yurei, who felt pity for him, didn't have any way to care for him except
+to feed him souls, and transformed him into a monster over time, who relies on
+stealth to creep around.
+
+Upon finding a victim and closing in, it jumps up and scares the soul out of all
+beings, bypassing all physical defenses and killing them almost instantly. It can
+also move through walls. Wheneveri t's attacked, it'll quickly retreat a short
+distance and try again.
+
+The only upside is, he's the easiest ghoul to kill.
+
+Recommended Weapon: Rocket Launcher or Shotgun
+==============================================================================*/
+
+Class GFCreeper : GFGhoulBase
+{
+	const ChanVoice = 400;
+	Default
+	{
+		GFGhoulBase.PainDelay 2;
+		Health 2000;
+		Height 16;
+		Radius 13;
+		xscale 0.8;
+		yscale 0.1;
+		Speed 16;
+		Alpha 0.4;
+		BloodColor "White";
+		-DONTTHRUST
+		+NOCLIP
+		+NOEXTREMEDEATH
+		+NODAMAGETHRUST
+		+FORCERADIUSDMG
+		MaxSlopeSteepness 0;
+		Tag "Creeper";
+		Species "GFCreeper";
+		DamageType "CreeperBoo";
+		DamageFactor "Sjas", 0.2;
+		DamageFactor "Jitter", 0.2;
+		SeeSound "GCreeper/Taunt";
+	//	ActiveSound "GCreeper/Chase";
+		PainSound "GCreeper/Pain";
+		DeathSound "GCreeper/Death";
+	}
+	
+	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
+	{
+		static const string ob[] =
+		{
+			"%o WAAAAHAHAHAHARG'd from the Creeper's jumpscare",
+			"Creeper finds %o falling out of their chair the funniest thing ever",
+			"%o looked for the green creepers instead of the gray one nomming their soul",
+			"%o shot out of his pants with a Wilhelm scream thanks to a Creeper.",
+			"%o was GOTCHA!'d by a Creeper",
+			"%o was drawn to a Creeper like a siren song and lost their soul",
+			"A creeper PEEKABOO!'d poor %o's pants brown",
+			"%o was surprise French kiss'd by a lonely Creeper. <3",
+			"%o stepped into the wrong haunted house owned by Creeper",
+			"%o now has yellow stains in their pants due to a Creeper"
+		};
+		return ob[random(0, ob.Size() - 1)];
+	}
+	
+	override void Tick()
+	{
+		if (IsFrozen())	return;
+		Super.Tick();
+		if (bKILLED)	return;
+		if (GotDelay > 0)	GotDelay--;
+		if (BallDelay > 0)	BallDelay--;
+	}
+	
+	override int DamageMobj(Actor i, Actor s, int damage, Name mod, int flags, double angle)
+	{
+		int dmg = Actor.DamageMobj(i, s, damage, mod, flags, angle);
+		
+		if (bKILLED || damage < 1)	return dmg;
+		if (!bNOPAIN && !(flags & DMG_NO_PAIN) && (!i || !i.bPAINLESS))
+		{
+			if ((i && i.bFORCEPAIN) || (s && s.bFORCEPAIN) || (CurDmg + dmg >= DmgThreshold))
+			{
+				CurDmg = 0;
+				let st = ResolveState("Pain");
+				if (st) SetState(st);				
+			}
+		}
+		
+		HandlePainSound(i, s, damage, mod, flags);
+		return dmg;
+	}
+	
+	private int GotDelay;
+	void GotEm()
+	{
+		if (GotDelay > 0)	return;
+		GotDelay = 35 * 4;
+		A_StartSound("GCreeper/Gotcha", ChanVoice + 2);
+	}
+	// Take no indirect damage from other creepers
+	override int TakeSpecialDamage(Actor i, Actor s, int damage, Name dtype)
+	{
+		if (s && s != self && s.GetClass() == GetClass())
+			if (dtype != "Melee")
+				return 0;
+		return Super.TakeSpecialDamage(i, s, damage, dtype);
+	}
+	// Deals more damage to non-players (called by the popup)
+	override int DoSpecialDamage(Actor target, int damage, Name dtype)
+	{
+		if (!(target is 'PlayerPawn') && dtype == 'CreeperBoo')
+			damage *= 10;
+			
+		return Super.DoSpecialDamage(target, damage, dtype);
+	}
+	
+	private void SetFear(bool on)
+	{
+		bNOFEAR = !on;
+		bFRIGHTENED = on;
+	}
+	
+	private void Peekaboo(Actor mo)
+	{
+		if (!mo || mo == self || bKILLED)
+			return;
+			
+		let pop = GFCreeperPopup(Spawn("GFCreeperPopup", mo.pos, ALLOW_REPLACE));
+		if (pop)
+		{
+			pop.target = self;
+			pop.tracer = mo;
+			pop.primary = (mo == target);
+			
+		}
+	}
+	
+	private void Attack(bool mel = false)
+	{
+		if (mel)
+		{
+			if (target)
+			{
+				if (target is 'PlayerPawn' || target.bNODAMAGE)
+				{
+					if (target.bINVULNERABLE || target.bNODAMAGE ||
+						(target.player && target.player.cheats & (CF_GODMODE|CF_GODMODE2)))
+					{	// Slap 'em back and retreat.
+						A_CustomMeleeAttack(255);
+						SetState(ResolveState("Pain"));
+						return;
+					}
+				}
+				Peekaboo(target);
+				let it = GFGlobal.MakeBTIPos(pos, (128, 256));
+				Actor mo;
+				while (it.Next())
+				{
+					mo = it.thing;
+					if (!mo || !mo.bSHOOTABLE || mo.bKILLED || (mo is 'GFGhoulBase') || (master && master == mo) || (mo is 'PlayerPawn'))
+						continue;
+					Peekaboo(mo);
+				}
+			}
+		}
+		else
+		{
+			let mo = Spawn("GFCreeperball", Vec3Offset(0, 0, 10), ALLOW_REPLACE);
+			if (mo)
+			{
+				mo.target = self;
+				mo.tracer = target;
+				mo.A_FaceTracer(0,0);
+				mo.Vel3DFromAngle(mo.Speed, mo.Angle, mo.Pitch);
+				if (target is 'PlayerPawn')
+				{
+					mo.VelIntercept(target, mo.speed);
+					mo.bSEEKERMISSILE = false;
+				}
+				else
+					mo.bSEEKERMISSILE = true;
+			}
+		}
+	}
+	
+	private void CreeperPain()
+	{
+		bNOPAIN = true;
+		A_StopSounds(ChanVoice, ChanVoice+1);
+		SetFear(true);
+		SetFlashTimer(18);
+		DamageFlash(true);
+		S_StartSoundAt(pos, "Ghoul/Damaged", 5);
+	}
+	
+	private void CreeperBoom()
+	{
+		if (bKILLED)
+			A_FadeOut(0.01, 0);
+		bool big = (alpha <= 0.0);
+		if (big)
+		{
+			int rng = random[rnd](7,10);
+			for (int i = 0; i < rng; i++)
+			{
+				let ex = GhoulDeathExplo(Spawn('GhoulDeathExplo', pos + (0,0,height * 0.75), ALLOW_REPLACE));
+				if (ex)
+				{
+					ex.A_SetTranslation('GDamage1');
+					ex.big = true;
+					if (i > 2)
+						ex.silent = true;
+				}
+			}
+		}
+		else
+		{
+			Vector3 ps = Vec3Angle(frandom(0,radius * 2.0),random(0,359),frandom(height * 0.5, height * 2.5));
+			let ex = GhoulDeathExplo(Spawn('GhoulDeathExplo', ps, ALLOW_REPLACE));
+			if (ex)
+			{
+				ex.A_Face(self, 0, 0);
+				ex.angle += 180;
+				ex.pitch = -pitch;
+				ex.A_SetTranslation('GDamage1');
+				if (random[rng](0,1))
+					ex.silent = true;
+			}
+		}
+		if (alpha <= 0.0)
+			Destroy();
+		else
+			A_Wander();
+	}
+	
+	private int BallDelay;
+	private void CreeperChase(bool mel = true, bool misl = true)
+	{
+		if (bKILLED)	return;
+		A_StartSoundIfNotSame("GCreeper/Chase","GCreeper/Chase", 399, CHANF_LOOP);
+		if (BallDelay < 1)
+		{
+			BallDelay = random[rng](15,25);
+			if (misl && CheckSight(target, SF_IGNOREVISIBILITY|SF_IGNOREWATERBOUNDARY))
+				Attack(false);
+		}
+		if (mel)	A_Chase();
+		else		A_Chase(null);
+			
+	}
+	
+	States
+	{
+	Spawn:
+		CREE A 15 A_Look();
+		Loop;
+	See:
+		CREE A 0 {	SetFear(false); A_StartSound(SeeSound, CHAN_VOICE, CHANF_OVERLAP, 1, ATTN_NONE); }
+		
+	Chasing:
+		CREE AAAABBBB 2 CreeperChase();
+		Loop;
+	Melee:
+		TNT1 A 10 Attack(true);
+		Goto Pain;
+	Pain:
+		CREE A 1 CreeperPain();
+		CREE ABABABABABABABABAB 1 bright CreeperChase();
+		CREE E 0 { bNOPAIN = false; }
+		CREE ABABABABABAB 2 CreeperChase();
+		CREE ABABABABABAB 3 CreeperChase();
+		CREE A 0 SetFear(false);
+		Goto Chasing;
+	Death:
+		CREE D 0 
+		{
+			Speed = Default.Speed * 0.25;
+			A_Scream();
+			A_Fall();
+			A_FadeIn(1.0, FTF_CLAMP);
+			A_SetScale(0.06);
+		}
+		---- A 1 Bright CreeperBoom();
+		Wait;
+	}
+}
+
+Class GFCreeperPopup : Actor
+{
+	const maxdiv = 4;
+	const _height = 56;
+	const hdiv = _height / maxdiv;
+	bool primary;
+	Default
+	{
+		Projectile;
+		+NOINTERACTION
+		+BRIGHT
+		+PIERCEARMOR
+		+FORCEYBILLBOARD
+		+NOEXTREMEDEATH
+		Radius 16;
+		Height _height;
+		Scale 0.05;
+		RenderStyle "Translucent";
+		DamageType "CreeperBoo";
+	}
+	
+	private int count;
+	private bool isalive, killcheck;
+	private void Popup()
+	{
+		if (Tracer)
+		{
+			Vector3 v;
+			v.XY = Tracer.Vec2Angle(10, Tracer.Angle);
+			v.Z = Tracer.Pos.Z - height + Clamp(hdiv * count, 0, height);
+			SetOrigin(v, (count > 0));
+		}
+		
+		if (!Target || Target.bKILLED)
+			return;
+		
+		Switch (count++)
+		{
+			Case 0:	A_StartSound("GCreeper/Pain", 5);	break;
+			Case 1: A_StartSound("GCreeper/Attack", 6);	break;
+			Case 5:
+			{
+				
+				isalive = (primary && !Tracer.bKILLED);
+				Tracer.DamageMobj(self, target, 100, DamageType, DMG_THRUSTLESS);
+				killcheck = (isalive && Tracer.bKILLED);
+				break;
+			}
+			Case 6:
+			{
+				if (killcheck && target && tracer)
+				{
+					let cr = GFCreeper(Target);
+					if (cr && !cr.bKILLED)	cr.GotEm();
+				}
+				break;
+			}
+		}
+	}
+	
+	override int DoSpecialDamage(Actor trg, int damage, Name damagetype)
+	{
+		return (target) ? target.DoSpecialDamage(trg, damage, damagetype) : damage;
+	}
+	
+	States
+	{
+	Spawn:
+		CREE CCCCCCCCC 1 Popup();
+	Fading:
+		---- A 1 
+		{	
+			Popup();
+			A_FadeOut();
+		}
+		Wait;
+	}
+}
+
+const CreeperSlowDuration = 35;
+Class GFCreeperSlow : PowerSpeed
+{
+	const MaxTime = 35 * 50;
+	Default
+	{
+		Speed 1.0;
+		Powerup.Duration CreeperSlowDuration;
+		+INVENTORY.ADDITIVETIME
+	}
+	
+	override bool IsBlinking()	{	return true;	} // disables color screen
+	
+	private double RealSpeed, CurSpeed;
+	override void InitEffect()
+	{
+		Super.InitEffect();
+		if (!Owner)	return;
+		RealSpeed = Owner.Speed;
+	}
+	
+	override void DoEffect()
+	{
+		if (!Owner)	
+		{	Destroy(); return; }
+		
+		if (Owner.Speed != CurSpeed)
+			RealSpeed = Owner.Speed; // The owner performed a speed change
+		
+		Super.DoEffect();
+		if (EffectTics > MaxTime)
+			EffectTics = MaxTime;
+		if (EffectTics < 1)
+			return;
+		
+		Amount = int(ceil(effecttics / 35));
+				
+		double mx = (Owner is 'PlayerPawn') ? 0.5 : 0.25;
+		
+		CurSpeed = Max((RealSpeed - (0.01 * Amount)), mx);
+		Owner.Speed = CurSpeed;
+	}
+	
+	override void EndEffect()
+	{
+		if (Owner)
+			Owner.Speed = RealSpeed;
+		Super.EndEffect();
+	}
+}
+
+Class GFCreeperBall : Actor
+{
+	int DmgMin, DmgMax;
+	Property Dmg: DmgMin, DmgMax;
+	Default
+	{
+		GFCreeperBall.Dmg 2, 4;
+		Projectile;
+		+THRUSPECIES
+		+MTHRUSPECIES
+		+BRIGHT
+		speed 42;
+		damagefunction (0); // Not used on purpose.
+		height 8;
+		radius 6;
+		scale 0.6;
+		renderstyle "Add";
+		Species "GFCreeper";
+		seesound "GCreeper/Curse";
+		deathsound "GCreeper/Cursed";
+	//	obituary "%o was unlucky enough to be slow-deathed by a Creeper's balls." ;
+	}
+	
+	override int SpecialMissileHit(Actor mo)
+	{
+		if (!mo || bTHRUACTORS || !bMISSILE)	return 1;
+		if (mo == target || (bMTHRUSPECIES && mo.species == species))	
+		{
+			if (mo != tracer)
+				return 1;
+		}
+		if ((mo is 'PlayerPawn' || mo.bISMONSTER) && !mo.bKILLED)
+		{
+			let inv = 	Powerup(FindInventory("GFCreeperSlow"));
+			if (inv)	inv.EffectTics += CreeperSlowDuration;
+			else		mo.A_GiveInventory("GFCreeperSlow",1);
+			
+			if (mo.bFLOAT)
+				mo.DamageMobj(self, target, random[rng](DmgMin,DmgMax), Damagetype);
+			else
+			{
+				bool bud = mo.bBUDDHA;
+				mo.bBUDDHA = true;
+				mo.DamageMobj(self, target, random[rng](DmgMin,DmgMax), Damagetype);
+				mo.bBUDDHA = bud;
+			}
+		}
+		
+		return -1;
+	}
+	
+	override int DoSpecialDamage(Actor trg, int dmg, Name type)
+	{
+		if (trg)
+		{
+			if (trg is 'GFGhoulBase')
+				if (!trg.bBOSS)
+					dmg *= 10;
+			else if (trg.bISMONSTER)
+				dmg *= 10;
+		}
+		return dmg;
+	}
+	
+	private void DoSeek()
+	{
+		if (Tracer && !(tracer is "PlayerPawn"))
+			A_SeekerMissile(20, 20, SMF_PRECISE);
+	}
+	
+	States
+	{
+	Spawn:
+		X20A ABCD 3 DoSeek();
+		Loop;
+	Death:
+		X20A EFGHIJ 3 A_SetTranslucent(1.0, 1);
+		Stop;
+	}
+}

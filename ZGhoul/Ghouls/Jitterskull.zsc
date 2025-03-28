@@ -1,0 +1,682 @@
+/*==============================================================================
+	Jitterskull
+	
+In early days there were giants. Jitterskull was amongst the strongest and
+communications were not at their best, communicating through grunts and groans.
+Jitter was amongst the most respected. His malformed and smaller brother was
+buried by him after he committed suicide. When his time came, Jitter requested
+to be buried with his brother.
+
+Millenia later, the Yurei, in search of others to carry out her vengeance,
+resurrected his skull as a mindless servant. 
+
+He remains docile until someone is nearby. Moving via 'jittering', his creaky 
+jaw gives away his location with his quick motions. He's large enough to fit 
+several humans easily in his jaw, and charges at his foes in an attempt to 
+devour them, munching them up and 'swallowing' them to heal himself. 
+
+But he's also vulnerable while eating someone. Hitting him with strong attacks
+will interrupt everything he does, including eating, which will immediately
+get him attacking again.
+
+Recommended weapon: Super Shotgun
+==============================================================================*/
+
+Class JitterEyes : Actor
+{
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+BRIGHT
+	//	+ROLLSPRITE
+		SpriteAngle 180;
+	}
+	States
+	{
+	Spawn:
+		JSKE A -1;
+		Loop;
+	}
+}
+
+Class GFJitterSkull : GFGhoulBase
+{
+	Default
+	{
+		GFGhoulBase.PainDelay 10;
+		GFGhoulBase.DmgThreshold 200;
+		Monster;
+		Health 3000;
+		Scale 0.13;
+		Height 70;
+		Radius 15;
+		Speed 15;
+		PainChance 0;
+		+DONTCORPSE
+		+NOBLOCKMONST
+		+NODROPOFF
+		+QUICKTORETALIATE
+		+NOICEDEATH
+		+NORADIUSDMG
+		+NOFEAR
+		+DONTTHRUST
+		+DONTMORPH
+		+DONTBLAST
+		+DONTGIB
+		MaxStepHeight 64;
+		MaxDropoffHeight 64;
+		BloodType "GFJitterChip";
+		SeeSound "Jitterskull/Taunt";
+		PainSound "Jitterskull/Pain";
+		DeathSound "Jitterskull/Death";
+		//Undead
+		DamageFactor "AEPoison", 0.5;
+		DamageFactor "AEBullet", 0.75;
+		DamageFactor "Unholy", 0.5;
+		DamageFactor "UnholyDisint", 0.5;
+		DamageFactor "Holy", 2.0;
+		DamageFactor "Disintegrate", 1.5;
+		DamageFactor "AEMagic", 1.5;
+		DamageFactor "Jitter", 0.0;
+		DamageFactor "Sjas", 1;
+		DamageType "Jitter";
+		Obituary "";
+		Tag "Jitterskull";
+	}
+	
+	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
+	{
+		static const string ob[] =
+		{
+			"%o became a Jitter Lunchable",
+			"%o couldn't dodge Jitter's lunging jowels of doom",
+			"On Fine Dine Tonight, %o was rated A+ tier by Jitterskull",
+			"%o was a sanguine petre dish of vitamins and minerals for Jitterskull",
+			"Jitterskull fee fi fo fumbed and ate %o for breakfast",
+			"%o tastes like bacon, according to Jitterdon Skullsey"
+		};
+		return ob[random(0, ob.Size())];
+	}
+	
+	private Actor Eyes;
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		Eyes = Spawn('JitterEyes', pos);
+		if (Eyes) 
+		{
+			Eyes.Scale = Scale;
+		}
+	}
+	
+	override void Deactivate(Actor mo)
+	{
+		Super.Deactivate(mo);
+		if (Eyes)	Eyes.bINVISIBLE = true;
+	}
+	
+	override void Activate(Actor mo)
+	{
+		Super.Activate(mo);
+		if (Eyes)	Eyes.bINVISIBLE = false;
+	}
+	
+	override void DamageFlash(bool on)
+	{
+		Super.DamageFlash(on);
+		if (Eyes)	
+		{
+			Eyes.bSPRITEANGLE = on;
+			Eyes.Translation = Translation;
+		}
+	}
+	
+//	private ChewToken chewy;
+	override void Tick()
+	{
+		if (IsFrozen()) return;
+		Super.Tick();
+		if (bKILLED)	return;
+		
+		HandleChewing();
+		SetZ(FloorZ);
+		if (Eyes) 
+		{
+			if (Target)
+				Eyes.A_Face(Target);
+			if (!(Eyes.Pos ~== Pos))
+				Eyes.SetOrigin(pos, false);
+			Eyes.bINVISIble = (bINVISIBLE || Frame > 2);
+			Eyes.Prev = Prev;
+			Eyes.Vel = Vel;
+			Eyes.Scale = Scale;
+		}
+	}
+	
+	private void HandleChewing()
+	{
+		bNOFEAR = !CanChew;
+		bFRIGHTENED = CanChew;
+		if (CanChew)
+		{
+			if (ChewTimer > 0)
+			{
+				if (--ChewTimer < 1)
+				{
+					CanChew = false;
+					foreach (mo : Corpses)
+						if (mo)	mo.Destroy();
+					Corpses.Clear();
+				}
+				else
+				{
+					GiveBody(1);
+				}
+				
+			}
+			else
+			{
+				ChewTimer = 100;
+				A_StartSound("Jitterskull/Chew", 20, CHANF_OVERLAP);
+			}
+		}
+	}
+	
+	private void DoPainSound()
+	{	A_StartSound(PainSound, CHAN_VOICE, CHANF_OVERLAP);	}
+	
+	override void Die(Actor s, Actor i, int flags, Name mod)
+	{
+		if (Eyes)	Eyes.Destroy();
+		// Upchuck fudz
+		foreach (mo : Corpses)
+		{
+			if (!mo)	continue;
+			mo.SetOrigin(pos + (0,0,frandom[rng](15, 30)), false);
+			mo.bACTIVATEMCROSS = false;
+			mo.VelFromAngle(frandom[rng](5,10), angle + frandom[rng](-70,70));
+			mo.A_ChangeLinkFlags(0,0);
+		}
+		Corpses.Clear();
+		CanChew = Lunging = false;
+		Super.Die(s, i, flags, mod);
+	}
+	
+	override void OnDestroy()
+	{
+		if (Eyes) Eyes.Destroy();
+		Super.OnDestroy();
+	}
+	
+	private bool DoTryMove(bool forward = true)
+	{
+		double ang = forward ? angle : angle + 180.0;
+		Vector2 newpos = Vec2Angle(speed, ang);
+		return TryMove(newpos, bDROPOFF);
+	}
+	private int LastFrame;
+	private bool CanChew;
+	private void JitterJaw()
+	{
+		Lunging = false;
+		if (Corpses.Size() > 0)
+		{
+			CanChew = true;
+		}
+		A_FaceTarget();
+		LastFrame = Frame;
+		int rng = random[rd](0,2);
+		if (rng == LastFrame)
+			rng = (rng + 1) % 3;
+		Frame = rng;
+	}
+	
+	private Vector3 oldpos;
+	private void PreMove()	{	oldpos = pos;	}
+	private void PostMove()	
+	{	
+		prev = oldpos; 
+		if (Eyes) 
+		{
+			Eyes.SetOrigin(pos, false);
+			Eyes.prev = prev;
+		}
+	}
+	
+	const LungeDist = 340;
+	const LungeDistSq = LungeDist ** 2;
+	private bool MustMove;
+	private void CheckAttack()
+	{
+		if (MustMove)
+		{
+			return;
+		}
+		
+		if (!target || target.bKILLED || !target.bSHOOTABLE || ChewTimer > 0 || (!bNOFEAR && bFRIGHTENED))
+			return;
+		
+		if (Distance3DSquared(target) > LungeDistSq)
+			return;
+			
+		double	mtop = pos.z + height,
+				etop = target.pos.z + target.height;
+		
+		if (mtop < target.pos.z || etop < pos.z)
+			return;
+			
+		if (!CheckSight(target, SF_IGNOREVISIBILITY))
+			return;
+		
+		Vector3 old = pos;
+		double incr = 0, dist = Distance3D(target);
+		A_FaceTarget();
+		
+		while (incr < dist)
+		{
+			MovementBlockingLine = BlockingLine = null;
+			BlockingMobj = null;
+			Blocking3DFloor = null;
+			BlockingFloor = null;
+			BlockingCeiling = null;
+			incr += min(radius, dist - incr);
+			if (!TryMove(Vec2Angle(incr, angle),bDROPOFF) &&
+				(MovementBlockingLine || /*BlockingLine ||*/ BlockingFloor || BlockingCeiling || Blocking3DFloor))
+			{
+				/*
+				Line ln = BlockingLine;
+				if (ln &&
+				*/
+				SetOrigin(old, false);
+				return;
+			}
+		}
+		SetOrigin(old, false);
+		SetStateLabel("Lunge");
+	}
+	
+	private void Charge()
+	{
+		oldpos = pos;
+		A_FaceTarget();
+		A_StartSound("Jitterskull/Attack", CHAN_VOICE, CHANF_OVERLAP);
+		A_Recoil(-50);
+	}
+	
+	private void CheckMoved()
+	{
+		if (pos ~== oldpos)
+			MustMove = true;
+	}
+	
+	private void JitterMove(int count = 15)
+	{
+		if (count < 1)	return;
+		if (MustMove)
+		{
+			bNOFEAR = false;
+			bFRIGHTENED = true;
+		}
+		PreMove();
+		A_Stop();
+		let it = BehaviorIterator.Create('JitterMislCrasher');
+		Array<JitterMislCrasher> beh; beh.Clear();
+		{
+			JitterMislCrasher bb;
+			while (bb = JitterMislCrasher(it.Next()))
+			{
+				if (bb.Owner.bMISSILE)
+					beh.Push(bb);
+			}
+		}
+		for (int i = 0; i < count; i++)
+		{
+			A_DoChase(null, null, 0);
+			foreach (ms : beh)
+				if (ms)	ms.CheckImpact(self);
+				
+		}
+		if (MustMove)
+		{
+			bNOFEAR = true;
+			bFRIGHTENED = false;
+		}
+		MustMove = false;
+		PostMove();
+	}
+	
+	
+	
+	private void JitterChomp()
+	{
+		Lunging = true;
+		A_SpawnProjectile("GFJitterskullAttack",32,0,0);
+		if (vel ~== (0,0,0))
+			return;
+		Vector3 np = pos + vel;
+		let it = BlockThingsIterator.CreateFromPos(np.x,np.y,np.z, height * 0.75, radius, false);
+		while (it.Next())
+		{
+			let mo = it.thing;
+			if (mo && mo != self && 
+				mo.pos.z <= pos.z + height &&
+				mo.pos.z + mo.height >= pos.z)
+				AddCorpse(mo);
+		}
+	}
+	
+	private int dc, ac, ChewTimer;
+	private bool Lunging;
+	private void JitterBoom(int count = 1, bool big = false)
+	{
+		for (int i = 0; i < count; i++)
+		{
+			if (big)
+			{
+				let ex = GhoulDeathExplo(Spawn('GhoulDeathExplo', pos + (0,0,height * 0.75), ALLOW_REPLACE));
+				if (ex)
+				{
+					if (i == 0)	ex.jitterchips = random[rnd](50,100);
+					ex.silent = (i < 3);
+					ex.big = true;
+				}
+				
+			}
+			else
+			{
+				Vector3 ps = Vec3Angle(frandom(0,radius * 2.0),random(0,359),frandom(height * 0.5, height * 2.5));
+				let ex = GhoulDeathExplo(Spawn('GhoulDeathExplo', ps, ALLOW_REPLACE));
+				if (ex)
+				{
+					ex.jitterchips = random[rnd](2,6);
+					ex.A_Face(self, 0, 0);
+					ex.angle += 180;
+					ex.pitch = -pitch;
+				}
+			}
+		}
+	}
+	private Array<Actor> Corpses;
+	bool AddCorpse(Actor mo, bool fresh = false)
+	{
+		if (!(mo is 'PlayerPawn') && !(mo is 'GFGhoulBase') &&
+			(mo.bCORPSE || mo.bKILLED || fresh) &&
+			mo.Radius < 100 && mo.Height < 100 &&
+			/*mo.pos.z <= pos.z + height * 0.5 &&*/ !mo.bNOBLOOD &&
+			Corpses.Find(mo) >= Corpses.Size())
+		{
+			static const Class<Actor> bl[] =
+			{
+				'LostSoul',
+				'PainElemental',
+				'Cyberdemon',
+				'SpiderMastermind'
+			};
+			for (int i = 0; i < bl.Size(); i++)
+			{
+				if (mo is bl[i] || GetReplacee(mo.GetClass()) == bl[i])
+					return false;
+			}
+			Corpses.Push(mo);
+			mo.A_ChangeLinkFlags(1,1);
+			return true;
+		}
+		return false;
+	}
+	
+	override int TakeSpecialDamage(Actor i, Actor s, int dmg, Name dtype)
+	{
+		if (ChewTimer > 0)
+			dmg *= 2;
+		return dmg;
+	}
+	
+	override bool CanCollideWith(Actor other, bool passive)
+	{
+		if (!other) return false;
+		if (Lunging)
+		{
+			if (AddCorpse(other))
+				return false;
+		}
+		return true;
+	}
+	
+	States
+	{
+	Spawn:
+		JSKL A 0;
+	Idle:
+		---- AAAAAAAA 1 JitterJaw();
+		---- A 0 A_Look();
+		Loop;
+	See:
+		---- A 0 A_StartSound(SeeSound, CHAN_VOICE, CHANF_OVERLAP, 1, ATTN_NONE);
+	Chasing:
+		---- A 1 { JitterJaw(); A_StartSound("Jitterskull/Chase", 11); bNOPAIN = false; }
+		---- AAAAAAAAAAAAAAA 1 JitterJaw();
+	Check:
+		---- A 0 CheckAttack();
+		Goto Moving;
+	Moving:
+		JSKL A 1 JitterMove();
+		Goto Chasing;
+	Lunge:
+		JSKL D 1 Charge();
+		JSKL DDDDDDDDDDDDDDDDDDDD 1 JitterChomp();
+		---- D 0 CheckMoved();
+		---- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1 JitterJaw();
+		Goto Check;
+	Pain:
+		JSKL A 0
+		{
+			bNOPAIN = true;
+			A_StartSound("Ghoul/Damaged", 10, CHANF_OVERLAP);
+		}
+		JSKL AAAAAAAA 1 DamageFlash(true);
+		JSKL A 1
+		{
+			DoPainSound();
+			DamageFlash(false);
+			bNOFEAR = false;
+			bFRIGHTENED = true;
+			JitterMove();
+			bNOFEAR = true;
+			bFRIGHTENED = bNOPAIN = false;
+		}
+		---- AAAAAAAAAAAAAAA 1 JitterJaw();
+		Goto Chasing;
+	Death:
+		JSKL D 1
+		{
+			A_Stop();
+			A_StopAllSounds();
+			A_Scream();
+			A_Fall();
+		}
+		JSKL D 1
+		{
+			if (bDESTROYED)	return;
+			if (++dc < 100)
+			{
+				if (--ac < 1)
+				{
+					ac = random[rng](1,6);
+					JitterBoom();
+				}
+			}
+			else if (dc < 115)
+			{
+				if (--ac < 1)
+				{
+					ac = random[rng](1,3);
+					int c = random[rng](1,3);
+					JitterBoom(c);
+				}
+			}
+			else if (dc > 115)
+			{
+				JitterBoom(4,true);
+				Destroy();
+			}
+		}
+		Wait;
+	}
+}
+
+Class GFJitterskullAttack : Actor
+{
+	Default
+	{
+		PROJECTILE;
+		+FORCERADIUSDMG
+		+EXTREMEDEATH
+		+NOINTERACTION
+		Speed 10;
+		Radius 2;
+		Height 4;
+		Damage 4;
+		DamageType "Jitter";
+	}
+	
+	override int DoSpecialDamage(Actor trg, int dmg, Name dtype)
+	{
+		dmg = Super.DoSpecialDamage(trg, dmg, dtype);
+		
+		return (trg is 'PlayerPawn' && dmg > 3) ? 3 : dmg;
+			
+	}
+	States
+	{
+	Spawn:
+		TNT1 A 1 NoDelay 
+		{
+			A_Explode(15,96,0,0,64);
+			A_RadiusThrust(512, 128, RTF_NOIMPACTDAMAGE, 64);
+		}
+		Stop;
+	Death:
+		TNT1 A 0;
+		Stop;
+	}
+}
+
+Class GFJitterChip : Actor
+{
+	bool shortdeath;
+	property shortdeath: shortdeath;
+	Default
+	{
+		GFJitterChip.shortdeath true;
+		Projectile;
+		-NOGRAVITY
+		+THRUACTORS
+		+BOUNCEONWALLS
+		Scale 0.8;
+		Gravity 0.85;
+	}
+	
+	private int waterwait;
+	override void Tick()
+	{
+		if (IsFrozen())
+			return;
+			
+		Super.Tick();
+		
+		if (bNOINTERACTION)	
+			return;
+		if (waterwait < 35 && waterlevel > 2)
+		{
+			waterwait++;
+			if (waterwait >= 35)
+			{
+				bNOINTERACTION = true;
+				SetStateLabel("Death");
+			}
+		}
+	}
+	
+	private void RNGFrame()
+	{
+		Frame = random(0,4);
+	}
+	
+	States
+	{
+	Spawn:
+		JCHP A 0 NoDelay RNGFrame();
+		---- A 350;
+	Death:
+		---- A 350 A_SetTics(shortdeath ? 0 : 350);
+		---- A 1 A_FadeOut();
+		Wait;
+	}
+}
+
+extend class GFEvent
+{
+	private void CheckJitterKill(WorldEvent e)
+	{
+		let mo = e.Thing;
+		if (!mo)	return;
+		
+		let js = GFJitterskull(mo.Target);
+		if (js)	js.AddCorpse(mo, true);
+	}
+}
+
+class JitterMislCrasher : Behavior
+{
+	void CheckImpact(Actor mo)
+	{
+		if (!mo || !Owner || !Owner.bMISSILE)
+			return;
+		
+		let o = Owner;
+		/*
+		if (o.bTHRUACTORS || mo.bTHRUACTORS || mo.bNONSHOOTABLE || mo.bNOBLOCKMAP ||
+			(o.species == mo.species && (o.bMTHRUSPECIES)) ||
+			(mo.bGHOST && o.bTHRUGHOST) ||
+			((o.bTHRUBITS || mo.bTHRUBITS) && (mo.ThruBits & o.ThruBits)) ||
+			!o.CanCollideWith(mo, false) || !mo.CanCollideWith(o, true) ||
+			o.SpecialMissileHit(mo) > 0)
+			return;
+		*/
+		// Vertically out of range
+		if (o.pos.z + o.Height < mo.pos.z ||
+			o.pos.z > mo.pos.z + mo.height)
+			return;
+		
+		/*
+		Vector2
+			mp = mo.pos.XY,
+			op = Owner.pos.XY;
+		double rao = Owner.Radius;
+		double ram = mo.Radius;
+				
+		Vector2 
+			loo = Owner.Vec2Offset(-rao, -rao),
+			hio = Owner.Vec2Offset(rao, rao),
+			lom = mo.Vec2Offset(-ram, -ram),
+			him = mo.Vec2Offset(ram, ram);
+		
+		if ((lom.X > hio.X && him.X > hio.X) ||
+			(lom.X < loo.X && him.X < loo.X) ||
+			(lom.Y > hio.Y && him.Y > hio.Y) ||
+			(lom.Y < loo.Y && him.Y < loo.Y))
+			return;
+		*/
+		
+		if (o.Distance2DSquared(mo) > ((o.Radius + mo.Radius) ** 2))
+			return;
+		
+		if (o.CheckPosition(o.pos.XY, true))
+			return;
+			
+		o.DoMissileDamage(mo);
+		o.ExplodeMissile(null, mo);
+		Destroy();
+	}
+}

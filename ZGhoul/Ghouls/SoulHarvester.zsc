@@ -1,0 +1,33 @@
+/*==============================================================================
+	Soul Harvester (Reaper for short)
+	
+A farmer is one who reaps and sows. One particular farmer had a bad habit of
+harvesting humans on occasion like he did regular crops. This truly evil soul
+often took matters into his own hands in his own twisted views of righteousness,
+believing himself judge, jury and executioner of even the smallest of sins. He
+was careful, clever and crafty in making his victims disappear. Never once was
+he caught. On his 133rd victim however, the universe seemed to have enough of
+his evil, as a bridge collapsed beneath him and crushed him.
+
+The Yurei understood his desire to punish humanity for its incontinence and called
+him to her side. As he wielded a scythe in life, so too shall his teeth reap
+humans in death.
+
+Reaper likes to spawn glowing pools of energy beneath the feet of his victims
+which quickly slows them down. He likes to take his time drawing out the
+inevitable end, but he kills quickly. He can also launch hooks that will stop
+his foes dead and reel them in. The chains are breakable by rapidly pressing use.
+
+His melee instantly kills unarmored players in a radial chomp, also has a high
+health pool, but isn't hard to evade.
+
+Recommended Weapon: BFG 9000
+==============================================================================*/
+
+Class GFSoulHarvester : GFGhoulBase abstract
+{
+	Default
+	{
+		Tag "Reaper";
+	}
+}

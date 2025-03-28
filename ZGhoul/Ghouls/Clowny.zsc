@@ -1,0 +1,40 @@
+/*==============================================================================
+	Clowny
+
+During Hell's invasion of earth, Pennywise slumbered. It wasn't until a year or
+two after the portal was shut down when he awoke. Seeing the world on fire and
+humanity attempting to put out the flames gave Pennywise the opportunity of a 
+lifetime to feast. He's no friend to Hell and view them as inferior in many ways
+to his own army, and rightly so. They're predictable, stupid and bumbling.
+
+While consuming the town of Derry, he heard the mass call from the Yurei, he
+became intrigued. Curiosity caused him to send the soul of his most trusted
+lieutenant as a means of forging a potential partnership, and the Yurei accepted.
+Transforming him into the wrathful Clowny, Pennywise now watches the eldritch
+abomination wreaking havoc on the human world for his own twisted purposes.
+Humans caught in his maddening visage are sent straight to his master, acting
+like a portal to feed Pennywise - just payment for the alliance with the Yurei.
+-----
+Clowny is a deceiver of fools and uses illusions to confuse his victims. His 
+powers are imperfect however, as they appear slightly more translucent than
+he is. Whenever his victims look in his direction, he speeds up and can charge,
+unable to help but laugh a lot - a weakness of his. He deals tremendous damage
+to anything he touches, even if they aren't solid, often causing their view to
+spin around drunkenly.
+
+Whenever taking a certain amount of damage, he'll split a bunch of illusions of 
+himself around and move erratically, The illusions deal small damage, but during
+this time, beware; he may show his irises, an indicator of a much more deadlier
+charge that can insta-kill almost anything. Get out of sight or hit him with big
+weaponry such as rockets to drive him back until he dies.
+
+Recommended Weapon: Rocket Launcher
+==============================================================================*/
+
+Class GFClowny : GFGhoulBase abstract
+{
+	Default
+	{
+		Tag "Clowny";
+	}
+}

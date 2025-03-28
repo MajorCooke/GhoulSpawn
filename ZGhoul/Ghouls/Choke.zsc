@@ -1,0 +1,33 @@
+/*==============================================================================
+	Choke
+	
+The little brother of Jitterskull was born a malformed giant, and was often a
+target for picking on. His diminutive stature and lopsided body often made him
+an outcast, and Choke struggled very hard to be liked. Unable to take it anymore,
+Choke committed suicide, with his bigger brother burying him. When it was his
+bigger brother's time to pass on, he requested to be buried next to Choke's side.
+
+Even the Yurei hadn't wanted him - an accidental resurrection bring both Jitter's
+head and Choke's to unlife, but she took them both under her arms as mindless
+servants to wreak havoc upon humanity.
+
+Choke is the fastest ghoul around, constantly on the move which renders him
+partially invisible. Only when still is he fully revealed. He's much squishier
+than his boney brother, but he also presents a serious hazard to those with
+explosives.
+
+He can also puke up his last meal as a dangerous ball of gore. The longer he 
+charges it, the bigger it gets, including blast radius.
+
+But he's vulnerable to stunlocking. Rapid fire weapons are best.
+
+Recommended Weapon: Plasma Rifle or Chaingun
+==============================================================================*/
+
+Class GFChoke : GFGhoulBase abstract
+{
+	Default
+	{
+		Tag "Choke";
+	}
+}

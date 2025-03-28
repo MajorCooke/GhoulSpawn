@@ -1,0 +1,62 @@
+/*==============================================================================
+	Frostbite
+	
+A spirit of vengeance lies within the winter regions of the world. Formed from
+the frosted souls of the dead, Frostbite is there to answer the pleas of those
+who were violently murdered, and ensure their killer's cold demise in turn.
+Understanding the Yurei's rage against humanity and her desire for revenge,
+Frostbite answered her call and joined her legion in order to send humanity to
+the cold grave.
+
+Frostbite can easily be heard and seen in the darkness, glowing with an ethereal
+blue light and emitting frosty twinkles from his hair. Only if it holds still will
+he become difficult to track, but he doesn't do so for long, when he wants to
+charge out of a corner and eat someone.
+
+His primary attacks involve spewing a stream of frost breath, and shooting out
+icicle spewing frost novas that explode on contact with surfaces. Frostbite is 
+also incredibly resilient; his winter magic construct is difficult to crack with
+conventional weaponry, making him the tankiest of them all.
+
+But he's also quite slow, and needs time to recharge his attacks, allowing for
+pot shotting him and taking advantage of his down time to nuke him with strong
+attacks. His breath will also likely cause a lot of infighting.
+==============================================================================*/
+
+Class GFFrostbite : GFGhoulBase abstract
+{
+	Default
+	{
+		Tag "Frostbite";
+	}
+	
+	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
+	{
+		if (mod == 'Melee')
+		{
+			static const string ob[] =
+			{
+				"%o was but a frosty bite sized meal for Frostbite",
+				"%o mistook Frostbite for a winter teddy bear and became dinner instead.",
+				"%o couldn't dodge Frostbite's jaws of slowing death.",
+				"",
+				"",
+				""
+			};
+			return ob[random(0, ob.Size())];
+		}
+		else
+		{
+			static const string ob[] =
+			{
+				"",
+				"",
+				"",
+				"",
+				"",
+				""
+			};
+			return ob[random(0, ob.Size())];
+		}
+	}
+}

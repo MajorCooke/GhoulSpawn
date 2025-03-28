@@ -1,0 +1,296 @@
+[en default]
+
+GS_GHOULSPAWN_INFO = "Enables ghoul spawning";
+
+GS_DESPAWN_INFO = "Despawns ghouls if spawning is disabled";
+
+GS_ENDLESS_INFO = "Yurei only spawns ghouls endlessly";
+
+GS_SPAWNWAIT_INFO = "Wait until all ghouls are dead before spawning more";
+
+GS_SPAWNCOUNTDOWN_INFO_T = "Spawn timer ticks while ghouls are alive";
+GS_SPAWNCOUNTDOWN_INFO_F = "Spawn timer ticks only when all ghouls are dead";
+GS_QUANTITYTYPE_INFO_0 = "Use Spawn Amount";
+GS_QUANTITYTYPE_INFO_1 = "Randomize between 1 and Spawn Amount";
+GS_QUANTITYTYPE_INFO_2 = "Increases by 1 every full cycle, returns to 1 after";
+GS_QUANTITYTYPE_INFO_3 = "Increases by 1 but stays at max";
+GS_QUANTITYTYPE_INFO_4 = "No max cap, resets to 1 if option or map changes";
+
+GS_CYCLE_INFO_T = "Ghouls spawn in an order pre-determined on map start";
+GS_CYCLE_INFO_F = "Ghouls are absolutely randomized";
+
+GS_ABILITIES_INFO = "Determines some behaviors - not all of them";
+
+GS_INSTAKILL_INFO = "Doesn't apply to other ghouls";
+
+GS_TARGETING_INFO = "Determines targeting rules, overriding map rules";
+
+GS_NOTARGETABLES_INFO = "Ghouls can attack enemies that shouldn't be targetable";
+
+GS_GHOULSINFIGHT_INFO = "Ghouls can infight and hurt each other";
+
+/*==============================================================================
+	*** Upgrades ***
+==============================================================================*/
+
+GSC_LIGHT_DESC =
+"From the Light comes forth the power of Smite. Striking down evil with unstoppable"
+"power ensures your foes cannot get back up again."
+"";
+
+GSC_LIGHT_LORE =
+"In a different Earth, Shosonna lives. Empowered by holy radiance, she and the"
+"holy pope, who is ablaze with holy light shining from his eyes, are allies."
+"The One Above has willed to teach those capable of wielding Aurora Essence the"
+"power to strike against the ghoul scourge threatening to extinguish humanity"
+"across reality. The Light is your sword, for no evil can stand against it for long.";
+
+GSC_DARK_DESC =
+"The Dark provides the power to protect and defend oneseld and their allies."
+"A torrent of demon fire could be reduced to a mere candle, if used wisely.";
+
+GSC_DARK_LORE =
+"I am the demon lord you've been made aware of - Zatax. A pact has been made with "
+"your kind as such: in exchange for a Terminator body, the strongest among you "
+"capable of wielding Aurora Essence shall be granted the knowledge to safely wield the "
+"dark. For your sanity, we only scratch the surface - lest you become a slave who "
+"dooms all you see. This shall be enough to grant you the protective powers, allowing "
+"you to treat an ocean of fire as if it were no more threatening than a mere candle. "
+"With this, our mutual enemy shall melt in terror before your onslaught."
+"\n\n"
+"There are others elements you can utilize with essence. To keep you out of corruption's "
+"grasp, I can give you no further than the protective elements of the Dark. Perhaps you "
+"might catch the eye of the Pope, and gain the power of the Light? I hear it's perfect "
+"for overwhelming assault."
+"\n\n"
+"Regardles..."
+"\n\n"
+"May your thirst for vengeance never quench and your will burn brighter than your sun.\n"
+"May your steps be paved with the flesh of my idiotic brethren, and the gore of ghouls.\n" 
+"May we meet on the battlefield one day and destroy this scourge together, gloriously.\n" 
+"May we part amicably come victory, as I take the Yurei with me straight to Hell.\n\n"
+""
+"Good hunting, warrior.";
+
+GSC_CHAOS_DESC =
+"Chaos, a mix of all flavors, brings forth the unexpected and anomalous, such as "
+"summoning allies... but this may come at a price...";
+
+GSC_CHAOS_LORE =
+"The very fabric of reality is formed by matter and chaos to drive it, consisting of "
+"every element to make the universe go 'round. With the Yurei's invasion, even Hell's, "
+"the forces of good and evil have been at an apocalyptic war for the fate of all. "
+"What other madness could bring us back from the brink of death and reform a lost limb"
+"with no explanation or reason? Yet this can work both ways."
+
+GSC_DEATH_DESC =
+"Special abilities that require certain events to conjure. Whether retaliatory or "
+"from onslaught, these powerful spells can easily turn the tide of battle, if lucky";
+
+GSC_DEATH_LORE =
+"Death comes to all in the end. Sometimes sooner than one may like. But the Universe"
+"has a way of balancing itself out. Every time one side grows in power, someone"
+"or something out there will become an equalizer - love it or hate it. Death is"
+"the great equalizer, and perhaps the universe has tipped too far in the Yurei's"
+"direction. Yet to master it requires an intricate balance in all things, including"
+"power. The Reapers may have their eyes on certain individuals, guiding their"
+"scythes whenever it's time to harvest the abundance. But then again, they are"
+"tales of the crypt. Or... Are they?..."
+"";
+
+/*------------------------------------------------------------------------------
+	Jitterskull
+------------------------------------------------------------------------------*/
+GSL_JITTERSKULL_LORE =
+"Long ago, giants roamed the land. Their communication wasn't the best though, "
+"primarily speaking through grunts and gestures. Jitterskull particularly was a "
+"mighty warrior, revered by many and defender of his land, and a model giant at "
+"that. He had a little brother, but he was the star of the show. WHen his brother "
+"killed himself, Jitterskull personally buried Choke in a sacred place that would "
+"eventually become the Forbidden Forest. When his own time came, he requested to "
+"be buried by his brother's side. "
+"\n\n"
+"Many years later, the giants had long since been extinct. With the forbidden forest "
+"overtaking their graves, long had they been forgotten until the Yurei rose in power. "
+"Finding his remains, the Yurei resurrected his head as a mindless servant that "
+"roams the forest to this day, devouring all who trespass on the Yurei's land.";
+
+GSL_JITTERSKULL_DESC =
+"Jitterskulls movement is either a 'leap' forward, or moving at a snail's pace. "
+"The only time he moves more regularly is when lunging to chomp an enemy. Every "
+"time he moves, his jaws grind together at the hinges, producing noise no matter "
+"the movement. He's otherwise docile until he's alerted to an enemy nearby. "
+"Unlike his brethren, he's a brawler and much more solid, unable to pass through "
+"walls and a limited amount of height he can move up and down upon."
+"\n\n"
+"His bite is extremely powerful however, and can instantly cleave any human in "
+"twine, even some of the lesser demons. When lunging, he can also scoop up corpses "
+"and munch on them, healing himself in the process.";
+
+GSL_JITTERSKULL_TIPS =
+"* Jitterskull is the worst ghoul to deal with in tight quarters.\m"
+"* He's the 'slowest' ghoul and can easily be lead around in circles, but he "
+"has the farthest reach for attack.\n"
+"* When damaged enough, he will flinch and recoil, buying time. Keep hitting him "
+"with strong attacks and go on the offensive.\n"
+"* Take advantage of his limited mobility to get him stuck in a spot where you can "
+"unload on him.\n"
+"* Weak to crushing damage.";
+
+GST_BONEWALL_DESC =	
+"Jitterskull drops bones of its victims when attacking, blocking non-Ghouls."
+"Drops one bone pile per attack. Can be destroyed.";
+
+GST_DOUBLECHOMP_DESC =
+"Charges immediately again after performing 2 normal charges. Only performs"
+"if it can see its target.";
+
+GST_SKULLTAPULT_DESC =
+"Can attack vertically. Not bound to terrain while attacking.";
+
+GST_JIGGLEMEDDLE_DESC =
+"Can move around slowly.";
+
+GST_CALMJAW_DESC =
+"Jiggle Meddle additionally is silent.";
+
+GST_MESSYEATER_DESC =
+"While eating a corpse, tosses out gore that slows non-Ghouls.";
+
+GST_CALCIUMJAW_DESC =
+"After eating a corpse, doubles the speed of the next lunge.";
+
+GST_CALCIFIER_DESC =
+"Healing multiplies per corpse Jitterskull is eating.";
+
+GST_BONESTORM_DESC =
+"Movement charges up a Bone Storm that damages nearby enemies.";
+
+GST_CAVITYSHARDS_DESC =
+"Shoots a series of teeth after a lunge attack.";
+
+GST_BONEBREAKER_DESC =
+"Enemies are slowed massively after taking damage for a short time.";
+
+GST_SWIFTY_DESC =
+"Jitterskull jitters at full speed regardless of status.";
+
+// Rare
+GST_TELESKULL_DESC =
+"Movement is without height limitation.";
+
+GST_PHASER1_DESC =
+"Moves through solid obstacles.";
+// Legendary
+GST_PHASER2_DESC =
+"Ignores clipping.";
+
+GST_IMPACT_DESC =
+"Instead of lunge radius, deals +200% damage from impact.";
+
+GST_TEETHCUTTER_DESC =
+"+0.2% damage for every edible swallowed.";
+
+/*------------------------------------------------------------------------------
+	Sjas
+------------------------------------------------------------------------------*/
+GSL_SJAS_LORE =
+"In the medieval times, Sjas was once a jester who told good jokes, serving as"
+"entertainer for a royal court. One day, his joke didn't quite land, and he tried"
+"retelling it again. But confusion soon turned into horror for the gathered as he"
+"seemingly snapped and started screaming it belligerently until he was forcefully"
+"removed from the stage. Several days later, after a few incidents, he swore"
+"revenge upon them all before summarily being executed."
+"\n\n"
+"Now he has arisen frmo the grave, called by the Yurei to unleash the power of his"
+"screams to kill as many humans as possible, roaming the forest and exploding heads"
+"with the power of his voice.";
+
+GSL_SJAS_DESC =
+"Sjas emits loud vocals as he travels, but when holding still, emits none. He's"
+"very difficult to spot, even more so in the dark and is translucent. Listen for"
+"his audio and blast him when in sight. He has a low threshold for pain, and if he"
+"either attacks or takes enough damage, he'll vanish and attack from another angle."
+"He is most effective when an enemy suffers distractions, so stay on alert and keep"
+"pumping him full of lead until he dies.";
+
+GST_SPEEDFLECTOR_NAME = "Speedflector";
+GST_SPEEDFLECTOR_DESC = "Reflective Shout gives Sjas a speed boost for each projectile blocked or reflected.";
+GST_SPEEDFLECTOR_ICON = "T_SJAS1";
+
+GST_ESCAPEART_NAME = "Escape Art";
+GST_ESCAPEART_DESC = "Taking fatal damage warps Sjas away to heal. Sjas warps right back to where he was when done. Only happens once.";
+GST_ESCAPEART_ICON = "T_SJAS2";
+
+GST_SHOUTINGTEMPO_NAME = "Shouting Tempo";
+GST_SHOUTINGTEMPO_DESC = "Reflective Shout no longer stops Sjas, and reflects bullets and rails.";
+GST_SHOUTINGTEMPO_ICON = "T_SJAS3";
+
+GST_DECEPTIVEWINDS_NAME = "Deceptive Winds";
+GST_DECEPTIVEWINDS_DESC = "Sjas emits shadows of himself to confuse enemies into attacking them.";
+GST_DECEPTIVEWINDS_ICON = "T_SJAS4";
+
+/*------------------------------------------------------------------------------
+	Creeper
+------------------------------------------------------------------------------*/
+GSL_CREEPER_LORE =
+"The Yurei found a baby floating down the creek near her wrecked home - the one "
+"human she actually took pity upon instead of violently murdering. He was crying "
+"and hungry, desperate for food. But there was no human food around, so without "
+"much choice, the Yurei fed him human souls instead. This eventually twisted him "
+"overtime into the monster he is today, transforming him into an eldritch creature "
+"made of ectoplasm. Now he stalks the forest, seeking out trespassers and showing "
+"them a terrifying visage that bypasses conventional defenses and goes straight "
+"for the soul, quite physically frightening them to death.";
+
+GSL_CREEPER_DESC =
+"Creeper crawls through most solid entities and emits a breathing mutter while he"
+"moves. He's very difficult to spot, so listen carefully for his infamous 'over here'" 
+"taunt when he spawns."
+"\n\n"
+"However, he does have a tendency to throw ectoplastic curse balls at his foes, which"
+"deal a tiny bit of damage but cannot kill. Instead, their primary purpose is to slow"
+"his targets, weakening them simultaneously in order to reach them more easily."
+"Not all souls are created equal. In fact, human souls are more resilient than demons"
+"who are hindered by rage. That just means the Creeper will have to try a few times"
+"in order to shake the soul loose with his terrifying visage.";
+
+GSL_CREEPER_TIPS =
+"* The creeper can go through solid walls. Avoid being cornered.\n"
+"* Creeper balls can't kill but they'll wear you down and slow you, making easy "
+"prey for other enemies and for his primary attack.\n"
+"* His curse stacks, but gradually wear off every second.\n"
+"* Use a fast hitscan weapon if in close range, and explosives at a distance to "
+"finish him off.\n";
+
+
+/*------------------------------------------------------------------------------
+	Choke
+------------------------------------------------------------------------------*/
+GSL_CHOKE_LORE =
+"Long ago, giants roamed the land. One of these is the little dwarf giant known "
+"as Choke. Unlike his brother, he was often disliked and made fun of for his "
+"deformity. No one loved him. Human, giant, or even ghoul, no one wanted anything "
+"to do with him. Unloved and uncared for, Choke eventually killed himself, with his "
+"brother burying him personally. When Jitterskull's time came, his last request "
+"was to be buried next to his brother."
+"\n\n"
+"While the Yurei was resurrecting Jitterskull's head, she accidentally did so for "
+"Choke as well, but accepted him nonetheless and finally gave him purpose; eating "
+"human fleshlings who dare to trespass into her domain.";
+
+GSL_CHOKE_DESC =
+"Choke is easily the fastest ghoul unalive. His figure is a complete blur whenever "
+"moving, but is fully visible when still. He scouts the Forbidden Forest, alerting "
+"his brethren whenever there's an intruder spotted. Unlike Jitter's bite, he nibbles "
+"his opponents down but also has a preference to attack from a distance. He can "
+"upchuck his last few meals into dangerous blood balls that's either a large fast ball, "
+"a shotgun spread of smaller ones, or a huge slow seeking orb that'll likely kill "
+"anything it hits.";
+
+GSL_CHOKE_TIPS =
+"* Fast weapons are a must whenever he's out of blood to give, since he'll attack"
+"relentlessly. This will make him flinch and peel off for a brief moment.\n"
+"* Use explosive weapons carefully, and only when charging his blood balls.\n"
+"* Stay moving to further minimize bite damage.\n"
+"* Lure him to corpses if low on health. He'll devour those first and buy you time. ";

@@ -1,0 +1,168 @@
+// Base definition of all traits and what to give them
+Class GFTraitData
+{
+	Name ID;			// Name of trait
+	String Desc;		// Description
+	String Icon;		// graphic file name
+	TextureID tex;		// texture used by VisualThinkers if enabled
+	EGFTraitRank Rank;	// see ZGhoul/Constants.zsc
+	Array<Name>	Items;	// Name of items to give, if any.
+	Array<Name> Behaviors;	// Name of behaviors to apply
+	double Chance[2];	// [0] / [1] chance - defaults to 20 / 100 or 20% chance to apply on spawn
+	
+	void Init()
+	{
+		ID = '';
+		Desc = Icon = "";
+		tex.SetNull();
+		Rank = 0;
+		Items.Clear();
+		Behaviors.Clear();
+		Chance[0] = 0.0;
+		Chance[1] = 100.0;
+	}
+	
+	static GFTraitData Deserialize(GFJsonElement elem)
+	{
+		if (!elem)	ThrowAbortException("GFTraitData: Expected a GFJsonObject, got null");
+		
+		let obj = GFJsonObject(elem);
+		if (!obj)	ThrowAbortException("GFTraitData: Expected a GFJsonObject, got "..elem.GetClassName());
+		return new('GFTraitData').ProcessObject(obj);
+	}
+	
+	private GFTraitData ProcessObject(GFJsonObject obj)
+	{
+		Init();
+		GFJsonElement eName = obj.Get("name");
+		GFJsonString sName;
+		if (!eName)	ThrowAbortException("GFTraitData: 'name' is missing from a trait or is not lowercase!");
+		sName = GFJsonString(eName);
+		if (!sName)	ThrowAbortException("GFTraitData: Expected 'name' as string, got "..eName.GetClassName());
+		
+		GFJsonElement eDesc = obj.Get("desc");
+		GFJsonString sDesc;
+		if (eDesc)
+		{
+			sDesc = GFJsonString(eDesc);
+			if (!sDesc)	ThrowAbortException("GFTraitData: Expected 'desc' as string, got "..eDesc.GetClassName());
+		}
+		
+		GFJsonElement eIcon = obj.Get("icon");
+		GFJsonString sIcon;
+		if (eIcon)
+		{
+			sIcon = GFJsonString(eIcon);
+			if (!sIcon)	ThrowAbortException("GFTraitData: Expected 'icon' as string, got "..eDesc.GetClassName());
+			Icon = sIcon.s;
+			tex = TexMan.CheckForTexture(Icon);
+			if (!tex.IsValid())
+			{
+				Console.Printf("\cvTexture '"..Icon.."' is invalid and won't show with other traits.");
+				Icon = "";
+				tex.SetNull();
+			}
+		}
+		
+		GFJsonElement eChance = obj.Get("chance");
+		if (eChance)
+		{
+			if (eChance is 'GFJsonArray')
+			{
+				let carr = GFJsonArray(eChance);
+				for (uint i = 0; i < carr.Size(); i++)
+				{
+					if (i > 1)	break;
+					let ele = carr.Get(i);
+					let jd = GFJsonDouble(ele);
+					if (jd)
+					{
+						Chance[i] = jd.AsDouble();
+						continue;
+					}
+					let ji = GFJsonInt(ele);
+					if (ji)
+					{
+						Chance[i] = ji.AsDouble();
+						continue;
+					}
+					
+					// Not an int or double so abort everything.
+					
+					String s = "GFTraitData: Expected 'chance' array members to be int or double, got ";
+					if (ele)	s = s..ele.GetClassName();
+					else		s = s.." null";
+					ThrowAbortException(s);
+					return null;
+				}
+			}
+			else if (eChance is 'GFJsonDouble')
+			{
+				let cval = GFJsonDouble(eChance);
+				Chance[0] = cval.AsDouble();
+			}
+			else if (eChance is 'gfJsonInt')
+			{
+				let cval = GFJsonInt(eChance);
+				Chance[0] = cval.AsDouble();
+			}
+			else	ThrowAbortException("GFTraitData: Expected 'chance' as int, double or int/double array, got "..eDesc.GetClassName());
+		}
+		// 'items' array
+		GFJsonElement eItems = obj.Get("items");
+		if (eItems)
+		{
+			if (eItems is 'GFJsonArray')
+			{
+				let arr = GFJsonArray(eItems);
+				
+				for (uint i = 0; i < arr.Size(); i++)
+				{
+					let sinv = GFJsonString(arr.Get(i));
+					if (!sinv)	ThrowAbortException("GFTraitData: 'items' array members are strings only");
+					
+					// verify it's an actual item before storing by converting the
+					// string into an applicable class. Basically checks to see
+					// if the class exists or not; null if it doesn't.
+					Class<Inventory> iv = sinv.s;
+					if (iv) Items.Push(sinv.s);
+				}
+			}
+			else if (eItems is 'GFJsonString')
+			{
+				let sid = GFJsonString(eItems);
+				Class<Inventory> iv = sid.s;
+				if (iv) Items.Push(sid.s);
+			}
+			else ThrowAbortException("GFTraitData: Expected 'items' as string array or variable, got "..eItems.GetClassName()); 
+		}
+		
+		// 'behaviors' array
+		GFJsonElement eBeh = obj.Get("behaviors");
+		if (eBeh)
+		{
+			if (eBeh is 'GFJsonArray')
+			{
+				let arr = GFJsonArray(eBeh);
+				
+				
+				for (uint i = 0; i < arr.Size(); i++)
+				{
+					let sb = GFJsonString(arr.Get(i));
+					if (!sb)	ThrowAbortException("GFTraitData: 'behaviors' array members are strings only");
+					
+					Class<Behavior> bb = sb.s;
+					if (bb) Behaviors.Push(sb.s);
+				}
+			}
+			else if (eBeh is 'GFJsonString')
+			{
+				let st = GFJsonString(eBeh);
+				Class<Behavior> bb = st.s;
+				if (bb) Behaviors.Push(st.s);
+			}
+			else ThrowAbortException("GFTraitData: Expected 'behaviors' as a string array or variable, got "..eBeh.GetClassName());
+		}
+		return self;
+	}
+}

@@ -1,0 +1,276 @@
+
+
+Class GFEventStatic : StaticEventHandler
+{
+	private Array<Class<GFGhoulBase> > Order;
+	
+	static clearscope GFEventStatic Fetch()
+	{	return GFEventStatic(Find('GFEventStatic'));	}
+	
+	override void NetworkProcess(ConsoleEvent e)
+	{
+		if (e.Name == 'GS_Refresh')
+			RefreshGhoulList();
+	}
+	
+	override void WorldLoaded(WorldEvent e)
+	{
+		RefreshGhoulList();
+	}
+	
+	Class<GFGhoulBase> PickGhoul()
+	{
+		if (Order.Size() < 1)
+		{
+			RefreshGhoulList();
+			if (Order.Size() < 1)
+			{
+				Console.Printf("No ghouls applicable!");
+				return null;
+			}
+		}
+		int which = max(0,random[rng](0, Order.Size()-1));
+		return Order[which];
+	}
+	
+	private void RefreshGhoulList()
+	{
+		Order.Clear();
+		
+		// Get a list of all classes inheriting from GFGhoulBase.
+		// TO DO: Expand with ZJSON so people can register any class.
+		int i = 0;
+		for (i = 0; i < AllActorClasses.Size(); i++)
+		{
+			let gh = (class<GFGhoulBase>)(AllActorClasses[i]);
+			if (gh)	
+			{
+				gh = (class<GFGhoulBase>)(Actor.GetReplacement(gh));
+				if (gh && gh.isAbstract())	
+					continue;
+				let defs = GetDefaultByType(gh);
+				if (defs.NormalSpawn)
+					Order.Push(gh);
+			}
+		}
+		
+		if (Order.Size() < 1)
+		{
+			Console.Printf("No ghouls gotten!");
+			return;
+		}
+		// List assembled, now randomize the order.
+		int size = Order.Size();
+		for (int z = 0; z < size; z++) // Do it multiple times for maximum random.
+			for (i = 0; i < size; i++)
+			{
+				if (random[rng](0,1) == 0)
+					continue;
+				int j = i; 
+				while (j == i)
+					j = random[rng](0,size-1);
+				
+				let temp = Order[i];
+				Order[i] = Order[j];
+				Order[j] = temp;
+			}
+	}
+}
+
+Class GFEvent : EventHandler
+{
+	private GFEventStatic SEvent;
+	private Array<Class<GFGhoulBase> > Order;
+	private Array<GFGhoulBase> Ghouls;
+	private int Timer;
+	private bool NG;
+	
+	
+	static clearscope GFEvent Fetch()
+	{	return GFEvent(Find('GFEvent'));	}
+	
+	override void NewGame()
+	{
+		NG = true;
+	}
+	
+	override void WorldLoaded(WorldEvent e)
+	{
+		RefreshGhoulList();
+		if (e.IsReopen || e.IsSaveGame) return;
+		Timer = 35 * 60;
+	}
+	
+	override void WorldThingSpawned(WorldEvent e)
+	{
+		let mo = e.Thing;
+		if (mo && mo.bMISSILE && !(mo.Target is 'GFJitterskull'))
+		{
+			mo.AddBehavior('JitterMislCrasher');
+		}
+	}
+	
+	override void NetworkProcess(ConsoleEvent e)
+	{
+		if (e.Name == 'GS_ToggleSpawning')
+		{
+			Cvar p = Cvar.GetCvar("GS_GhoulSpawn");
+			bool res = p.GetBool();
+			p.SetBool(!res);
+			
+			if (!res)	Console.Printf("Ghoul Spawn On");
+			else		Console.Printf("Ghoul Spawn Off");
+		}
+	}
+	
+	private void RefreshGhoulList()
+	{
+		Order.Clear();
+		
+		// Get a list of all classes inheriting from GFGhoulBase.
+		// TO DO: Expand with ZJSON so people can register any class.
+		int i = 0;
+		for (i = 0; i < AllActorClasses.Size(); i++)
+		{
+			let gh = (class<GFGhoulBase>)(AllActorClasses[i]);
+			if (gh)	
+			{
+				gh = (class<GFGhoulBase>)(Actor.GetReplacement(gh));
+				if (gh && gh.isAbstract())	
+					continue;
+				let defs = GetDefaultByType(gh);
+				if (defs.NormalSpawn)
+					Order.Push(gh);
+			}
+		}
+		
+		if (Order.Size() < 1)
+		{
+			Console.Printf("No ghouls gotten!");
+			return;
+		}
+		// List assembled, now randomize the order.
+		int size = Order.Size();
+		for (int z = 0; z < size; z++) // Do it multiple times for maximum random.
+			for (i = 0; i < size; i++)
+			{
+				if (random[rng](0,1) == 0)
+					continue;
+				int j = i; 
+				while (j == i)
+					j = random[rng](0,size-1);
+				
+				let temp = Order[i];
+				Order[i] = Order[j];
+				Order[j] = temp;
+			}
+	}
+	
+	private GFGhoulBase Ghoul;
+	private void PickGhoul()
+	{	
+		if (Ghoul)	return;
+		if (!SEvent)	SEvent = GFEventStatic.Fetch();
+		Class<GFGhoulBase> pick = SEvent.PickGhoul();
+		
+		if (!pick)
+		{
+			Timer = 35;
+			return;
+		}
+		
+		Ghoul = GFGhoulBase(Actor.Spawn(pick, (0,0,0), ALLOW_REPLACE));
+		if (Ghoul)
+		{
+			Ghoul.ev = self;
+			Ghoul.Deactivate(null);
+			Ghoul.bINVISIBLE = true;
+			Ghoul.bSOLID = false;
+		}
+	}
+	
+	private Actor plr;
+	override void WorldTick()
+	{
+		if (gamestate != GS_LEVEL || !level ||
+			level.LevelName == 'TitleMap' || // in case someone goes "map titlemap" in console
+			level.MapName == 'TitleMap' || 
+			level.IsFrozen())
+			return;
+			
+		if (!GS_GhoulSpawn)		{	Timer = 35;	return;		}
+		if (Timer > 0)			{	Timer--;	return;		}
+		
+		if (NG)	
+		{
+			Timer += 35 * 60 * 2;
+			NG = false;
+		}
+		
+		if (!Ghoul || !plr)
+		{
+			int pnum = random[rng](0,MAXPLAYERS-1);
+			bool good = false;
+			for (int i = 0; i < MAXPLAYERS; i++)
+			{
+				if (!playeringame[pnum] || !players[pnum].mo || players[pnum].mo.bKILLED)
+				{
+					pnum = (pnum + 1) % MAXPLAYERS;		
+				}
+				else { good = true; break; }
+			}
+			
+			if (!good)	{	timer = 35;	return;	}
+			
+			plr = players[pnum].mo;
+		}
+		PickGhoul();
+		if (!Ghoul)	return;
+		if (Ghoul.bNOCLIP)
+		{
+			Vector3 next = plr.Vec3Angle(random[rng](1000,3000), random[rng](0,359));
+			Ghoul.SetOrigin(next, false);
+		}
+		else
+		{
+			Ghoul.SetOrigin(plr.pos, false);
+			if (!Level.IsPointInLevel(Ghoul.pos))
+			{	Timer = 35; return;		}
+			Ghoul.SetZ(Ghoul.FloorZ);
+			Ghoul.BlockingLine = null;
+			Ghoul.Blocking3DFloor = null;
+			Ghoul.BlockingFloor = null;
+			Ghoul.BlockingCeiling = null;
+			Ghoul.BlockingMobj = null;
+			Ghoul.bTHRUACTORS = true;
+			bool check = Ghoul.CheckPosition(Ghoul.Pos.XY);
+			Ghoul.bTHRUACTORS = false;
+			
+			if (!check)
+			{	Timer = 35; return;		}
+		}
+		Ghoul.Materialize(plr);
+		Ghoul.Target = plr;
+		Ghoul.LastHeard = plr;
+		Ghouls.Push(Ghoul);
+		Ghoul = null;
+		plr = null;
+		Timer = 35 * (60 * random(1,3));
+	}
+	
+	override void WorldThingDied(WorldEvent e)
+	{
+		let mo = GFGhoulBase(e.Thing);
+		if (mo)		Ghouls.Delete(Ghouls.Find(mo));
+		else		CheckJitterKill(e);
+	}
+	
+	override void WorldThingDestroyed(WorldEvent e)
+	{
+		if (Ghouls.Size() < 1)	return;
+		let mo = GFGhoulBase(e.Thing);
+		if (mo)	
+			Ghouls.Delete(Ghouls.Find(mo));
+	}
+}
+

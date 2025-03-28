@@ -1,0 +1,266 @@
+/*==============================================================================
+	Sjas
+	
+In mediaval times, Sjas was a jester who was pretty good at his job. One day,
+a joke he told didn't quite land the way he wanted it and continued repeating it
+to the confusion of everyone. It got to the point of him screaming it insanely,
+and the king had him removed from the stage. A few days later, he swore revenge,
+screaming he would kill them all before being summarily executed. The Yurei
+brought him back as a head, understanding his desire for vengeance and set him
+loose uopon the forest to kill anyone that enters.
+
+As an ethereal entity, he can move through all terrain and makes audible screams,
+announcing his presence. His voice is powerful enough to kill anyone up close, 
+and will teleport away if damaged enough. Can also charge his enemies, but doesn't
+deal passing damage like Jitterskull. Can also perform a supersonic scream to
+briefly make himself reflective invulnerable.
+
+Recommended Weapon: BFG 9000 or Super Shotgun
+==============================================================================*/
+	
+
+class GFSjas : GFGhoulBase
+{
+	Default
+	{
+		GFGhoulBase.PainDelay 2;
+		GFGhoulBase.PainVolume 0.5;
+		GFGhouLBase.DmgThreshold 100;
+		Monster;
+		+DONTTHRUST
+		-SOLID
+		+FLOAT
+		+LOOKALLAROUND
+		+NOGRAVITY
+		+NOBLOCKMONST
+		+MBFBOUNCER
+		+NOTELEOTHER
+		+NOICEDEATH
+		+DONTMORPH
+		+NOCLIP
+		+FORCERADIUSDMG
+		+DONTHARMSPECIES
+		+NOTELESTOMP
+		+CAUSEPAIN
+		+FORCERADIUSDMG
+		Health 2000; //25000
+		Alpha 0.4;
+		Radius 30;
+		Height 85;
+		floatspeed 10;
+		Speed 24;
+		meleedamage 10;
+		Renderstyle "Translucent";
+		SeeSound "Sjas/See";
+		PainSound "Sjas/Pain";
+		DeathSound "Sjas/Death";
+		Bloodcolor "White";
+		Species "Sjas";
+		//Undead
+		DamageType "Sjas";
+		DamageFactor "AEPoison", 0.5;
+		DamageFactor "AEBullet", 0.75;
+		DamageFactor "Unholy", 0.5;
+		DamageFactor "UnholyDisint", 0.5;
+		DamageFactor "Holy", 2;
+		DamageFactor "Disintegrate", 1.5;
+		DamageFactor "AEMagic", 1.5;
+		DamageFactor "Jitter", 2;
+		DamageFactor "Sjas", 0.0;
+		Obituary "%o lost a shouting match with Sjas.";
+		Tag "Sjas";
+	}
+	
+	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
+	{
+		static const string ob[] =
+		{
+			"%o lost a screaming match with Sjas.",
+			"%o's head caved in from Sjas blaring the loud speakers.",
+			"Sjas blew %o's mind with the power of its vocals.",
+			"%o stood on the wrong side of a goose with a megaphone called Sjas.",
+			"Sjas gave %o the audio therapy of a lifetime.",
+			"Sjas punk'd %o with a vocal-induced aneurism"
+		};
+		return ob[random(0, ob.Size())];
+	}
+	
+	override void Tick()
+	{
+		if (IsFrozen())	return;
+		Super.Tick();
+		if (bKILLED)
+			LightLevel = Max(LightLevel - 3, 0);
+	}
+	
+	override void HandlePainSound(Actor i, Actor s, int damage, Name mod, int flags)
+	{
+		if (PainTimer > 0)
+			return;
+			
+		PainTimer = 2;
+		A_StartSound(PainSound, CHAN_VOICE, CHANF_OVERLAP, 0.5);
+	}
+	
+	private void SjasChase()
+	{
+		bNOGRAVITY = bFLOAT = true;
+		A_Chase("Melee",null,CHF_DONTMOVE|CHF_DONTTURN|CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN);
+		A_FaceTarget(0,0,0,0,FAF_MIDDLE);
+		A_ChangeVelocity(cos(pitch)*Speed,0,-sin(pitch)*Speed,CVF_RELATIVE|CVF_REPLACE);
+	}
+	
+	private void SjasScream()
+	{
+		A_FadeIn(1.0, FTF_CLAMP);
+		A_Stop();
+		A_FaceTarget();
+	//	A_SpawnItemEx("SjasScreamExplosion",0,0,16,0,0,0,0,32); //A_Explode(128,256,XF_NOTMISSILE)
+	//	A_CustomMeleeAttack(random(20,80));
+		int dmg = random[rng](5,35);
+		if (!(target is 'PlayerPawn'))
+			dmg *= 5;
+		A_VileAttack("vile/stop",dmg,dmg,128,1,"Melee");
+		A_Explode(100, 128, XF_NOTMISSILE, damagetype: "Sjas");
+		if (Target)
+			Target.DamageMobj(self, self, 5, "Sjas");
+		A_StopSound(5);
+		S_StartSoundAt(pos, "Sjas/Attack", CHAN_VOICE, CHANF_OVERLAP, 1.0);
+	}
+	
+	// Don't let the explosion deal damage to the target, only to others.
+	override int DoSpecialDamage(Actor trg, int dmg, Name dtype)
+	{
+		if (dtype == 'Sjas' && trg is 'PlayerPawn')
+			return 0;
+		return Super.DoSpecialDamage(trg, dmg, dtype);
+	}
+	
+	private void Vanish(bool silent = false)
+	{
+		A_FadeTo(0.4, 1.0, FTF_CLAMP);
+		Vector3 p = pos + (0, 0, height * 0.5);
+		if (!silent)
+			S_StartSoundAt(p, "Sjas/Pain", CHAN_VOICE);
+		Spawn("GFSjasVanish", p, ALLOW_REPLACE);
+		Warp(self, random(2048, 4096), 0, 0, random(0,359), WARPF_NOCHECKPOSITION);
+		bNOPAIN = false;
+	}
+	
+	private void SjasBoom(bool big = false)
+	{
+		if (big)
+		{
+			int rng = random[rnd](7,10);
+			for (int i = 0; i < rng; i++)
+			{
+				let ex = GhoulDeathExplo(Spawn('GhoulDeathExplo', pos + (0,0,height * 0.75), ALLOW_REPLACE));
+				if (ex)
+				{
+					ex.big = true;
+					if (i > 2)
+						ex.silent = true;
+				}
+			}
+		}
+		else
+		{
+			Vector3 ps = Vec3Angle(frandom(0,radius * 2.0),random(0,359),frandom(height * 0.5, height * 2.5));
+			let ex = GhoulDeathExplo(Spawn('GhoulDeathExplo', ps, ALLOW_REPLACE));
+			if (ex)
+			{
+				ex.A_Face(self, 0, 0);
+				ex.angle += 180;
+				ex.pitch = -pitch;
+				if (random[rng](0,1))
+					ex.silent = true;
+			}
+		}
+	}
+	
+	States
+	{
+	Spawn:
+	Idle:
+		SJAS A 15 A_Look();
+		Wait;
+	See:
+		SJAS B 0 A_StartSound(SeeSound, CHAN_VOICE, CHANF_OVERLAP, 1, ATTN_NONE);
+	Chasing:
+		SJAS B 0 A_StartSound("Sjas/Chase", 5);
+		SJAS BBBBBBBBBBBBBBBBBBBBBBBB 1 SjasChase();
+		Loop;
+	Melee:
+		SJAS C 0 SjasScream();
+		SJAS CDCDCDCDCD 1 A_Stop();
+		SJAS CCCCCCCCCCCCCCCCCCCC 1 A_Stop();
+		SJAS C 1 Vanish(true);
+		Goto Chasing;
+	Pain:
+		SJAS C 8
+		{
+			A_FadeIn(1.0, FTF_CLAMP);
+			bNOPAIN = true;
+			A_StartSound("Ghoul/Damaged", flags: CHANF_OVERLAP);
+			A_Stop();
+			SetFlashTimer(8);
+		}
+		TNT1 A 1 Vanish();
+		Goto Chasing;
+	Death:
+		SJAS C 35
+		{
+			SetFlashTimer(0);
+			DamageFlash(0);
+			LightLevel = 255;
+			A_FadeIn(1.0, FTF_CLAMP);
+			A_Pain();
+			A_Fall();
+			bNOCLIP = false;
+		}
+		SJAS CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC 2 SjasBoom();
+		SJAS DDCCEEFFGGHH 2 SjasBoom();
+	//	SJAS EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE 2 SjasBoom();
+	//	SJAS FFFFGGGGHHHH 2 SjasBoom();
+		TNT1 A 35
+		{
+			SjasBoom(true);
+			A_Scream();
+		}
+		Stop;
+	}
+}
+
+Class GFSjasVanish : Actor
+{
+	bool silent;
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+NOTONAUTOMAP
+		+NOSECTOR
+	}
+	States
+	{
+	Spawn:
+		TNT1 A 5 NoDelay
+		{
+			Color col;
+			int mx = random[rng](200, 300);
+			for (int i = 0; i < mx; i++)
+			{
+				int c = random[rng](96, 255);
+				col = Color(c,c,c);
+				double p = frandom[rng](-90.0, 90.0);
+				double v = frandom[rng](5, 15);
+				double co = cos(p) * v;
+				double si = -sin(p) * v;
+				A_SpawnParticle(col, SPF_RELATIVE|SPF_FULLBRIGHT|SPF_REPLACE,
+					random(17,35),random(5,10),random(0,359), 0, 0, 0,
+					co, 0, si, 0, 0, 0, 1, -1, 1);
+			}
+		}
+		Stop;
+	}
+}

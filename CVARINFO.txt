@@ -1,0 +1,60 @@
+// Descriptions are based on the cvars being enabled.
+/*------------------------------------------------------------------------------
+	Spawning CVARS
+------------------------------------------------------------------------------*/
+// Ghouls can spawn.
+server bool GS_GhoulSpawn = true;
+
+// Ghouls despawn if the spawner is disabled.
+server bool GS_Despawn = false;
+
+// Yurei will only spawn ghouls, never attack.
+server bool GS_Endless = true;
+
+// Spawn ghouls a few minutes after all current ghouls are dead, otherwise
+// after a few minutes
+server bool GS_SpawnWait = true;
+
+// Spawn countdown happens regardless of ghouls present, otherwise waits until
+// all are dead. Only effective if GS_SpawnWait is on.
+server bool GS_SpawnCountdown = false;
+
+// Number of ghoul spawns increase gradually over time based on existing class #s
+// 0: Use GS_SpawnAmount
+// 1: Randomized number of ghouls between [1, GS_SpawnAmount]
+// 2: Gradually increase number of ghouls spawned, returning back to 1
+// 3: Same as 2 but stays at max
+// 4: No cap (will reset if changed or map changed)
+server int GS_QuantityType = 1;
+
+// Ghouls cycle through a full roster before they can spawn again.
+// Order determined at map start.
+server bool GS_Cycle = true;
+
+/*------------------------------------------------------------------------------
+	Difficulty CVARS
+------------------------------------------------------------------------------*/
+
+// Determines attacks
+// 0: Ghouls Forest (Classic)
+// 1: Ghouls vs Humans 
+server bool GS_Abilities = true;
+
+// Ghouls can instantly kill in one hit unless invulnerable
+// 0: Disabled
+// 1: Monsters
+// 2: Players
+// 4: All
+server int GS_InstaKill = 0;
+
+// Targeting
+//-1: Only attack the target given at spawn, ignores pain from others
+// 0: Abide by Doom targeting rules
+// 1: Ignore map defined rules
+server int GS_Targeting = 0;
+
+// Ignore NOTARGET flags on enemies (but respects NEVERTARGET)
+server bool GS_NoTargetables = false;
+
+// Can infight with other ghouls
+server bool GS_GhoulsInfight = true;

@@ -1,0 +1,43 @@
+
+
+Class GFDamageTypeData
+{
+	Name Type;		// Damage type to affect
+	double Factor;
+	
+}
+
+// Used for specifying how much damage a particular ghoul can do to a particular
+// enemy, and how much others can do to it. Includes damage types as well.
+Class GFDamageData
+{
+	Name Thing;		// The thing to affect the damage around.
+	Name Ghoul;		// Ghoul this affects.
+	bool Source,	// If true, affects all attacks coming from this thing, otherwise is exclusive. Ignored if !giving.
+		Giving,		// If true, affects outgoing damage. Otherwise, affects incoming
+		Children,	// Applies to all classes inheriting from Thing.
+		Replacers,	// Applies to all classes replacing Thing.
+	double Factor;	// How much to multiply the damage by.
+	int Damage;		// if > -2, straight up replaces it.
+	
+	void Init()
+	{
+		Thing = "";
+		Source = Giving = Children = Replacers = false;
+		Factor = 1.0;
+		Damage = -2;
+	}
+	
+	static GFDamageData Deserialize(GFJsonElement elem)
+	{
+		if (!elem)	ThrowAbortException("GFDamageData: Expected GFJsonElement, got null");
+		let obj = GFJsonObject(elem)
+		if (!obj)	ThrowAbortException("GFDamageData: Expected GFJsonElement, got "..elem.GetClassName());
+		return new('GFDamageData').ProcessObject(obj);
+	}
+	
+	private GFDamageData ProcessObject(GFJsonObject obj)
+	{
+		return self;
+	}
+}

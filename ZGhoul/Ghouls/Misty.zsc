@@ -1,0 +1,30 @@
+/*==============================================================================
+	Misty
+	
+Foggy mists are feared for a reason. The horror stories of axe murderers are not
+spoken of lightly, but more prevalently is the provocation of fear. Fear of the
+unknown. In the dense fog, one is blind to the monster lying in wait merely a
+few steps away. 
+
+Misty is made entirely of the Yurei's energy and is an extension of her will,
+unlike many others who are evil spirits given horrifying figures. Barely visible
+and bringing dense fog wherever she goes, only those with infrared can see through
+the thick of it - but they are also blind to her presence as well.
+
+Her primary method of attack is to suffocate her victims, drowning them with
+water particulates - sometimes horrifyingly so with nightmarish visions.
+
+Attacking her pushes her back, quickly changing angles and trying again. The 
+less health she has, the faster and more dangerous she becomes. Stay frosty and
+quick on the trigger, or get her to infight with demons. 
+
+Recommended Weapon: Plasma Rifle
+==============================================================================*/
+
+Class GFMisty : GFGhoulBase abstract
+{
+	Default
+	{
+		Tag "Misty";
+	}
+}

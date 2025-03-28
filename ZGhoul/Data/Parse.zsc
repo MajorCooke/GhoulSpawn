@@ -1,0 +1,218 @@
+// Parser File
+
+// This is where all the primary parsing takes place. This reads in and processes
+// all data, and then sends it off for other areas to handle them.
+
+extend Class GFEventStatic
+{
+//	ExampleOptions example_data;
+	private GFData JData;
+	override void OnRegister() //ParseJSON()
+	{
+		if (JData)	JData.Destroy();
+		JData = null;
+		
+		String lname = "/GHOUSPWN.json");
+		int lump = Wads.CheckNumForFullName(lname);
+		if (lump == -1)
+		{
+			Console.Printf("\cg%s not found! \ciUsing internal values instead.", lname);
+			return;
+		}
+		
+		uint errcount = 0;
+		
+		Array<GFData> datas;
+		while (lump > -1)
+		{
+			GFJsonElementOrError data = GFJSON.Parse(Wads.ReadLump(lump++),false);
+			if (data is "GFJsonError")
+			{
+				Console.Printf(lname..": "..GFJsonError(data).what);
+				errcount++;
+			}
+			else if (errcount < 1 && data is "GFJsonElement") 
+			{
+				let dat = GFData.Deserialize(GFJsonElement(data));
+				if (dat)
+				{
+					if (dat.ModID == 'GhoulSpawn')
+					{
+						JData = dat;
+						datas.Insert(0, dat);
+					}
+					else datas.Push(dat);
+				}
+			}
+		}
+		
+		if (errcount)
+		{
+		//	ThrowAbortException("%d errors while parsing %s", errcount, lname);
+			ThrowAbortException(""..errcount.." errors while parsing "..lname);
+			return;
+		}
+		
+		if (datas.Size() < 1)
+		{	Console.Printf("Nothing added. Using internal values."); return;	}
+		
+		Array<Name> IDs;
+		foreach (data : datas)
+		{
+			if (data.ModID == '' || data.ModID == ' ' || data.ModID == 'None' ||				
+				IDs.Find(data.ModID) != IDs.Size())
+				ThrowAbortException(""..data.ModID..": mod_id must be present, unique and not conflicting with other mod_ids");
+			IDs.Push(data.ModID);
+			
+			if (JData && JData == data)
+				continue;
+				
+			HandleAddon(data);
+		}
+	}
+	
+	private void HandleAddon(GFData data)
+	{
+		if (!data)	return;
+		
+	}
+}
+
+// These are a bunch of wrapper functions to avoid copy/pasting over and over again.
+/*
+enum EGFErrType
+{
+	GFErr_None = 0,
+	GFErr_Warn,
+	GFErr_Abort,
+	GFErr_AbortWrongType, // Only abort on wrong types, not nulls.
+	
+	GFErr_Default = GFErr_None
+};
+
+Class GFGlobalParser
+{
+	String ID; // For error printing
+	
+	static GFGlobalParser Make(String clsname)
+	{
+		let gp = new();
+		gp.ID = clsname;
+		return gp;
+	}
+	
+	private void TryError(EGFErrType type, String err, bool nil = false)
+	{
+		if (type <= GFErr_None)	return;
+		Switch(type)
+		{
+			Default:
+			Case GFErr_AbortWrongType:	if (nil)	return; // follow through if it's a wrong type.			
+			Case GFErr_Abort:	ThrowAbortException(err);	return;
+			Case GFErr_Warn:	Console.Printf("\cfWARNING:"..err);	return;
+		}
+	}
+	
+	GFJsonObject GetElemObject(GFJsonElement elem, EGFErrType type = GFErr_Default)
+	{
+		if (!elem)
+		{
+			TryError(type, ""..ID..": Expected GFJsonElement as GFJsonObject, got null", true);
+			return null;
+		}
+		let obj = GFJsonObject(elem);
+		if (!obj)	TryError(type, ""..ID..": Expected GFJsonElement as GFJsonObject, got "..elem.GetClassname(), type);
+		return obj;
+	}
+	
+	// String
+	GFJsonString GetJsonObjString(GFJsonObject obj, String s, EGFErrType type = GFErr_Default)
+	{
+		if (!obj)	TryError(type, ""..ID..": GFJsonObject parameter must not be null", true);	return null;
+		return GetJsonElementString(obj.Get(s), s, type);
+	}
+	
+	GFJsonString GetJsonElementString(GFJsonElement elem, String s, EGFErrType type = GFErr_Default)
+	{
+		if (!elem)	TryError(type, ""..ID..": Expected "..s.." as GFJsonString, got null/missing", true);	return null;
+		let st = GFJsonString(elem);
+		if (!st)	TryError(type, ""..ID..": Expected "..s.." as GFJsonString, got "..elem.GetClassName());
+		return st;
+	}
+	
+	// Integer
+	GFJsonInt GetJsonObjInt(GFJsonObject obj, String s, EGFErrType type = GFErr_Default)
+	{
+		if (!obj)	TryError(type, ""..ID..": GFJsonObject parameter must not be null", true);	return null;
+		return GetJsonElementInt(obj.Get(s), s, type);
+	}
+	
+	GFJsonInt GetJsonElementInt(GFJsonElement elem, String s, EGFErrType type = GFErr_Default)
+	{
+		if (!elem)	TryError(type, ""..ID..": Expected "..s.." as GFJsonInt, got null/missing", true);	return null;
+		let st = GFJsonInt(elem);
+		if (!st)	TryError(type, ""..ID..": Expected "..s.." as GFJsonInt, got "..elem.GetClassName());
+		return st;
+	}
+	
+	// Doubles
+	GFJsonDouble GetJsonObjDouble(GFJsonObject obj, String s, EGFErrType type = GFErr_Default)
+	{
+		if (!obj)	TryError(type, ""..ID..": GFJsonObject parameter must not be null", true);	return null;
+		return GetJsonElementDouble(obj.Get(s), s, type);
+	}
+	
+	GFJsonDouble GetJsonElementDouble(GFJsonElement elem, String s, EGFErrType type = GFErr_Default)
+	{
+		if (!elem)	TryError(type, ""..ID..": Expected "..s.." as GFJsonDouble, got null/missing", true);	return null;
+		let st = GFJsonDouble(elem);
+		if (!st)	TryError(type, ""..ID..": Expected "..s.." as GFJsonDouble, got "..elem.GetClassName());
+		return st;
+	}
+	
+	// Booleans
+	GFJsonBool GetJsonObjBool(GFJsonObject obj, String s, EGFErrType type = GFErr_Default)
+	{
+		if (!obj)	TryError(type, ""..ID..": GFJsonObject parameter must not be null", true);	return null;
+		return GetJsonElementBool(obj.Get(s), s, type);
+	}
+	
+	GFJsonBool GetJsonElementBool(GFJsonElement elem, String s, EGFErrType type = GFErr_Default)
+	{
+		if (!elem)	TryError(type, ""..ID..": Expected "..s.." as GFJsonBool, got null/missing", true);	return null;
+		let st = GFJsonBool(elem);
+		if (!st)	TryError(type, ""..ID..": Expected "..s.." as GFJsonBool, got "..elem.GetClassName());
+		return st;
+	}
+	
+	// Nulls
+	GFJsonNull GetJsonObjNull(GFJsonObject obj, String s, EGFErrType type = GFErr_Default)
+	{
+		if (!obj)	TryError(type, ""..ID..": GFJsonObject parameter must not be null", true);	return null;
+		return GetJsonElementNull(obj.Get(s), s, type);
+	}
+	
+	GFJsonNull GetJsonElementNull(GFJsonElement elem, String s, EGFErrType type = GFErr_Default)
+	{
+		if (!elem)	TryError(type, ""..ID..": Expected "..s.." as GFJsonNull, got null/missing", true);	return null;
+		let st = GFJsonNull(elem);
+		if (!st)	TryError(type, ""..ID..": Expected "..s.." as GFJsonNull, got "..elem.GetClassName());
+		return st;
+	}
+	
+	// Arrays
+	GFJsonArray GetJsonObjArray(GFJsonObject obj, String s, EGFErrType type = GFErr_Default)
+	{
+		if (!obj)	TryError(type, ""..ID..": GFJsonObject parameter must not be null", true);	return null;
+		return GetJsonElementArray(obj.Get(s), s, type);
+	}
+	
+	GFJsonArray GetJsonElementArray(GFJsonElement elem, String s, EGFErrType type = GFErr_Default)
+	{
+		if (!elem)	TryError(type, ""..ID..": Expected "..s.." as GFJsonArray, got null/missing", true);	return null;
+		let st = GFJsonArray(elem);
+		if (!st)	TryError(type, ""..ID..": Expected "..s.." as GFJsonArray, got "..elem.GetClassName());
+		return st;
+	}
+}
+*/

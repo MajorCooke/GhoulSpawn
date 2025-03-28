@@ -1,0 +1,24 @@
+/*==============================================================================
+	Eyesore
+	
+An escaped experiment from a lab, this mutant spider demon is the definition of
+arachnophobia. The mindless organism only has one desire: feed. Due to its augments
+it can rapidly generate little babies to swarm its foes, and its bite is the 
+most dangerous, capable of chomping a human in half.
+
+Hit it with rapid weaponry to slow it down, also good for quickly splattering
+its offspring. It may withdraw and scuttle away in order to try attacking again
+later. Do not relent. Pursue it to death. It can crawl on ceilings too, so keep
+an eye out. Thankfully, it's not very well developed and can go down with several
+super shotgun blasts.
+
+Recommended Weapon: Chaingun (Pistol for Baby Sores)
+==============================================================================*/
+
+Class GFEyesore : GFGhoulBase abstract
+{
+	Default
+	{
+		Tag "Eyesore";
+	}
+}

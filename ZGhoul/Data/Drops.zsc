@@ -1,0 +1,29 @@
+
+Class GFDropData
+{
+	Name 	ID,		// Name of thing to spawn
+			Type;	// Damagetype needed to drop this thing
+	int Count[2], 	// drop quantity min/max
+		Amount[2]; 	// amount min/max of item (if applicable, i.e. ammo)
+		
+	void Init()
+	{
+		ID = Type = '';
+		for (int i = 0; i < 2; i++)
+		{	Count[i] = Amount[i] = 0;	}
+	}
+		
+	static GFDropData Deserialize(GFJsonElement elem)
+	{
+		if (!elem)	ThrowAbortException("GFDropData: element is null");
+		let obj = GFJsonObject(elem);
+		if (!obj)	ThrowAbortException("GFDropData: expected object, got "..elem.GetClassName());
+		return new('GFDropData').ProcessObject(obj);
+	}
+	
+	private GFDropData ProcessObject(GFJsonObject obj)
+	{
+		Init();
+		return self;
+	}
+}

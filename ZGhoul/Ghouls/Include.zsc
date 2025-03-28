@@ -1,0 +1,11 @@
+
+#include "./Yurei.zsc"
+#include "./Choke.zsc"
+#include "./Creeper.zsc"
+#include "./Frostbite.zsc"
+#include "./Jitterskull.zsc"
+#include "./Sjas.zsc"
+#include "./Clowny.zsc"
+#include "./Eyesore.zsc"
+#include "./Misty.zsc"
+#include "./SoulHarvester.zsc"

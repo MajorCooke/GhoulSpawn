@@ -1,0 +1,59 @@
+/* 
+Primary container for all data.
+The file structure is as such:
+
+* UpgradeData
+* GhoulData
+* --> DamageData (specific to a ghoul)
+* --> DropData
+* --> TraitData
+*/
+Class GFData
+{
+	Name ModID;
+	Map<Name, GFUpgradeData> UpgradeData;
+	Map<Name, GFGhoulData> GhoulData;
+	
+	static GFData Deserialize(GFJsonElement elem)
+	{
+		if (!elem)		ThrowAbortException("GFData: Expected a GFJsonObject, got null");
+		
+		let obj = GFJsonObject(elem);
+		if (!obj)		ThrowAbortException("GFData: Expected a GFJsonObject, got "..elem.GetClassName());
+		
+		return new('GFData').ProcessObject(obj);
+	}
+	
+	private GFData ProcessObject(GFJsonObject obj)
+	{
+		// First make sure there is a ModID present.
+		JsonElement elemModID = obj.Get("mod_id");
+		if (!elemModID)	ThrowAbortException("mod_id is missing. Add it with a unique name to fix.");
+		else
+		{
+			let miid = GFJsonString(elemModID);
+			if (!miid)	ThrowAbortException("mod_id: Expected a GFJsonString, got "..elemModID.getClassName());
+			ModID = miid.s;
+		}
+		
+		// "Upgrades" array
+		
+		// "Ghouls" array
+		JsonElement elemGhouls = obj.Get("ghouls");
+		if (elemGhouls)
+		{
+			let arr = GFJsonArray(elemGhouls);
+			if (!arr)	ThrowAbortException("ghouls: Expected GFJsonArray, got "..elemGhouls.getClassName());
+			
+			// Now iterating through each object defined.
+			for (uint i = 0; i < arr.Size(); i++)
+			{	// GFGhoulData will handle the rest of the processing.
+				GFGhoulData gd = GFGhoulData.Deserialize(arr.Get(i));
+				if (gd)		GhoulData.Insert(gd.ID, gd);
+			}
+		}
+		return self;
+	}
+}
+
+
