@@ -3,6 +3,7 @@
 Class GFEventStatic : StaticEventHandler
 {
 	private Array<Class<GFGhoulBase> > Order;
+	private int Count, LastNum;
 	
 	static clearscope GFEventStatic Fetch()
 	{	return GFEventStatic(Find('GFEventStatic'));	}
@@ -11,11 +12,28 @@ Class GFEventStatic : StaticEventHandler
 	{
 		if (e.Name == 'GS_Refresh')
 			RefreshGhoulList();
+		else MsgNetworkProcess(e);
+	}
+	
+	override void InterfaceProcess(ConsoleEvent e)
+	{
+		MsgInterfaceProcess(e);
+	}
+	
+	override void RenderOverlay(RenderEvent e)
+	{
+		MsgRenderOverlay(e);
 	}
 	
 	override void WorldLoaded(WorldEvent e)
 	{
+		LastNum = -1;
 		RefreshGhoulList();
+	}
+	
+	override void WorldTick()
+	{
+		TickMessages();
 	}
 	
 	Class<GFGhoulBase> PickGhoul()
@@ -30,6 +48,16 @@ Class GFEventStatic : StaticEventHandler
 			}
 		}
 		int which = max(0,random[rng](0, Order.Size()-1));
+		if (LastNum > -1 && Which == LastNum && Order.Size() > 1)
+		{
+			if (Count < GS_RepeatLimit)
+				Count++;
+			else while (Which == LastNum)
+				which = max(0,random[rng](0, Order.Size()-1));
+			
+		}
+		else Count = 0;
+		LastNum = which;
 		return Order[which];
 	}
 	
@@ -175,7 +203,7 @@ Class GFEvent : EventHandler
 		
 		if (!pick)
 		{
-			Timer = 35;
+			Timer = 15;
 			return;
 		}
 		
@@ -249,13 +277,13 @@ Class GFEvent : EventHandler
 			if (!check)
 			{	Timer = 35; return;		}
 		}
-		Ghoul.Materialize(plr);
 		Ghoul.Target = plr;
 		Ghoul.LastHeard = plr;
+		Ghoul.Materialize();
 		Ghouls.Push(Ghoul);
 		Ghoul = null;
 		plr = null;
-		Timer = 35 * (60 * random(1,3));
+		Timer = 35 * (30 * random(1,5));
 	}
 	
 	override void WorldThingDied(WorldEvent e)

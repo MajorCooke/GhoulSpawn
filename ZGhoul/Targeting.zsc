@@ -1,0 +1,204 @@
+/*
+Class GFPostTicker : Thinker
+{
+	static GFPostTicker MakePostTicker()
+	{
+		let it = ThinkerIterator.Create('GFPostTicker', Thinker.MAX_STATNUM - 1);
+		GFPostTicker ticker = null;
+		while (ticker = GFPostTicker(it.Next()))
+			if (ticker)	return ticker;
+		
+		ticker = new();
+		return ticker;
+	}
+	override void PostBeginPlay()
+	{
+		ChangeStatNum(Thinker.MAX_STATNUM - 1);
+	}
+	
+	override void Tick()
+	{
+		let it = BehaviorIterator.Create('GFTargeting');
+		GFTargeting tar = null;
+		int count = 0;
+		while (tar = GFTargeting(it.Next()))
+		{
+			if (!tar || tar.bDESTROYED || !tar.owner)
+				continue;
+			
+			let o = tar.Owner;
+			if (!o || o.bKILLED || o.IsFrozen())	
+				continue;
+			
+			let fn = (Function<play void()>)(FindFunction('GFTargeting', 'PostTick'));
+			if (fn)	fn.Call(tar);
+			count++;
+		}
+		if (count < 1)
+			Destroy();
+	}
+}
+*/
+Class GFTargeting : Behavior
+{
+	const CleanTimer = 35 * 5;
+	private bool DestroyMe;
+	private int Timer;
+	
+	//--------------------------------------------------------------------------
+	// Safety setup
+	
+	private bool CheckOwner() const
+	{
+		return (Owner && !Owner.bKILLED);
+	}
+	
+	override void Initialize()
+	{
+		if (!Owner || Owner is 'PlayerPawn')
+		{	Destroy();	return;		}
+		GetTarget();
+		AddTarget(Target);
+	}
+	private bool PostTicked;
+	override void Tick()
+	{
+		if (DestroyMe || !CheckOwner()) {	Destroy();	return;		}
+		if (Owner.IsFrozen())	return;
+		if (++Timer >= CleanTimer)
+		{	Timer = 0;	CleanTargets();		}
+		
+		HandleTargets();
+		PostTicked = false;
+	}
+	
+	
+	
+	override void TransferredOwner(Actor old)
+	{
+		if (!old || old is 'PlayerPawn')
+			DestroyMe = true;
+		PostTicked = true; // Don't run upon transfer.
+		Targets.Clear();
+		PrevTarget = Target = null;
+		
+		GetTarget();
+		AddTarget(Target);
+	}
+	
+	//--------------------------------------------------------------------------
+	// Now for target handling.
+	/*
+	void PostTick()
+	{
+		if (PostTicked || !Owner)	return;
+		PostTicked = true;
+		
+		HandleTargets();
+	}
+	*/
+	private void GetTarget()
+	{
+		Target = (CheckOwner()) ? Owner.Target : null;
+	}
+	
+	private Actor PrevTarget, Target;
+	private Array<Actor> Targets;
+	private void HandleTargets()
+	{
+		if (!CheckOwner())	return;
+		
+		GetTarget();
+		if (Targetable(Target))
+		{
+			if (PrevTarget != Target)
+			{
+				RearrangeTarget(Target);
+				PrevTarget = Target;
+			}
+		}
+		else 
+		{
+			if (NextTarget())
+				Owner.Target = Target;
+		}
+	}
+	
+	private bool AddTarget(Actor mo)
+	{
+		if (mo && mo != Owner && (mo.bISMONSTER || mo is 'PlayerPawn') && !mo.bKILLED)
+		{
+			if (Targets.Find(mo) >= Targets.Size())
+				Targets.Push(mo);
+			return true;
+		}
+		return false;
+	}
+	
+	private void CleanTargets()
+	{
+		if (Targets.Size() > 0)
+		{
+			Timer = 0;
+			int prev = Targets.Size();
+			int i = 0, j = 0;
+			
+			foreach(mon : Targets)
+				if (mon) Targets[j++] = mon;
+			Targets.Resize(j);
+		}
+	}
+	
+	private void RearrangeTarget(Actor mo)
+	{
+		if (Targets.Find(mo) >= Targets.Size())
+			AddTarget(mo);
+		else if (Targets.Size() > 0)
+		{
+			int pos = Targets.Find(mo);
+			if (pos == Targets.Size() - 1) // Already at the end.
+				return;
+			Targets[pos] = null;
+			Targets.Push(mo);
+			CleanTargets();
+		}
+	}
+	
+	private bool Targetable(Actor mo)
+	{
+		if (!Owner)	return false;
+		
+		// Primarily want to see if the target is actually targetable, so remove
+		// the restraints briefly.
+		bool quick = Owner.bQUICKTORETALIATE;
+		Owner.bQUICKTORETALIATE = true;
+		bool nosw = Owner.bNOTARGETSWITCH;
+		Owner.bNOTARGETSWITCH = false;
+		
+		bool ret = Owner.OkayToSwitchTarget(mo);
+		
+		Owner.bQUICKTORETALIATE = quick;
+		Owner.bNOTARGETSWITCH = nosw;
+		return ret;
+		
+		return ret;
+	}
+	
+	private Actor NextTarget()
+	{
+		if (Targetable(Target))
+			return Target;
+		
+		for (int i = Targets.Size() - 1; i > -1; i--)
+		{
+			let mo = Targets[i];
+			if (Targetable(mo))
+			{	
+				Target = mo;	
+				return Target;		
+			}
+			Targets.Pop();
+		}
+		return null;
+	}
+}

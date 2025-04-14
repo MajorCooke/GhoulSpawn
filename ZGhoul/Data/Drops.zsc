@@ -1,10 +1,10 @@
 
 Class GFDropData
 {
-	Name 	ID,		// Name of thing to spawn
-			Type;	// Damagetype needed to drop this thing
-	int Count[2], 	// drop quantity min/max
-		Amount[2]; 	// amount min/max of item (if applicable, i.e. ammo)
+	internal readonly Name 	ID,			// Name of thing to spawn
+							Type;		// <Damage/Death>type needed to drop this thing
+	internal readonly int	Count[2], 	// drop quantity min/max
+							Amount[2]; 	// amount min/max of item (if applicable, i.e. ammo)
 		
 	void Init()
 	{
@@ -12,7 +12,11 @@ Class GFDropData
 		for (int i = 0; i < 2; i++)
 		{	Count[i] = Amount[i] = 0;	}
 	}
-		
+	
+	
+	//--------------------------------------------------------------------------
+	// Serialization functions
+	//--------------------------------------------------------------------------
 	static GFDropData Deserialize(GFJsonElement elem)
 	{
 		if (!elem)	ThrowAbortException("GFDropData: element is null");

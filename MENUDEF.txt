@@ -1,0 +1,39 @@
+AddOptionMenu "OptionsMenu"
+{
+	Submenu "Ghoul Spawns", "GhoulSpawnOptions"
+}
+
+Optionmenu "GhoulSpawnOptions"
+{
+	Title "Ghoul Spawn Options"
+	Submenu "Keybinds",					"GhoulSpawnKeybinds"
+	Option "Ghoul Spawner", 			GS_GhoulSpawn,		"OnOff"
+	Option "Ghouls Despawn",			GS_Despawn,			"YesNo"
+	Slider "Repeat Limit",				GS_RepeatLimit,		0, 10, 1, 0
+	option "Spawn Alert",				GS_AlertNoiseType,	"GSAlertType"
+	StaticText ""
+	Option "Target Behavior",			GS_Targeting,		"GSTarget"
+	Option "Ghouls Target Ghouls",		GS_GhoulsInfight,	"YesNo"
+	Option "Ignore NOTARGET flag",		GS_NoTargetables,	"YesNo"
+}
+
+OptionValue "GSAlertType"
+{
+	0, "None"
+	1, "Sight Sounds"
+	2, "Global"
+}
+
+OptionValue "GSTarget"
+{
+	-1,	"Players/Friends Only"
+	0,	"Obey map rules"
+	1,	"Ignore map rules"
+}
+
+Optionmenu "GhoulSpawnKeybinds"
+{
+	Title "Ghoul Spawn Keybinds"
+	
+	Control "Toggle Ghoul Spawning",	"NetEvent GS_ToggleSpawning"
+}

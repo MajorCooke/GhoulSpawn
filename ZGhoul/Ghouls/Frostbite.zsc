@@ -32,31 +32,14 @@ Class GFFrostbite : GFGhoulBase abstract
 	
 	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
 	{
-		if (mod == 'Melee')
+		static const string ob[] =
 		{
-			static const string ob[] =
-			{
-				"%o was but a frosty bite sized meal for Frostbite",
-				"%o mistook Frostbite for a winter teddy bear and became dinner instead.",
-				"%o couldn't dodge Frostbite's jaws of slowing death.",
-				"",
-				"",
-				""
-			};
-			return ob[random(0, ob.Size())];
-		}
-		else
-		{
-			static const string ob[] =
-			{
-				"",
-				"",
-				"",
-				"",
-				"",
-				""
-			};
-			return ob[random(0, ob.Size())];
-		}
+			"Frostbite made %o shiver to a standstill.",
+			"%o was made into an icy popsicle by Frostbite.",
+			"%o felt the cold snap from Frostbite.",
+			"%o drank Frostbite's cool-aid. OH NAH!"
+		};
+		return ob[random(0, ob.Size())];
+		
 	}
 }

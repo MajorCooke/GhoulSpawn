@@ -63,6 +63,18 @@ Class GFGlobal play
 			output += divisor;
 		return output;
 	}
+	
+	static bool IsTouching(Actor a1, Actor a2, bool threed = true)
+	{
+		if (threeD)
+		{
+			if (a1.pos.z > a2.pos.z + a2.height)	return false;
+			if (a2.pos.z > a1.pos.z + a1.height)	return false;
+		}
+		double dist = a1.Distance2DSquared(a2);
+		double rad = (a1.radius + a2.radius) ** 2;
+		return (dist <= rad);
+	}
 
 	/*--------------------------------------------------------------------------
 	GetFalloff

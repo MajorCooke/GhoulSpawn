@@ -12,26 +12,22 @@ extend Class GFEventStatic
 		if (JData)	JData.Destroy();
 		JData = null;
 		
-		String lname = "/GHOUSPWN.json");
-		int lump = Wads.CheckNumForFullName(lname);
-		if (lump == -1)
-		{
-			Console.Printf("\cg%s not found! \ciUsing internal values instead.", lname);
-			return;
-		}
-		
-		uint errcount = 0;
+		String lname = "/GHOUSPWN.json";
 		
 		Array<GFData> datas;
-		while (lump > -1)
+		int lump = 0;
+		while (true)
 		{
-			GFJsonElementOrError data = GFJSON.Parse(Wads.ReadLump(lump++),false);
-			if (data is "GFJsonError")
+			lump = Wads.FindLump(lname, lump);
+			if (lump == -1)	break;
+			
+			GFJsonElementOrError data = GFJSON.Parse(Wads.ReadLump(lump),false);
+			if (data is 'GFJsonError')
 			{
-				Console.Printf(lname..": "..GFJsonError(data).what);
-				errcount++;
+				ThrowAbortException(""..WADs.GetLumpFullPath(lump)..": "..GFJsonError(data).what);
+				return;
 			}
-			else if (errcount < 1 && data is "GFJsonElement") 
+			else if (data is 'GFJsonElement')
 			{
 				let dat = GFData.Deserialize(GFJsonElement(data));
 				if (dat)
@@ -44,13 +40,7 @@ extend Class GFEventStatic
 					else datas.Push(dat);
 				}
 			}
-		}
-		
-		if (errcount)
-		{
-		//	ThrowAbortException("%d errors while parsing %s", errcount, lname);
-			ThrowAbortException(""..errcount.." errors while parsing "..lname);
-			return;
+			lump++;
 		}
 		
 		if (datas.Size() < 1)

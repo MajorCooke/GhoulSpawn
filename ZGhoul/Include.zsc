@@ -1,0 +1,15 @@
+#include "./Constants.zsc"
+#include "./Base.zsc"
+#include "./Event.zsc"
+#include "./Targeting.zsc"
+#include "./Global.zsc"
+
+
+// Libraries
+#include "./Libraries/Include.zsc"
+
+// All ghoul definitions are located here.
+#include "./Ghouls/Include.zsc"
+
+// All information regarding the parsed content is here.
+#include "./Data/Include.zsc"

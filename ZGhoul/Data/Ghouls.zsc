@@ -3,10 +3,10 @@ Class GFGhoulData
 {
 	Name ID;						// Name of the ghoul
 	String Tag;						// For mods like TargetSpy
-	Map<Name, GFTraitData> Traits;	// Applicable traits
 	Map<Name, GFDropData> Drops;	// item drops
 	Map<Name, GFDamageData> Damages;// Special damage interactions
-	int Weight;						// Spawn Chance, Max Chance (X/Y)
+	Map<Name, double> DamageFactors;// 
+	int Weight;						// Spawn Chance (RandomSpawner styled)
 	
 	void Init()
 	{
@@ -18,6 +18,9 @@ Class GFGhoulData
 		Weight = 50;
 	}
 
+	//--------------------------------------------------------------------------
+	// Serialization functions
+	//--------------------------------------------------------------------------
 	static GFGhoulData Deserialize(GFJsonElement elem)
 	{
 		if (!elem)		ThrowAbortException("GFGhoulData: Expected a GFJsonObject, got null");
@@ -75,22 +78,6 @@ Class GFGhoulData
 			prop = true;
 		}
 		*/
-		// "traits":
-		GFJsonElement elemTraits = obj.Get("traits");
-		if (elemTraits)
-		{
-			GFJsonArray arr = GFJsonArray(elemTraits);
-			if (!arr)	ThrowAbortException("GFGhoulData: expected 'traits' an an object array, got "..elemTraits.GetClassName());
-			
-			// see GFTraitData below
-			for (uint i = 0; i < arr.Size(); i++)
-			{
-				GFTraitData td = GFTraitData.Deserialize(arr.Get(i));
-				if (td)	Traits.Insert(td.ID, td);
-			}
-			if (Traits.Size() > 0) 
-				prop = true;
-		}
 		
 		// "tag" override
 		GFJsonElement elemTag = obj.Get("tag");

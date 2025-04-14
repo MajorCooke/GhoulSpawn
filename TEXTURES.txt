@@ -1,0 +1,28 @@
+sprite SAMBQ0, 301, 268
+{
+	patch SAMBN0, 147, 266
+	{
+		Translation "Inverse"
+	}
+}
+
+sprite SAMBP0, 296, 336
+{
+	patch SAMBO0, 145, 325
+	{
+		Translation "Inverse"
+	}
+}
+
+NoTrim JSKEA1
+NoTrim JSKEA2
+NoTrim JSKEA3
+NoTrim JSKEA4
+NoTrim JSKEA5
+NoTrim JSKEA6
+NoTrim JSKEA7
+NoTrim JSKEA8
+NoTrim JSKLA0
+NoTrim JSKLB0
+NoTrim JSKLC0
+NoTrim JSKLD0

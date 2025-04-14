@@ -69,33 +69,6 @@ Specifically everything with a : AFTER it. Values stored after it are insensitiv
 		{
 			"actor":		"GFSjas", 	// Actor name
 			"tag":			"Sjas", 	// Nice name. If not specified, internal tag is used.
-			"traits":
-			[
-				{
-					"name": "",	// Mandatory, but the only one. Needs a unique name, no spaces in it.
-					"tag"; "",	// similar to Actor tags, acts as a 'nice' name when viewed in a codex
-					"icon": "",	// location of the graphic
-					"desc": "",	// description for codex
-					"rank": "Normal", //normal, uncommon, rare, or legendary. Defaults to normal if not specified.
-					"items": // string array/variable of inventory actors or behaviors to give
-					[
-						
-					]
-				},
-				
-			],
-			/*
-			"damage":
-			{
-				"from":
-				{
-				}
-				"to":
-				[
-				]
-				"types":
-			}
-			*/
 		},
 		{
 			"actor": 		"GFJitterskull",
@@ -114,16 +87,100 @@ Specifically everything with a : AFTER it. Values stored after it are insensitiv
 			"actor":		"GFMisty",
 		},
 		{
-			"actor":		"GFChoke",
+			"actor":		"GFClowny",
 		},
 		{
-			"actor":		"GFChoke",
+			"actor":		"GFSoulHarvester",
 		},
 		{
-			"actor":		"GFChoke",
+			"actor":		"GFJugulum",
 		},
 		{
-			"actor":		"GFChoke",
+			"actor":		"GFYureiAvatar",
+		},
+	],
+	
+	/*--------------------------------------------------------------------------
+	Trait Data
+	
+	* langstr - The LANGUAGE lump string to look up, which will cover name, icon,
+		desc and long. Take note how the traits only have GFT_<TraitName> WITHOUT
+		the ending suffix of _<NAME/DESC/ICON/LONG>. If those vars are present,
+		they will override what's found by the langstr, even if blank! Requires
+		a string with _BASE defined in order to work.
+		
+	* base - Base name of the upgrade to use internally. 
+		langstr uses the part after 'GFT_' for this variable.
+	
+	* name - Nice name used for displaying in the codex.
+		langstr uses the value of 'GFT_<TraitName>_NAME' for this variable.
+		
+	* desc - Synopsis of the trait.
+	
+	* long - Expanded definition for reading in the codex.
+	
+	* rank - Can be 'normal' (default), 'uncommon', 'rare' or 'legendary'.
+		Alternatively can supply a number between [0,3] respectively.
+		
+	* levelreq - An array of 1 or 2 numbers, which defines the level range the
+		ghoul must be within to have a chance at receiving this trait. Zero for
+		either of these means no min and/or max cap.
+		Accepted syntax:
+		[min] or [min,max]
+		
+	* maxpower - Maximum amount of times this trait can be selected again. Same
+		as investing more points in a talent tree for a stronger effect.
+		
+	* items - String array of inventory actors OR behaviors to give. These are
+		delivered IN ORDER by the way they're listed. (Reminder: Behaviors call
+		Initialize() if the actor lacks it, Reinitialize() otherwise.)
+		This is done each time the trait is given.
+		
+		**NOTE**
+		Traits cannot be stripped and ghouls will have them until killed, but
+		the items/behaviors can be removed. Use inventory/behaviors for one-off 
+		events, etc.
+		
+	* classes - String array of whitelisted actor classes. Leave blank or don't
+		specify to allow all to receive it. Alternatively, "remove:<class>" or 
+		"remove:all" can be used to override previous definitions, useful for
+		addon developers. 
+		
+		**NOTE** 
+		This is processed in order, top to bottom!
+		
+	* traitreq - Object array of traits needed to be applicable.
+		* name - Base name of the trait (not the nice name)
+		* power - Int variable/array similar to 'levelreq'. If set to 0, means
+			the trait is cannot apply if the listed one is present. Defaults to 1.
+		
+	--------------------------------------------------------------------------*/
+	
+	"traits":
+	[
+		// All default values are seen with each definition.
+		{
+			
+			"langstr": "", 
+			"base": "",
+			"name": "",
+			"icon": "",
+			"desc": "",
+			"long": "",
+			"rank": "Normal",
+			"levelreq": [0,0],
+			"maxpower": 1, 	
+			"items":
+			[
+				
+			],
+			"classes": // list of applicable classes. If left blank, applies to all of them.
+			[
+			],
+			"traitreq":
+			[
+			]
+			
 		},
 	]
 }

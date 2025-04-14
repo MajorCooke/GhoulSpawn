@@ -43,7 +43,7 @@ class GFSjas : GFGhoulBase
 		+NOTELESTOMP
 		+CAUSEPAIN
 		+FORCERADIUSDMG
-		Health 2000; //25000
+		Health 400; //25000
 		Alpha 0.4;
 		Radius 30;
 		Height 85;
@@ -90,7 +90,7 @@ class GFSjas : GFGhoulBase
 		if (IsFrozen())	return;
 		Super.Tick();
 		if (bKILLED)
-			LightLevel = Max(LightLevel - 3, 0);
+			LightLevel = Max(LightLevel - 5, 0);
 	}
 	
 	override void HandlePainSound(Actor i, Actor s, int damage, Name mod, int flags)
@@ -185,7 +185,7 @@ class GFSjas : GFGhoulBase
 		SJAS A 15 A_Look();
 		Wait;
 	See:
-		SJAS B 0 A_StartSound(SeeSound, CHAN_VOICE, CHANF_OVERLAP, 1, ATTN_NONE);
+		SJAS B 0 PlaySeeSound();
 	Chasing:
 		SJAS B 0 A_StartSound("Sjas/Chase", 5);
 		SJAS BBBBBBBBBBBBBBBBBBBBBBBB 1 SjasChase();

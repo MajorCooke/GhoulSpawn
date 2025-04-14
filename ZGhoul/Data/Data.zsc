@@ -10,10 +10,14 @@ The file structure is as such:
 */
 Class GFData
 {
-	Name ModID;
-	Map<Name, GFUpgradeData> UpgradeData;
-	Map<Name, GFGhoulData> GhoulData;
+	internal readonly Name ModID;
+	internal readonly Map<Name, GFUpgradeData> Upgrades;
+	internal readonly Map<Name, GFGhoulData> Ghouls;
+	internal readonly Map<Name, GFTraitData> Traits;
 	
+	//--------------------------------------------------------------------------
+	// Serialization functions
+	//--------------------------------------------------------------------------
 	static GFData Deserialize(GFJsonElement elem)
 	{
 		if (!elem)		ThrowAbortException("GFData: Expected a GFJsonObject, got null");
@@ -27,7 +31,7 @@ Class GFData
 	private GFData ProcessObject(GFJsonObject obj)
 	{
 		// First make sure there is a ModID present.
-		JsonElement elemModID = obj.Get("mod_id");
+		GFJsonElement elemModID = obj.Get("mod_id");
 		if (!elemModID)	ThrowAbortException("mod_id is missing. Add it with a unique name to fix.");
 		else
 		{
@@ -37,19 +41,47 @@ Class GFData
 		}
 		
 		// "Upgrades" array
+		GFJsonElement elem = obj.Get("upgrades");
+		if (elem)
+		{
+			let arr = GFJsonArray(elem);
+			if (!arr)	ThrowAbortException(ModID.." upgrades: Expected GFJsonArray, got "..elemGhouls.getClassName());
+			
+			// Now iterating through each object defined.
+			for (uint i = 0; i < arr.Size(); i++)
+			{	// GFGhoulData will handle the rest of the processing.
+				GFUpgradeData ud = GFUpgradeData.Deserialize(arr.Get(i));
+				if (ud)		Upgrades.Insert(ud.ID, ud);
+			}
+		}
 		
 		// "Ghouls" array
-		JsonElement elemGhouls = obj.Get("ghouls");
+		GFJsonElement elemGhouls = obj.Get("ghouls");
 		if (elemGhouls)
 		{
 			let arr = GFJsonArray(elemGhouls);
-			if (!arr)	ThrowAbortException("ghouls: Expected GFJsonArray, got "..elemGhouls.getClassName());
+			if (!arr)	ThrowAbortException(ModID.." ghouls: Expected GFJsonArray, got "..elemGhouls.getClassName());
 			
 			// Now iterating through each object defined.
 			for (uint i = 0; i < arr.Size(); i++)
 			{	// GFGhoulData will handle the rest of the processing.
 				GFGhoulData gd = GFGhoulData.Deserialize(arr.Get(i));
-				if (gd)		GhoulData.Insert(gd.ID, gd);
+				if (gd)		Ghouls.Insert(gd.ID, gd);
+			}
+		}
+		
+		// 'Traits' array
+		GFJsonElement elemTraits = obj.Get("traits");
+		if (elemTraits)
+		{
+			GFJsonArray arr = GFJsonArray(elemTraits);
+			if (!arr)	ThrowAbortException(ModID.." traits: expected array of strings, got "..elemTraits.GetClassName());
+			
+			// see GFTraitData 
+			for (uint i = 0; i < arr.Size(); i++)
+			{
+				GFTraitData td = GFTraitData.Deserialize(arr.Get(i));
+				if (td)		Traits.Insert(td.ID, td);
 			}
 		}
 		return self;

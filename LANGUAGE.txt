@@ -137,59 +137,7 @@ GSL_JITTERSKULL_TIPS =
 "unload on him.\n"
 "* Weak to crushing damage.";
 
-GST_BONEWALL_DESC =	
-"Jitterskull drops bones of its victims when attacking, blocking non-Ghouls."
-"Drops one bone pile per attack. Can be destroyed.";
 
-GST_DOUBLECHOMP_DESC =
-"Charges immediately again after performing 2 normal charges. Only performs"
-"if it can see its target.";
-
-GST_SKULLTAPULT_DESC =
-"Can attack vertically. Not bound to terrain while attacking.";
-
-GST_JIGGLEMEDDLE_DESC =
-"Can move around slowly.";
-
-GST_CALMJAW_DESC =
-"Jiggle Meddle additionally is silent.";
-
-GST_MESSYEATER_DESC =
-"While eating a corpse, tosses out gore that slows non-Ghouls.";
-
-GST_CALCIUMJAW_DESC =
-"After eating a corpse, doubles the speed of the next lunge.";
-
-GST_CALCIFIER_DESC =
-"Healing multiplies per corpse Jitterskull is eating.";
-
-GST_BONESTORM_DESC =
-"Movement charges up a Bone Storm that damages nearby enemies.";
-
-GST_CAVITYSHARDS_DESC =
-"Shoots a series of teeth after a lunge attack.";
-
-GST_BONEBREAKER_DESC =
-"Enemies are slowed massively after taking damage for a short time.";
-
-GST_SWIFTY_DESC =
-"Jitterskull jitters at full speed regardless of status.";
-
-// Rare
-GST_TELESKULL_DESC =
-"Movement is without height limitation.";
-
-GST_PHASER1_DESC =
-"Moves through solid obstacles.";
-// Legendary
-GST_PHASER2_DESC =
-"Ignores clipping.";
-
-GST_IMPACT_DESC =
-"Instead of lunge radius, deals +200% damage from impact.";
-
-GST_TEETHCUTTER_DESC =
-"+0.2% damage for every edible swallowed.";
 
 /*------------------------------------------------------------------------------
 	Sjas
@@ -213,22 +161,6 @@ GSL_SJAS_DESC =
 "either attacks or takes enough damage, he'll vanish and attack from another angle."
 "He is most effective when an enemy suffers distractions, so stay on alert and keep"
 "pumping him full of lead until he dies.";
-
-GST_SPEEDFLECTOR_NAME = "Speedflector";
-GST_SPEEDFLECTOR_DESC = "Reflective Shout gives Sjas a speed boost for each projectile blocked or reflected.";
-GST_SPEEDFLECTOR_ICON = "T_SJAS1";
-
-GST_ESCAPEART_NAME = "Escape Art";
-GST_ESCAPEART_DESC = "Taking fatal damage warps Sjas away to heal. Sjas warps right back to where he was when done. Only happens once.";
-GST_ESCAPEART_ICON = "T_SJAS2";
-
-GST_SHOUTINGTEMPO_NAME = "Shouting Tempo";
-GST_SHOUTINGTEMPO_DESC = "Reflective Shout no longer stops Sjas, and reflects bullets and rails.";
-GST_SHOUTINGTEMPO_ICON = "T_SJAS3";
-
-GST_DECEPTIVEWINDS_NAME = "Deceptive Winds";
-GST_DECEPTIVEWINDS_DESC = "Sjas emits shadows of himself to confuse enemies into attacking them.";
-GST_DECEPTIVEWINDS_ICON = "T_SJAS4";
 
 /*------------------------------------------------------------------------------
 	Creeper

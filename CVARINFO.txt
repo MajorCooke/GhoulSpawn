@@ -31,6 +31,15 @@ server int GS_QuantityType = 1;
 // Order determined at map start.
 server bool GS_Cycle = true;
 
+// The max number of times the same ghoul can be spawned in a row before being
+// forced to pick something else.
+server int GS_RepeatLimit = 3;
+
+// 0: No alerts, easier jumpscares
+// 1: Normal attenuation for see sounds
+// 2: Global, including a piano slam before spawning
+server int GS_AlertNoiseType = 1;
+
 /*------------------------------------------------------------------------------
 	Difficulty CVARS
 ------------------------------------------------------------------------------*/

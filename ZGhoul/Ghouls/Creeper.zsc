@@ -3,8 +3,13 @@
 	
 An abandoned baby left floating down a river in a crib, he had no one to tend to
 him. The Yurei, who felt pity for him, didn't have any way to care for him except
-to feed him souls, and transformed him into a monster over time, who relies on
-stealth to creep around.
+to feed him souls, and transformed him into a monster over time.
+
+Now he stalks the forest as a semi-translucent monster, crawling quietly with
+his hands while emitting barely audible whispers that, if potential victims are
+careful enough to listen for, may help them avoid an untimely demise. However,
+he also tends to throw curse balls which slow enemies, but in turn gives away his
+position.
 
 Upon finding a victim and closing in, it jumps up and scares the soul out of all
 beings, bypassing all physical defenses and killing them almost instantly. It can
@@ -22,7 +27,7 @@ Class GFCreeper : GFGhoulBase
 	Default
 	{
 		GFGhoulBase.PainDelay 2;
-		Health 2000;
+		Health 400;
 		Height 16;
 		Radius 13;
 		xscale 0.8;
@@ -247,9 +252,22 @@ Class GFCreeper : GFGhoulBase
 			if (misl && CheckSight(target, SF_IGNOREVISIBILITY|SF_IGNOREWATERBOUNDARY))
 				Attack(false);
 		}
-		if (mel)	A_Chase();
-		else		A_Chase(null);
-			
+		if (Target && !Target.bKILLED)
+		{
+			A_FaceTarget(0);
+			Vector2 v = Vec2Angle(speed, (bFRIGHTENED ? angle + 180 : angle));
+			TryMove(v, (bDROPOFF || bNOCLIP));
+			if (mel && CheckMeleeRange())
+			{
+				SetState(ResolveState("Melee"));
+				return;
+			}
+		}
+		else
+		{
+			if (mel)	A_Chase(flags: CHF_DONTMOVE|CHF_DONTTURN|CHF_NODIRECTIONTURN);
+			else		A_Chase(null, flags: CHF_DONTMOVE|CHF_DONTTURN|CHF_NODIRECTIONTURN);
+		}	
 	}
 	
 	States
@@ -258,17 +276,18 @@ Class GFCreeper : GFGhoulBase
 		CREE A 15 A_Look();
 		Loop;
 	See:
-		CREE A 0 {	SetFear(false); A_StartSound(SeeSound, CHAN_VOICE, CHANF_OVERLAP, 1, ATTN_NONE); }
+		CREE A 0 { SetFear(false); PlaySeeSound(); }
 		
 	Chasing:
 		CREE AAAABBBB 2 CreeperChase();
 		Loop;
 	Melee:
-		TNT1 A 10 Attack(true);
+		TNT1 A 0 Attack(true);
 		Goto Pain;
 	Pain:
-		CREE A 1 CreeperPain();
-		CREE ABABABABABABABABAB 1 bright CreeperChase();
+		CREE A 0 CreeperPain();
+		CREE AB 1 bright CreeperChase(false);
+		CREE ABABABABABABABAB 1 bright CreeperChase();
 		CREE E 0 { bNOPAIN = false; }
 		CREE ABABABABABAB 2 CreeperChase();
 		CREE ABABABABABAB 3 CreeperChase();
@@ -277,6 +296,8 @@ Class GFCreeper : GFGhoulBase
 	Death:
 		CREE D 0 
 		{
+			bNOCLIP = false;
+			bTHRUACTORS = true;
 			Speed = Default.Speed * 0.25;
 			A_Scream();
 			A_Fall();
@@ -311,6 +332,15 @@ Class GFCreeperPopup : Actor
 	
 	private int count;
 	private bool isalive, killcheck;
+	
+	private void BOO()
+	{
+		isalive = (primary && !Tracer.bKILLED);
+		int dmg = Tracer.DamageMobj(self, target, 100, DamageType, DMG_THRUSTLESS);
+		if (dmg > 0 && Target && !Target.bKILLED)	Target.GiveBody(dmg);
+		killcheck = (isalive && Tracer.bKILLED);
+	}
+	
 	private void Popup()
 	{
 		if (Tracer)
@@ -326,17 +356,19 @@ Class GFCreeperPopup : Actor
 		
 		Switch (count++)
 		{
-			Case 0:	A_StartSound("GCreeper/Pain", 5);	break;
-			Case 1: A_StartSound("GCreeper/Attack", 6);	break;
-			Case 5:
+			Case 0:	
 			{
-				
-				isalive = (primary && !Tracer.bKILLED);
-				Tracer.DamageMobj(self, target, 100, DamageType, DMG_THRUSTLESS);
-				killcheck = (isalive && Tracer.bKILLED);
-				break;
+				if (!(Tracer is 'PlayerPawn'))
+					BOO();
+				A_StartSound("GCreeper/Attack", 5);	break;
 			}
 			Case 6:
+			{
+				if (Tracer is 'PlayerPawn')
+					BOO();
+				break;
+			}
+			Case 12:
 			{
 				if (killcheck && target && tracer)
 				{
@@ -370,21 +402,28 @@ Class GFCreeperPopup : Actor
 const CreeperSlowDuration = 35;
 Class GFCreeperSlow : PowerSpeed
 {
-	const MaxTime = 35 * 50;
+	const MaxTime = 35 * 10;
 	Default
 	{
 		Speed 1.0;
 		Powerup.Duration CreeperSlowDuration;
 		+INVENTORY.ADDITIVETIME
+		Inventory.InterhubAmount 0;
+	}
+	
+	override void PreTravelled()
+	{
+		Amount = 1;
 	}
 	
 	override bool IsBlinking()	{	return true;	} // disables color screen
 	
-	private double RealSpeed, CurSpeed;
+	private double RealSpeed, CurSpeed, Cap;
 	override void InitEffect()
 	{
 		Super.InitEffect();
 		if (!Owner)	return;
+		Cap = (Owner is 'PlayerPawn') ? 0.5 : 0.25;
 		RealSpeed = Owner.Speed;
 	}
 	
@@ -399,23 +438,29 @@ Class GFCreeperSlow : PowerSpeed
 		Super.DoEffect();
 		if (EffectTics > MaxTime)
 			EffectTics = MaxTime;
-		if (EffectTics < 1)
+		else if (EffectTics < 1)
 			return;
 		
-		Amount = int(ceil(effecttics / 35));
-				
-		double mx = (Owner is 'PlayerPawn') ? 0.5 : 0.25;
+		Amount = int(ceil(double(EffectTics * 10.0) / 35.0));
 		
-		CurSpeed = Max((RealSpeed - (0.01 * Amount)), mx);
+		CurSpeed = Max(Cap, (RealSpeed - (0.01 * Amount)));
 		Owner.Speed = CurSpeed;
 	}
-	
+	/*
+	private bool checked;
+	override double GetSpeedFactor()
+	{
+		Speed = Max(Cap, (Default.Speed - (0.01 * double(Amount))));
+		return Speed;
+	}
+	*/
 	override void EndEffect()
 	{
 		if (Owner)
 			Owner.Speed = RealSpeed;
 		Super.EndEffect();
 	}
+	
 }
 
 Class GFCreeperBall : Actor
@@ -443,7 +488,7 @@ Class GFCreeperBall : Actor
 	
 	override int SpecialMissileHit(Actor mo)
 	{
-		if (!mo || bTHRUACTORS || !bMISSILE)	return 1;
+		if (!mo)	return 1;
 		if (mo == target || (bMTHRUSPECIES && mo.species == species))	
 		{
 			if (mo != tracer)
@@ -451,7 +496,7 @@ Class GFCreeperBall : Actor
 		}
 		if ((mo is 'PlayerPawn' || mo.bISMONSTER) && !mo.bKILLED)
 		{
-			let inv = 	Powerup(FindInventory("GFCreeperSlow"));
+			let inv = 	GFCreeperSlow(mo.FindInventory("GFCreeperSlow"));
 			if (inv)	inv.EffectTics += CreeperSlowDuration;
 			else		mo.A_GiveInventory("GFCreeperSlow",1);
 			

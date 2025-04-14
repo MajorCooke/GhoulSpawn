@@ -30,4 +30,26 @@ Class GFChoke : GFGhoulBase abstract
 	{
 		Tag "Choke";
 	}
+	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
+	{
+		if (mod == 'Melee')
+		{
+			static const string ob[] =
+			{
+				"Choke chose %o for snack time.",
+				"%o was yummy yummy yummy. Now Choke's got food in his tummy",
+				"Choke signed up for a bacon tournament and was pleased %o was the bacon.",
+				"%o couldn't see the blur that was Choke before being treated like steak."
+			};
+			return ob[random(0, ob.Size())];
+		}
+		static const string ob[] =
+		{
+			"%o became akin to one of Choke's prior meals - carrion.",
+			"Choke taught %o the hard way that his gore balls are no joke.",
+			"%o thought it was all fun and games until Choke's goreball blew 'em up.",
+			"Choke got the last laugh over %o."
+		};
+		return ob[random(0, ob.Size())];
+	}
 }

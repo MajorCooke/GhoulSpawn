@@ -4,6 +4,7 @@ class GFJsonObjectKeys
 	Array<String> keys;
 }
 
+
 class GFJsonObject : GFJsonElement
 {
 	Map<String,GFJsonElement> data;
@@ -12,20 +13,9 @@ class GFJsonObject : GFJsonElement
 	{
 		return new("GFJsonObject");
 	}
-	// [MC] Added option to disable case sensitivity.
-	GFJsonElement Get(String key, bool sensitive = true)
+	
+	GFJsonElement Get(String key)
 	{
-		if (!sensitive)
-		{
-			key.MakeLower();
-			foreach (k, v : data)
-			{
-				k.MakeLower();
-				if (key == k)
-					return v;
-			}
-			return null;
-		}
 		if(!data.CheckKey(key)) return null;
 		return data.Get(key);
 	}

@@ -45,12 +45,12 @@ Class GFJitterSkull : GFGhoulBase
 	Default
 	{
 		GFGhoulBase.PainDelay 10;
-		GFGhoulBase.DmgThreshold 200;
+		GFGhoulBase.DmgThreshold 100;
 		Monster;
-		Health 3000;
+		Health 1000;
 		Scale 0.13;
 		Height 70;
-		Radius 15;
+		Radius 25;
 		Speed 15;
 		PainChance 0;
 		+DONTCORPSE
@@ -64,6 +64,8 @@ Class GFJitterSkull : GFGhoulBase
 		+DONTMORPH
 		+DONTBLAST
 		+DONTGIB
+		+NOBLOOD
+	//	+NOCLIP //disable after april fools
 		MaxStepHeight 64;
 		MaxDropoffHeight 64;
 		BloodType "GFJitterChip";
@@ -108,6 +110,23 @@ Class GFJitterSkull : GFGhoulBase
 		{
 			Eyes.Scale = Scale;
 		}
+	}
+	
+	override int DamageMobj(Actor i, Actor s, int damage, Name mod, int flags, double angle)
+	{
+		if (damage > 0 && !bKILLED && !(flags & DMG_EXPLOSION))
+		{
+			Actor who = null;
+			if (i)		who = i;
+			else if (s)	who = s;
+				
+			if (who && !who.bBLOODLESSIMPACT)
+			{
+				SpawnBlood(who.pos, who.angle, damage);
+			}
+		}
+		int dmg = Super.DamageMobj(i, s, damage, mod, flags, angle);
+		return dmg;
 	}
 	
 	override void Deactivate(Actor mo)
@@ -282,14 +301,23 @@ Class GFJitterSkull : GFGhoulBase
 			BlockingCeiling = null;
 			incr += min(radius, dist - incr);
 			if (!TryMove(Vec2Angle(incr, angle),bDROPOFF) &&
-				(MovementBlockingLine || /*BlockingLine ||*/ BlockingFloor || BlockingCeiling || Blocking3DFloor))
+				(MovementBlockingLine || 
+				/*BlockingLine ||*/ 
+				BlockingFloor || 
+				BlockingCeiling || 
+				Blocking3DFloor || 
+				BlockingMobj
+				))
 			{
 				/*
 				Line ln = BlockingLine;
 				if (ln &&
 				*/
-				SetOrigin(old, false);
-				return;
+			//	if (BlockingMobj != target)
+				{
+					SetOrigin(old, false);
+					return;
+				}
 			}
 		}
 		SetOrigin(old, false);
@@ -312,7 +340,7 @@ Class GFJitterSkull : GFGhoulBase
 	
 	private void JitterMove(int count = 15)
 	{
-		if (count < 1)	return;
+		if (count < 1 || bKILLED)	return;
 		if (MustMove)
 		{
 			bNOFEAR = false;
@@ -320,6 +348,7 @@ Class GFJitterSkull : GFGhoulBase
 		}
 		PreMove();
 		A_Stop();
+		
 		let it = BehaviorIterator.Create('JitterMislCrasher');
 		Array<JitterMislCrasher> beh; beh.Clear();
 		{
@@ -330,9 +359,37 @@ Class GFJitterSkull : GFGhoulBase
 					beh.Push(bb);
 			}
 		}
+		
+		Actor old = Goal;
 		for (int i = 0; i < count; i++)
 		{
+			if (bKILLED)	return;
 			A_DoChase(null, null, 0);
+			
+			if (bNOCLIP)
+			{
+				if (level.IsPointInLevel(pos) && 
+					!(CurSector.Flags & Sector.SECF_NORESPAWN) && 
+					CurSector.GetUDMFInt("user_nospawn") < 1 &&
+					CheckSight(Target, SF_IGNOREVISIBILITY|SF_IGNOREWATERBOUNDARY))
+				{
+					bNOCLIP = false;
+					if (!CheckPosition(pos.XY))
+						bNOCLIP = true;
+				}
+			}
+			
+			if (Goal && GFGlobal.IsTouching(self, Goal))
+			{
+				let it = BehaviorIterator.CreateFrom(self);
+				Behavior be;
+				while (be = Behavior(it.Next()))
+				{
+					let fn = (Function <play void(Actor)>)(FindFunction(be.GetClass(), 'GoalReached'));
+					if (fn)	fn.Call(old);
+				}
+			}
+			
 			foreach (ms : beh)
 				if (ms)	ms.CheckImpact(self);
 				
@@ -345,8 +402,6 @@ Class GFJitterSkull : GFGhoulBase
 		MustMove = false;
 		PostMove();
 	}
-	
-	
 	
 	private void JitterChomp()
 	{
@@ -452,7 +507,7 @@ Class GFJitterSkull : GFGhoulBase
 		---- A 0 A_Look();
 		Loop;
 	See:
-		---- A 0 A_StartSound(SeeSound, CHAN_VOICE, CHANF_OVERLAP, 1, ATTN_NONE);
+		---- A 0 PlaySeeSound();
 	Chasing:
 		---- A 1 { JitterJaw(); A_StartSound("Jitterskull/Chase", 11); bNOPAIN = false; }
 		---- AAAAAAAAAAAAAAA 1 JitterJaw();
@@ -606,7 +661,8 @@ Class GFJitterChip : Actor
 	States
 	{
 	Spawn:
-		JCHP A 0 NoDelay RNGFrame();
+		JCHP AAAA 0;
+		---- A 0 RNGFrame();
 		---- A 350;
 	Death:
 		---- A 350 A_SetTics(shortdeath ? 0 : 350);

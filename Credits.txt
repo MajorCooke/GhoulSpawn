@@ -1,6 +1,15 @@
 Ghoul Spawn
-by Major Cooke
+A GZDoom Mod enabling Ghouls Forest Series enemies to spawn in game
 
+================
+*** The Team ***
+================
+Major Cooke
+	Developer
+	
+=================
+*** Resources ***
+=================
 CutmanMike
 	Ghoul's Forest, Ghouls vs Humans
 	
@@ -10,5 +19,14 @@ Icytux
 Ghouls vs Humans Multiverse
 	Sprites & Sounds
 	
-RicardoLuis0
-	ZJSON
+=================
+*** Libraries ***
+=================
+Jay
+	ZJSON - https://github.com/RicardoLuis0/ZJSON
+	
+Agent_Ash
+	ZHudMessage - https://github.com/jekyllgrim/ZScript-HudMessage
+	
+Gutawer
+	ZForms - https://gitlab.com/Gutawer/gzdoom-zforms

@@ -21,7 +21,7 @@ class GFJSON
 			return "\a";
 		case "b":
 			return "\b";
-		case "e": // 'backslash e'
+		case "e":// '\e' -- ESC
 			return 0x1B;
 		case "n":
 			return "\n";
@@ -42,7 +42,7 @@ class GFJSON
 		{
 		case "\a":
 		case "\b":
-		case 0x1B: // 'backslash e'
+		case 0x1B: // '\e' -- ESC
 		case "\n":
 		case "\r":
 		case "\t":
@@ -65,7 +65,7 @@ class GFJSON
 			return "a";
 		case "\b":
 			return "b";
-		case 0x1B: // 'backslash e'
+		case 0x1B: // '\e' -- ESC
 			return "e";
 		case "\n":
 			return "n";
@@ -269,9 +269,9 @@ class GFJSON
             return GFJsonError.make("On Empty Object, expected }, got EOF");
         }
 	}
-	// parse a json array, allows trailing commas
+	
 	private static GFJsonElementOrError parseArray(out string data, out uint i, uint len, out uint line) 
-	{ 
+	{ // parse a json array, allows trailing commas
 		if(i >= len) return GFJsonError.make("Expected Array, got EOF");
 		uint c, next_i;
 		[c, next_i] = data.getNextCodePoint(i);

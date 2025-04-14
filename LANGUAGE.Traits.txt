@@ -1,0 +1,263 @@
+[en default]
+
+/*------------------------------------------------------------------------------
+	Jitterskull
+------------------------------------------------------------------------------*/
+GST_BONEWALL_BASE = "BoneWall";
+GST_BONEWALL_NAME =	"Bone Wall";
+GST_BONEWALL_ICON =	"";
+GST_BONEWALL_DESC =	
+"Jitterskull drops bones of its victims when attacking, blocking non-Ghouls."
+"Drops one bone pile per attack. Can be destroyed.";
+
+GST_DOUBLECHOMP_BASE = "DoubleChomp";
+GST_DOUBLECHOMP_NAME = "Double Chomp";
+GST_DOUBLECHOMP_ICON = "";
+GST_DOUBLECHOMP_DESC =
+"Charges immediately again after performing 2 normal charges. Only performs"
+"if it can see its target.";
+
+GST_SKULLTAPULT_BASE = "Skulltapult";
+GST_SKULLTAPULT_ICON = "";
+GST_SKULLTAPULT_DESC =
+"Jitterskull attacks flying foes vertically, unbound to the terrain while in the air.";
+
+GST_JIGGLEJAWS_BASE = "JiggleJaws"
+GST_JIGGLEJAWS_NAME = "Jiggle Jaws";
+GST_JIGGLEJAWS_ICON = "";
+GST_JIGGLEJAWS_DESC =
+"Can move around slowly, making noise while at it.";
+
+GST_CALMJAW_BASE = "CalmJaw";
+GST_CALMJAW_NAME = "Calm Jaw";
+GST_CALMJAW_ICON = "";
+GST_CALMJAW_DESC =
+"Jiggle Meddle additionally is silent.";
+
+GST_MESSYEATER_BASE = "MessyEater";
+GST_MESSYEATER_NAME = "Messy Eater";
+GST_MESSYEATER_ICON = "";
+GST_MESSYEATER_DESC =
+"While eating a corpse, tosses out gore that slows non-Ghouls.";
+
+GST_CALCIUMJAW_BASE = "CalciumJaw";
+GST_CALCIUMJAW_NAME = "Calcium Jaw";
+GST_CALCIUMJAW_ICON = "";
+GST_CALCIUMJAW_DESC =
+"After eating a corpse, doubles the speed of the next lunge.";
+
+GST_CALCIFIER_BASE = "Calcifier";
+GST_CALCIFIER_ICON = "";
+GST_CALCIFIER_DESC =
+"Healing multiplies per corpse Jitterskull is eating.";
+
+GST_BONESTORM_BASE = "BoneStorm";
+GST_BONESTORM_NAME = "Bone Storm";
+GST_BONESTORM_ICON = "";
+GST_BONESTORM_DESC =
+"Movement charges up a Bone Storm that damages nearby enemies.";
+
+GST_CAVITYSHARDS_BASE = "CavityShards";
+GST_CAVITYSHARDS_NAME = "Cavity Shards";
+GST_CAVITYSHARDS_ICON = "";
+GST_CAVITYSHARDS_DESC =
+"Shoots a series of teeth after a lunge attack.";
+
+GST_BONEBREAKER_BASE = "Bonebreaker";
+GST_BONEBREAKER_ICON = "";
+GST_BONEBREAKER_DESC =
+"Enemies are slowed massively after taking damage for a short time.";
+
+GST_SWIFTY_BASE = "Swifty";
+GST_SWIFTY_NAME = "Marathon Jitterer";
+GST_SWIFTY_ICON = "";
+GST_SWIFTY_DESC =
+"Jitterskull jitters at full speed regardless of status.";
+
+// Rare
+GST_TELESKULL_BASE = "TeleSkull";
+GST_TELESKULL_NAME = "Floor Hugger";
+GST_TELESKULL_ICON = "";
+GST_TELESKULL_DESC =
+"Jitterskull can move up and down any ledge no matter how tall it is.";
+
+
+// Legendary
+GST_PHASER_BASE = "Phaser";
+GST_PHASER_NAME = "Phase Shift";
+GST_PHASER_ICON = "";
+GST_PHASER_DESC = "Gain Noclip.";
+
+GST_IMPACT_BASE = "FocusedImpact";
+GST_IMPACT_NAME = "Focused Impact";
+GST_IMPACT_ICON = "";
+GST_IMPACT_DESC = "Instead of lunge radius, deals tremendous damage from impact.";
+
+GST_TEETHCUTTER_BASE = "TeethCutter";
+GST_TEETHCUTTER_NAME = "Teeth Cutter";
+GST_TEETHCUTTER_ICON = "";
+GST_TEETHCUTTER_DESC = "+0.2% damage for every edible swallowed.";
+
+/*------------------------------------------------------------------------------
+	Sjas
+------------------------------------------------------------------------------*/
+
+GST_SPEEDFLECTOR_BASE = "Speedflector";
+GST_SPEEDFLECTOR_ICON = "T_SJAS1";
+GST_SPEEDFLECTOR_DESC = 
+"Reflective Shout gives Sjas a speed boost for each projectile blocked or reflected.";
+
+
+GST_ESCAPEART_BASE = "EscapeArt";
+GST_ESCAPEART_NAME = "Escape Art";
+GST_ESCAPEART_ICON = "T_SJAS2";
+GST_ESCAPEART_DESC = "When attacked, Sjas splits into many images of himself to confuse enemies.";
+GST_ESCAPEART_LONG =
+"Sjas will splinter into many false clones upon vanishing that fly away or attempt "
+"attacking. Attackers heal Sjas instead of damaging. Fleeing ones heal Sjas if "
+"not killed after 10 seconds. After healing Sjas, the mirages vanish.";
+
+GST_SHOUTINGTEMPO_BASE = "ShoutingTempo";
+GST_SHOUTINGTEMPO_NAME = "Shouting Tempo";
+GST_SHOUTINGTEMPO_DESC = "Reflective Shout no longer stops Sjas, and reflects bullets and rails.";
+GST_SHOUTINGTEMPO_ICON = "T_SJAS3";
+
+GST_DECEPTIVEWINDS_BASE = "DeceptiveWinds";
+GST_DECEPTIVEWINDS_NAME = "Deceptive Winds";
+GST_DECEPTIVEWINDS_DESC = "Sjas emits shadows of himself to confuse enemies into attacking them.";
+GST_DECEPTIVEWINDS_ICON = "T_SJAS4";
+
+GST_AMPPERPAIN_BASE = "AmpPerPain";
+GST_AMPPERPAIN_NAME = "Amp Per Pain";
+GST_AMPPERPAIN_ICON = "";
+GST_AMPPERPAIN_DESC = "Taking damage increases Sjas next damaging attack.";
+GST_AMPPERPAIN_LONG = 
+"For every 10 damage, Sjas deals 1% increased damage when next dealt to his enemies. "
+"Only resets when successful damage is dealt, and resets one tic later.";
+
+GST_SEETHINGSILENCE_BASE = "SeethingSilence";
+GST_SEETHINGSILENCE_NAME = "Seething Silence";
+GST_SEETHINGSILENCE_ICON = "";
+GST_SEETHINGSILENCE_DESC = "Sjas moves slower, but makes no noise...";
+GST_SEETHINGSILENCE_LONG =
+"Sjas moves slower but makes no noise until spotted. When discovered, will perform "
+"a lunging scream, passing through and damaging all in his path. This pattern is "
+"broken if he fails to damage his main target, or flinches.";
+
+// Legendary
+GST_DARKSJAS_BASE = "DarkSjas";
+GST_DARKSJAS_NAME = "Darkest Sinister Jester, the Agonizing Screamer";
+GST_DARKSJAS_ICON = "";
+GST_DARKSJAS_DESC = "Dark Sjas awaits...";
+GST_DARKSJAS_LONG = 
+"When Sjas is supposed to die, he instead is re-pieced together by the power "
+"of the Abomination. Gaining an exceptionally excessive health pool, ridiculous "
+"abilities and unbelievable reaction times, he is best suited to fight in open areas."
+"\n\n"
+"Djas disturbs the land and air with his supernatural screams, which creates "
+"massive spikes from the earth and air. He has tremendous explosive power that "
+"can reach a very long way and will rain Hell from the sky."
+"\n\n"
+"This is the hardest boss in the mod, but can be despawned with the options if "
+"he is too challenging.";
+
+/*------------------------------------------------------------------------------
+	Creeper
+------------------------------------------------------------------------------*/
+
+GST_SOULPLASM_BASE = "SoulPlasm";
+GST_SOULPLASM_NAME = "Soul 'Plasm";
+GST_SOULPLASM_DESC = "Creeper Balls have increased slow potency.";
+GST_SOULPLASM_ICON = "";
+
+GST_GRAVEHUNGER_BASE = "GraveHunger";
+GST_GRAVEHUNGER_NAME = "Grave Hunger";
+GST_GRAVEHUNGER_DESC = "Creepers gain speed instead of slowing enemies";
+GST_GRAVEHUNGER_ICON = "";
+
+GST_FRESHFEAR_BASE = "FreshFear";
+GST_FRESHFEAR_NAME = "Fresh & Tasty Fear";
+GST_FRESHFEAR_ICON = "";
+GST_FRESHFEAR_DESC = "Creeper heals for all damage dealt during a BOO.";
+
+GST_MALEVOMIRAGE_BASE = "MalevoMirage";
+GST_MALEVOMIRAGE_NAME = "Malevolent Mirage";
+GST_MALEVOMIRAGE_ICON = "";
+GST_MALEVOMIRAGE_DESC = "Creeper spawns a mirage to trick enemies into attacking it.";
+GST_MALEVOMIRAGE_LONG = // Longer descriptions
+"Creeper spawns a fake that maintains distance equal to Creeper from his target. "
+"While active, Creeper becomes almost entirely invisible. If the fake is destroyed, "
+"Creeper lunges forward rapidly. Attacks against the Creeper himself will deal "
+"massively increased damage, and will destroy the clone without consequence.";
+
+GST_GHOULCALLER_BASE = "GhoulCaller";
+GST_GHOULCALLER_NAME = "Ghoul Caller";
+GST_GHOULCALLER_ICON = "";
+GST_GHOULCALLER_DESC = "Upon taking damage, has a chance to summon more ghouls.";
+GST_GHOULCALLER_LONG =
+"Depending on health, when taking damage, Creeper has a chance to call for help. "
+"The lower the health, the more frequently he'll conjure his fellows for his "
+"enemies to fight. These ghouls can only have 1/4 his level and cannot be legendary. "
+"";
+// Rare
+GST_CREEPYMASOCHISM_BASE = "CreepyMasochism";
+GST_CREEPYMASOCHISM_NAME = "Creepy Masochism";
+GST_CREEPYMASOCHISM_ICON = "";
+GST_CREEPYMASOCHISM_DESC = "Creeper lunges forward instead of retreating when damaged.";
+
+
+// Legendary
+GST_UNENDINGTERROR_BASE = "UnendingTerror";
+GST_UNENDINGTERROR_NAME = "Unending Terror";
+GST_UNENDINGTERROR_RANK = "Legendary";
+GST_UNENDINGTERROR_ICON = "";
+GST_UNENDINGTERROR_DESC = "Creeper balls can cause BOO. Lower health of victim means higher chance.";
+
+GST_SNAKEEYES_BASE = "SnakeEyes";
+GST_SNAKEEYES_NAME = "Snake Eyes";
+GST_SNAKEEYES_ICON = "";
+GST_SNAKEEYES_RANK = "Legendary";
+GST_SNAKEEYES_DESC = "Boo bypasses all damage protection and instakills non-vulnerable enemies.";
+
+
+/*------------------------------------------------------------------------------
+	Choke
+------------------------------------------------------------------------------*/
+GST_BLOODMOON_BASE = "BloodMoon";
+GST_BLOODMOON_NAME = "Blood Moon";
+GST_BLOODMOON_ICON = "";
+GST_BLOODMOON_DESC = "Choke fires all his smaller gore balls at once with extra speed and spread.";
+
+GST_HAMMERSPACETUMMY_BASE = "HammerspaceTummy";
+GST_HAMMERSPACETUMMY_NAME = "Hammerspace Tummy";
+GST_HAMMERSPACETUMMY_ICON = "";
+GST_HAMMERSPACETUMMY_DESC = "No limit on corpse capacity.";
+
+GST_GORGER_BASE = "Gorger";
+GST_GORGER_ICON = "";
+GST_GORGER_DESC = "Gore balls deal explosive damage.";
+
+GST_PHANTOM_BASE = "PhantomMunchace";
+GST_PHANTOM_NAME = "The Phantom Munchace";
+GST_PHANTOM_DESC = "Choke's bites gradually make him more invisible briefly."
+GST_PHANTOM_LONG =
+"Each successful bite on his foes grants him slight invisibility. The more invisible "
+"he becomes, the more likely projectiles pass through him (up to 50%). Upon reaching "
+"75% invisible, enemies will start guessing their shots. When fully invisible, he moves "
+"faster and can catch up to his prey, no matter where they go.";
+
+// Legendary
+GST_CHONK_BASE = "Chonk";
+GST_CHONK_ICON = "";
+GST_CHONK_DESC = "Moves slower, higher health, pain tolerance, and gains Spread Rune effects.";
+
+
+GST_CARRIONCANNON_BASE = "CarrionCannon";
+GST_CARRIONCANNON_NAME = "Carrion Cannon";
+GST_CARRIONCANNON_DESC = "Choke uses up all his corpses to fire a much stronger blood ball all at once.";
+GST_CARRIONCANNON_LONG =
+"When Choke has at least 3 corpses in his gullet, he can charge up a super powerful "
+"and fast ball of destructive blood. The more corpses, the greater the damage. Choke "
+"is also vulnerable, allowing for a window of opportunity to kill him before he finishes."
+"This ball is affected by traits, and deals enough damage to almost always be lethal "
+"on contact.";

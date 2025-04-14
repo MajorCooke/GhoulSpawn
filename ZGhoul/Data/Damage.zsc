@@ -2,9 +2,25 @@
 
 Class GFDamageTypeData
 {
-	Name Type;		// Damage type to affect
-	double Factor;
+	internal readonly Name Type;		// Damage type to affect
+	internal readonly double Factor;
 	
+	//--------------------------------------------------------------------------
+	// Serialization functions
+	//--------------------------------------------------------------------------
+	static GFDamageTypeData Deserialize(GFJsonElement elem)
+	{
+		if (!elem)	ThrowAbortException("GFDamageTypeData: Expected GFJsonElement, got null");
+		let obj = GFJsonObject(elem);
+		if (!obj)	ThrowAbortException("GFDamageTypeData: Expected GFJsonObject, got "..elem.GetClassName());
+		return new('GFDamageTypeData').ProcessObject(obj);
+	}
+	
+	private GFDamageTypeData ProcessObject(GFJsonObject obj)
+	{
+		
+		return self;
+	}
 }
 
 // Used for specifying how much damage a particular ghoul can do to a particular
@@ -28,6 +44,9 @@ Class GFDamageData
 		Damage = -2;
 	}
 	
+	//--------------------------------------------------------------------------
+	// Serialization functions
+	//--------------------------------------------------------------------------
 	static GFDamageData Deserialize(GFJsonElement elem)
 	{
 		if (!elem)	ThrowAbortException("GFDamageData: Expected GFJsonElement, got null");
