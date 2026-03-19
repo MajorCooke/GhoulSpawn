@@ -200,7 +200,7 @@ class GS_Choke : GS_GhoulBase
 				"Choke signed up for a bacon tournament and was pleased %o was the bacon.",
 				"%o couldn't see the blur that was Choke before being treated like steak."
 			};
-			return ob[random(0, ob.Size())];
+			return ob[random(0, ob.Size()-1)];
 		}
 		static const string ob[] =
 		{
@@ -209,7 +209,7 @@ class GS_Choke : GS_GhoulBase
 			"%o thought it was all fun and games until Choke's goreball blew 'em up.",
 			"Choke's gore balls sure fooled %o into thinking they weren't a threat."
 		};
-		return ob[random(0, ob.Size())];
+		return ob[random(0, ob.Size()-1)];
 	}
 	
 	enum EGS_ChokeMode
