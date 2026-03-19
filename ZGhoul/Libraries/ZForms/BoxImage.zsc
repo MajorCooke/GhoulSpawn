@@ -3,8 +3,8 @@
 ///
 /// This element scales the box textures to the element's size, using the box textures'
 /// configuration, so understanding of [`ZF_BoxTextures`] is needed to use this.
-class GF_BoxImage : GF_Element {
-	private void config(GF_BoxTextures textures = NULL, Vector2 scale = (1, 1)) {
+class GS_BoxImage : GS_Element {
+	private void config(GS_BoxTextures textures = NULL, Vector2 scale = (1, 1)) {
 		setBoxTex(textures);
 		setBoxScale(scale);
 		setAlpha(1.0);
@@ -18,8 +18,8 @@ class GF_BoxImage : GF_Element {
 	///
 	/// `textures` should not be `NULL`. Elements needing a box image child should instead avoid
 	/// creating the element in the first place if needed.
-	static GF_BoxImage create(Vector2 pos, Vector2 size, GF_BoxTextures textures, Vector2 scale = (1, 1)) {
-		let ret = new('GF_BoxImage');
+	static GS_BoxImage create(Vector2 pos, Vector2 size, GS_BoxTextures textures, Vector2 scale = (1, 1)) {
+		let ret = new('GS_BoxImage');
 
 		ret.config(textures, scale);
 		ret.setBox(pos, size);
@@ -27,15 +27,15 @@ class GF_BoxImage : GF_Element {
 		return ret;
 	}
 
-	private GF_BoxTextures boxTex;
+	private GS_BoxTextures boxTex;
 	/// Returns the box textures this image will draw using.
-	GF_BoxTextures getBoxTex() { return self.boxTex; }
+	GS_BoxTextures getBoxTex() { return self.boxTex; }
 	/// Sets the box textures this image will draw using. Must not be `NULL`.
-	void setBoxTex(GF_BoxTextures boxTex) {
+	void setBoxTex(GS_BoxTextures boxTex) {
 		if (boxTex == NULL) { throwAbortException("boxTex was NULL"); }
 		self.boxTex = boxTex;
 	}
-	private GF_BoxDrawer boxDrawer;
+	private GS_BoxDrawer boxDrawer;
 
 	private Vector2 boxScale;
 	/// Returns the box drawing scale this image will use.
@@ -48,7 +48,7 @@ class GF_BoxImage : GF_Element {
 	override void drawer() {
 		if (hidden) { return; }
 
-		GF_AABB beforeClip, clipRect;
+		GS_AABB beforeClip, clipRect;
 		screenClip(beforeClip, clipRect);
 		Screen.setClipRect(int(clipRect.pos.x), int(clipRect.pos.y), int(clipRect.size.x), int(clipRect.size.y));
 

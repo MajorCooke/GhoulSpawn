@@ -1,6 +1,6 @@
 
 
-class GFCarryToken : Inventory
+class GS_CarryToken : Inventory
 {
 	Default
 	{
@@ -10,12 +10,12 @@ class GFCarryToken : Inventory
 	}
 }
 
-Class GFTraitInfo
+class GS_TraitInfo
 {
 	
 }
-Class GFMissile : Actor abstract {	Default	{ Projectile; }}
-class GFGhoulBase : Actor abstract
+class GS_Missile : Actor abstract {	Default	{ Projectile; }}
+class GS_GhoulBase : Actor abstract
 {
 	meta bool TargetList;
 	Property TargetList: TargetList;
@@ -32,12 +32,12 @@ class GFGhoulBase : Actor abstract
 	Property PainVolume: PainVolume;
 	Default
 	{
-		GFGhoulBase.DmgThreshold 10;
-		GFGhoulBase.PainVolume 1.0;
-		GFGhoulBase.PainDelay 10;		// How many ticks to wait before sounding pain again.
-		GFGhoulBase.DmgTic 2;
-		GFGhoulBase.NormalSpawn true;
-		GFGhoulBase.TargetList true;
+		GS_GhoulBase.DmgThreshold 10;
+		GS_GhoulBase.PainVolume 1.0;
+		GS_GhoulBase.PainDelay 10;		// How many ticks to wait before sounding pain again.
+		GS_GhoulBase.DmgTic 2;
+		GS_GhoulBase.NormalSpawn true;
+		GS_GhoulBase.TargetList true;
 		Monster;
 		+DONTTHRUST
 		-COUNTKILL
@@ -60,7 +60,7 @@ class GFGhoulBase : Actor abstract
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
-		if (TargetList)	AddBehavior('GFTargeting');
+		if (TargetList)	AddBehavior('GS_Targeting');
 		flashtimer = -1;
 	}
 	
@@ -73,9 +73,9 @@ class GFGhoulBase : Actor abstract
 	override bool OkayToSwitchTarget(Actor o)
 	{
 		if (o && !o.bKILLED && o.bSHOOTABLE && !o.bNEVERTARGET && !IsTeamMate(o) &&
-			o != master && !bNOTARGETSWITCH && !bNOINFIGHTING && !(o is 'GFYurei'))
+			o != master && !bNOTARGETSWITCH && !bNOINFIGHTING && !(o is 'GS_Yurei'))
 		{
-			if (o is 'GFGhoulBase')
+			if (o is 'GS_GhoulBase')
 				return GS_GhoulsInfight;
 			else return true;
 		}
@@ -107,7 +107,7 @@ class GFGhoulBase : Actor abstract
 	{
 		if (bKILLED)	return -1;
 		
-		if ((s && s is 'GFGhoulBase' && !GS_GhoulsInfight))
+		if ((s && s is 'GS_GhoulBase' && !GS_GhoulsInfight))
 			return 0;
 		int dmg = Super.DamageMobj(i, s, damage, mod, flags|DMG_NO_PAIN, angle);
 		
@@ -178,7 +178,7 @@ class GFGhoulBase : Actor abstract
 	
 	override void Die(Actor s, Actor i, int flags, Name mod)
 	{
-		RemoveBehavior('GFTargeting');
+		RemoveBehavior('GS_Targeting');
 		A_SetTranslation('');
 		bNOICEDEATH = true; // Do not allow ice deaths!
 		Super.Die(s, i, flags, mod);
@@ -227,7 +227,7 @@ class GFGhoulBase : Actor abstract
 		}
 		
 	}
-	GFEvent ev;
+	GS_Event ev;
 	override void Deactivate(Actor mo)
 	{
 		Super.Deactivate(mo);
@@ -258,10 +258,10 @@ class GFGhoulBase : Actor abstract
 	// Custom functions
 	//--------------------------------------------------------------------------
 	private Map<Name, Int> Traits;
-	private GFEventStatic SEvent;
+	private GS_EventStatic SEvent;
 	void SetTrait(Name ID, int level)
 	{
-		if (!SEvent)	SEvent = GFEventStatic.Fetch();
+		if (!SEvent)	SEvent = GS_EventStatic.Fetch();
 		
 	}
 	
@@ -281,7 +281,7 @@ class GFGhoulBase : Actor abstract
 	{
 		if (!bDORMANT || bKILLED)	return;
 				
-		let mo = GFMaterializer(Spawn("GFMaterializer", pos, ALLOW_REPLACE));
+		let mo = GS_Materializer(Spawn("GS_Materializer", pos, ALLOW_REPLACE));
 		if (mo)
 		{
 			
@@ -292,7 +292,7 @@ class GFGhoulBase : Actor abstract
 	}
 }
 
-Class GFMaterializer : Actor
+class GS_Materializer : Actor
 {
 	const fadetime = (1.0 / (35.0 * 4.0));
 	bool instant;
@@ -340,7 +340,7 @@ Class GFMaterializer : Actor
 			if (count > 34)
 				A_FadeIn(fadetime, FTF_CLAMP);
 			else	count++;
-			Master.A_SpawnItemEx("GFMatFlame", 
+			Master.A_SpawnItemEx("GS_MatFlame", 
 				random(0, radius), 0, random(0, height * 0.75),
 				frandom(2,10), 0, 0, random(0,359), SXF_NOCHECKPOSITION);
 			SetOrigin(Master.pos, true);
@@ -349,7 +349,7 @@ Class GFMaterializer : Actor
 		{
 			Master.Activate(target);
 			A_StartSound("brain/spit",CHAN_VOICE);
-			A_Burst("GFBlackParticle");
+			A_Burst("GS_BlackParticle");
 		}
 	}
 	
@@ -364,7 +364,7 @@ Class GFMaterializer : Actor
 
 
 
-Class GFGhoulFX : Actor abstract
+class GS_GhoulFX : Actor abstract
 {
 	Default
 	{
@@ -373,7 +373,7 @@ Class GFGhoulFX : Actor abstract
 	}
 }
 
-Class GFBlackParticle : GFGhoulFX
+class GS_BlackParticle : GS_GhoulFX
 {
 	Default
 	{
@@ -397,7 +397,7 @@ Class GFBlackParticle : GFGhoulFX
 	}
 }
 
-Class GFMatFlame : GFGhoulFX
+class GS_MatFlame : GS_GhoulFX
 {
 	Default
 	{
@@ -414,7 +414,7 @@ Class GFMatFlame : GFGhoulFX
 	}
 }
 
-Class GhoulDeathExplo : GFGhoulFX
+Class GhoulDeathExplo : GS_GhoulFX
 {
 	private int count;
 	int Jitterchips;
@@ -460,7 +460,7 @@ Class GhoulDeathExplo : GFGhoulFX
 					v = frandom[rng](8, 30),
 					c = cos(p),
 					s = -sin(p);
-			A_SpawnItemEx("GFJitterChip", 
+			A_SpawnItemEx("GS_JitterChip", 
 				c * d,	0,	s * d,
 				c * v,	0,	s * v,
 				a,

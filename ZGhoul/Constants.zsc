@@ -1,9 +1,9 @@
-enum EGFTraitRank
+enum EGSTraitRank
 {
-	GFTR_NORMAL = 0,
-	GFTR_UNCOMMON,
-	GFTR_RARE,
-	GFTR_LEGENDARY
+	GSTR_NORMAL = 0,
+	GSTR_UNCOMMON,
+	GSTR_RARE,
+	GSTR_LEGENDARY
 };
 
 enum EGSConstants

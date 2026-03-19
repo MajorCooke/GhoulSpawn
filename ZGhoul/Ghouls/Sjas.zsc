@@ -19,13 +19,13 @@ Recommended Weapon: BFG 9000 or Super Shotgun
 ==============================================================================*/
 	
 
-class GFSjas : GFGhoulBase
+class GS_Sjas : GS_GhoulBase
 {
 	Default
 	{
-		GFGhoulBase.PainDelay 2;
-		GFGhoulBase.PainVolume 0.5;
-		GFGhouLBase.DmgThreshold 100;
+		GS_GhoulBase.PainDelay 2;
+		GS_GhoulBase.PainVolume 0.5;
+		GS_GhouLBase.DmgThreshold 100;
 		Monster;
 		+DONTTHRUST
 		-SOLID
@@ -77,7 +77,7 @@ class GFSjas : GFGhoulBase
 		{
 			"%o lost a screaming match with Sjas.",
 			"%o's head caved in from Sjas blaring the loud speakers.",
-			"Sjas blew %o's mind with the power of its vocals.",
+			"Sjas blew %o's mind with the power of his vocals.",
 			"%o stood on the wrong side of a goose with a megaphone called Sjas.",
 			"Sjas gave %o the audio therapy of a lifetime.",
 			"Sjas punk'd %o with a vocal-induced aneurism"
@@ -134,6 +134,12 @@ class GFSjas : GFGhoulBase
 	{
 		if (dtype == 'Sjas' && trg is 'PlayerPawn')
 			return 0;
+		if (damage > 0 && (dtype == 'Sjas' || dtype == 'Melee') && 
+			trg && (trg is "PlayerPawn" || trg.bISMONSTER) && !trg.bKILLED)
+		{
+			int dmg = max(1, int(floor(damage * 0.1)));
+			GiveBody(dmg);
+		}
 		return Super.DoSpecialDamage(trg, dmg, dtype);
 	}
 	
@@ -207,7 +213,7 @@ class GFSjas : GFGhoulBase
 		A_Fall();
 		bNOCLIP = false;
 	}
-	
+	const PainFadeTimer = 1.0 / 7.0;
 	States
 	{
 	Spawn:
@@ -227,14 +233,15 @@ class GFSjas : GFGhoulBase
 		G003 C 1 Vanish(true);
 		Goto Chasing;
 	Pain:
-		G003 C 8
+		G003 C 1
 		{
 			A_FadeIn(1.0, FTF_CLAMP);
 			bNOPAIN = true;
-			A_StartSound("Ghoul/Damaged", flags: CHANF_OVERLAP);
+		//	A_StartSound("Ghoul/Damaged", flags: CHANF_OVERLAP);
 			A_Stop();
-			SetFlashTimer(8);
+		//	SetFlashTimer(8);
 		}
+		---- CCCCCCC 1 A_FadeOut(PainFadeTimer, FTF_CLAMP);
 		TNT1 A 1 Vanish();
 		Goto Chasing;
 	Death:

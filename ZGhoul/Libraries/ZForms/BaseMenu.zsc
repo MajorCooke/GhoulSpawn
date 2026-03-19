@@ -1,35 +1,35 @@
 /// Represents when in the element order the focus indicator element should be
 /// drawn.
-enum GF_FocusPriority {
+enum GS_FocusPriority {
 	/// The focus indicator will be drawn above every element, besides things drawn explicitly on
 	/// top.
-	GF_FocusPriority_AboveAll,
+	GS_FocusPriority_AboveAll,
 	/// The focus indicator will be drawn immediately below the focused element.
-	GF_FocusPriority_JustBelowFocused,
+	GS_FocusPriority_JustBelowFocused,
 	/// The focus indicator will be drawn immediately above the focused element.
-	GF_FocusPriority_JustAboveFocused,
+	GS_FocusPriority_JustAboveFocused,
 }
 
 /// The class to inherit from for defining any menu that goes in the place that
 /// ZScript [`GenericMenu`]s normally go.
-class GF_GenericMenu : GenericMenu {
+class GS_GenericMenu : GenericMenu {
 	/// The top-level frame of the menu's element tree.
 	///
 	/// All top-level elements should be packed into this frame.
-	GF_Frame mainFrame;
+	GS_Frame mainFrame;
 
 	/// The default elements that are focused when the user hasn't got anything
 	/// focused and presses a navigation button.
-	GF_Element focusDefaults[GF_NavEventType_FocusChangeCount];
+	GS_Element focusDefaults[GS_NavEventType_FocusChangeCount];
 
-	private GF_ElementTreeGlobal globalStore;
+	private GS_ElementTreeGlobal globalStore;
 
 	/// Returns where the mouse position currently is in the menu.
 	Vector2 getMousePos() { return globalStore.mousePos; }
 
 	/// Sets the currently focused element to be `elem`, as if it came from the
 	/// direction `type`.
-	void setFocus(GF_Element elem, GF_NavEventType type) {
+	void setFocus(GS_Element elem, GS_NavEventType type) {
 		let old = globalStore.focus;
 		globalStore.focus = elem;
 		elem.beenFocused(type);
@@ -38,24 +38,24 @@ class GF_GenericMenu : GenericMenu {
 	}
 	/// Returns the element that is drawn as an indicator of what element is
 	/// focused.
-	GF_Element getFocusIndicator() { return globalStore.focusIndicator; }
+	GS_Element getFocusIndicator() { return globalStore.focusIndicator; }
 	/// Sets the element that is drawn as an indicator of what element is
 	/// focused.
-	void setFocusIndicator(GF_Element focusIndicator) { globalStore.focusIndicator = focusIndicator; }
+	void setFocusIndicator(GS_Element focusIndicator) { globalStore.focusIndicator = focusIndicator; }
 
 	/// Returns the focus indicator's priority.
 	///
 	/// See [`ZF_FocusPriority`].
-	GF_FocusPriority getFocusPriority() { return globalStore.focusPriority; }
+	GS_FocusPriority getFocusPriority() { return globalStore.focusPriority; }
 	/// Sets the focus indicator's priority.
 	///
 	/// See [`ZF_FocusPriority`].
-	void setFocusPriority(GF_FocusPriority focusPriority) { globalStore.focusPriority = focusPriority; }
+	void setFocusPriority(GS_FocusPriority focusPriority) { globalStore.focusPriority = focusPriority; }
 
 	override void init(Menu parent) {
 		Super.init(parent);
-		mainFrame = GF_Frame.create((0, 0), (320, 200));
-		globalStore = new("GF_ElementTreeGlobal");
+		mainFrame = GS_Frame.create((0, 0), (320, 200));
+		globalStore = new("GS_ElementTreeGlobal");
 		mainFrame.setGlobalStore(globalStore);
 		mainFrame.setBaseResolution((320, 200));
 		globalStore.mainFrame = mainFrame;
@@ -98,7 +98,7 @@ class GF_GenericMenu : GenericMenu {
 
 	override void drawer() {
 		if (globalStore.focus != NULL) {
-			GF_AABB box;
+			GS_AABB box;
 			globalStore.focus.getFocusAABB(box);
 			positionFocusIndicator(box.pos, box.size);
 		}
@@ -134,7 +134,7 @@ class GF_GenericMenu : GenericMenu {
 	/// Called when the menu wants the focus indicator to be moved to a new element.
 	/// 
 	/// This should not position the indicator - see [`positionFocusIndicator`].
-	virtual void changeFocusIndicator(GF_Element oldFocus, GF_Element newFocus) {}
+	virtual void changeFocusIndicator(GS_Element oldFocus, GS_Element newFocus) {}
 	/// Called when the focus indicator should change position or size.
 	///
 	/// # Examples
@@ -146,15 +146,15 @@ class GF_GenericMenu : GenericMenu {
 	/// ```
 	virtual void positionFocusIndicator(Vector2 pos, Vector2 size) {}
 
-	private void fireNavigationEvent(GF_NavEventType type, bool fromController) {
-		if (type == GF_NavEventType_Deny) {
+	private void fireNavigationEvent(GS_NavEventType type, bool fromController) {
+		if (type == GS_NavEventType_Deny) {
 			handleBack();
 		}
 
 		if (mainFrame.onNavEvent(type, fromController)) return;
 
-		if (type < GF_NavEventType_FocusChangeCount) {
-			GF_Element newFocus;
+		if (type < GS_NavEventType_FocusChangeCount) {
+			GS_Element newFocus;
 			if (globalStore.focus == NULL) {
 				newFocus = focusDefaults[type];
 			} else {
@@ -189,9 +189,9 @@ class GF_GenericMenu : GenericMenu {
 			SetCapture(false);
 		}
 
-		GF_UiEvent zfEv;
+		GS_UiEvent zfEv;
 
-		GF_UiEvent.fromGZDUiEvent(ev, zfEv);
+		GS_UiEvent.fromGZDUiEvent(ev, zfEv);
 		if (mainFrame.onUIEventPriority(zfEv)) return true;
 		if (mainFrame.onUIEvent(zfEv)) return true;
 
@@ -202,16 +202,16 @@ class GF_GenericMenu : GenericMenu {
 		if (globalStore != NULL && globalStore.blockMenuEvent) return true;
 
 		switch (mkey) {
-		case MKEY_Up:    fireNavigationEvent(GF_NavEventType_Up, fromcontroller); break;
-		case MKEY_Down:  fireNavigationEvent(GF_NavEventType_Down, fromcontroller); break;
-		case MKEY_Left:  fireNavigationEvent(GF_NavEventType_Left, fromcontroller); break;
-		case MKEY_Right: fireNavigationEvent(GF_NavEventType_Right, fromcontroller); break;
+		case MKEY_Up:    fireNavigationEvent(GS_NavEventType_Up, fromcontroller); break;
+		case MKEY_Down:  fireNavigationEvent(GS_NavEventType_Down, fromcontroller); break;
+		case MKEY_Left:  fireNavigationEvent(GS_NavEventType_Left, fromcontroller); break;
+		case MKEY_Right: fireNavigationEvent(GS_NavEventType_Right, fromcontroller); break;
 
-		case MKEY_PageUp:   fireNavigationEvent(GF_NavEventType_PageUp, fromcontroller); break;
-		case MKEY_PageDown: fireNavigationEvent(GF_NavEventType_PageDown, fromcontroller); break;
+		case MKEY_PageUp:   fireNavigationEvent(GS_NavEventType_PageUp, fromcontroller); break;
+		case MKEY_PageDown: fireNavigationEvent(GS_NavEventType_PageDown, fromcontroller); break;
 
-		case MKEY_Enter: fireNavigationEvent(GF_NavEventType_Confirm, fromcontroller); break;
-		case MKEY_Back:  fireNavigationEvent(GF_NavEventType_Deny, fromcontroller); break;
+		case MKEY_Enter: fireNavigationEvent(GS_NavEventType_Confirm, fromcontroller); break;
+		case MKEY_Back:  fireNavigationEvent(GS_NavEventType_Deny, fromcontroller); break;
 		}
 		return true;
 	}
@@ -221,14 +221,14 @@ class GF_GenericMenu : GenericMenu {
 //  current ZForms API as much as i should have been so it doesn't work
 //  properly anyway
 /// ?doc: hidden
-class GF_EventHandlerMenu ui {
-	GF_Frame mainFrame;
+class GS_EventHandlerMenu ui {
+	GS_Frame mainFrame;
 
 	protected bool useCustomCursor;
 	protected string customCursor;
 
 	virtual void init() {
-		mainFrame = GF_Frame.create((0, 0), (320, 200));
+		mainFrame = GS_Frame.create((0, 0), (320, 200));
 		mainFrame.setBaseResolution((320, 200));
 	}
 
@@ -247,7 +247,7 @@ class GF_EventHandlerMenu ui {
 
 	protected virtual void ticker() {
 		// Trigger a mouse movement UI event to fix things "sticking" sometimes
-		GF_UiEvent zfEv;
+		GS_UiEvent zfEv;
 		zfEv.type = UIEvent.Type_MouseMove;
 		zfEv.mouseX = inputProc_MouseX;
 		zfEv.mouseY = inputProc_MouseY;
@@ -275,9 +275,9 @@ class GF_EventHandlerMenu ui {
 			handleBack();
 		}
 
-		GF_UiEvent zfEv;
+		GS_UiEvent zfEv;
 
-		GF_UiEvent.fromGZDUiEvent(ev, zfEv);
+		GS_UiEvent.fromGZDUiEvent(ev, zfEv);
 		if (mainFrame.onUIEventPriority(zfEv)) return true;
 		mainFrame.onUIEvent(zfEv);
 		return true;
@@ -298,13 +298,13 @@ class GF_EventHandlerMenu ui {
 		inputProc_MouseY = posY;
 	}
 
-	void copyCustomMousePosition(GF_EventHandlerMenu other) {
+	void copyCustomMousePosition(GS_EventHandlerMenu other) {
 		inputProc_MouseX = other.inputProc_MouseX;
 		inputProc_MouseY = other.inputProc_MouseY;
 	}
 
 	void onInputEvent(InputEvent gzdEv) {
-		GF_UiEvent ev;
+		GS_UiEvent ev;
 
 		ev.KeyString = gzdEv.KeyString;
 		ev.KeyChar = gzdEv.KeyChar;

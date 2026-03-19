@@ -1,5 +1,5 @@
 
-class GFJSON
+class GS_JSON
 {
 	const BACKSLASH = 0x5C;		// '\\'
 	
@@ -141,17 +141,17 @@ class GFJSON
 		}
 	}
 	
-	private static GFJsonElementOrError parseString(out string data, out uint i, uint len)
+	private static GS_JsonElementOrError parseString(out string data, out uint i, uint len)
 	{ // parse a string
-		if(i >= len) return GFJsonError.make("Expected String, got EOF");
+		if(i >= len) return GS_JsonError.make("Expected String, got EOF");
 		uint delim, next_i;
 		[delim, next_i] = data.getNextCodePoint(i);
 		if(delim != "'" && delim != "\"")
 		{
-			return GFJsonError.make("Expected  '\'' or '\"' (String), got "..data.mid(i,1));
+			return GS_JsonError.make("Expected  '\'' or '\"' (String), got "..data.mid(i,1));
 		}
 		i = next_i;
-		GFJsonString s = GFJsonString.make();
+		GS_JsonString s = GS_JsonString.make();
 		uint c, i3;
 		while(next_i < len)
 		{
@@ -166,7 +166,7 @@ class GFJSON
 			{
 				if(i3 >= len)
 				{
-					return GFJsonError.make("On String, expected Character, got EOF");
+					return GS_JsonError.make("On String, expected Character, got EOF");
 				}
 				s.s.appendFormat("%s", data.mid(i, next_i - i));
 				[c, next_i] = data.getNextCodePoint(i3);
@@ -175,7 +175,7 @@ class GFJSON
 			}
 			else if(c == "\n")
 			{
-				return GFJsonError.make("On String, expected Character, got EOL");
+				return GS_JsonError.make("On String, expected Character, got EOL");
 			}
 			else
 			{
@@ -184,20 +184,20 @@ class GFJSON
 		}
 		string delim_s;
 		delim_s.appendCharacter(delim);
-		return GFJsonError.make("On String, expected '"..delim_s.."', got EOF");
+		return GS_JsonError.make("On String, expected '"..delim_s.."', got EOF");
 	}
     
-	private static GFJsonElementOrError parseObject(out string data, out uint i, uint len, out uint line)
+	private static GS_JsonElementOrError parseObject(out string data, out uint i, uint len, out uint line)
 	{ // parse a json object, allows trailing commas
-		if(i >= len) return GFJsonError.make("Expected Object, got EOF");
+		if(i >= len) return GS_JsonError.make("Expected Object, got EOF");
 		uint c, next_i;
 		[c, next_i] = data.getNextCodePoint(i);
 		if(c != "{")
 		{
-			return GFJsonError.make("Expected '{' (Object), got '"..data.mid(i, 1).."'");
+			return GS_JsonError.make("Expected '{' (Object), got '"..data.mid(i, 1).."'");
 		}
 		i = next_i;
-		GFJsonObject obj = GFJsonObject.make();
+		GS_JsonObject obj = GS_JsonObject.make();
         string last_element;
         bool has_last_element = false;
 		while(i<len)
@@ -209,45 +209,45 @@ class GFJSON
 				return obj;
 			}
 			let key = parseString(data, i, len);
-			if(key is "GFJsonError")
+			if(key is "GS_JsonError")
 			{
                 if(has_last_element)
 				{
-                    return GFJsonError.make("After Object value '"..last_element.."', "..GFJsonError(key).what);
+                    return GS_JsonError.make("After Object value '"..last_element.."', "..GS_JsonError(key).what);
                 }
 				else
 				{
-                    return GFJsonError.make("On first Object value, "..GFJsonError(key).what);
+                    return GS_JsonError.make("On first Object value, "..GS_JsonError(key).what);
                 }
 			}
-            last_element = GFJsonString(key).s;
+            last_element = GS_JsonString(key).s;
             has_last_element = true;
 			skipWhitespace(data, i, len, line);
 			if(i >= len)
 			{
-				return GFJsonError.make("On Object value '"..last_element.."', expected ':', got EOF");
+				return GS_JsonError.make("On Object value '"..last_element.."', expected ':', got EOF");
 			}
 			[c, next_i] = data.getNextCodePoint(i);
 			if(c != ":")
 			{
-				return GFJsonError.make("On Object value '"..last_element.."', expected ':', got '"..data.mid(i, 1).."'");
+				return GS_JsonError.make("On Object value '"..last_element.."', expected ':', got '"..data.mid(i, 1).."'");
 			}
 			i = next_i;
 			skipWhitespace(data, i, len, line);
 			if(i >= len)
 			{
-				return GFJsonError.make("On Object value '"..last_element.."', expected element, got EOF");
+				return GS_JsonError.make("On Object value '"..last_element.."', expected element, got EOF");
 			}
 			let elem = parseElement(data, i, len, line);
-			if(elem is "GFJsonError")
+			if(elem is "GS_JsonError")
 			{
-				return GFJsonError.make("On Object value '"..last_element.."', "..GFJsonError(elem).what);
+				return GS_JsonError.make("On Object value '"..last_element.."', "..GS_JsonError(elem).what);
 			}
-			obj.set(GFJsonString(key).s, GFJsonElement(elem));
+			obj.set(GS_JsonString(key).s, GS_JsonElement(elem));
 			skipWhitespace(data, i, len, line);
 			if(i >= len)
 			{
-				return GFJsonError.make("After Object value '"..last_element.."', expected ',', got EOF after element '"..last_element.."'");
+				return GS_JsonError.make("After Object value '"..last_element.."', expected ',', got EOF after element '"..last_element.."'");
 			}
 			[c, next_i] = data.getNextCodePoint(i);
 			if(c != ",")
@@ -256,31 +256,31 @@ class GFJSON
 				{
 					continue;
 				}
-				return GFJsonError.make("After Object value '"..last_element.."', expected ',', got '"..data.mid(i, 1).."'");
+				return GS_JsonError.make("After Object value '"..last_element.."', expected ',', got '"..data.mid(i, 1).."'");
 			}
 			i = next_i;
 		}
         if(has_last_element)
 		{
-            return GFJsonError.make("After Object value '"..last_element.."', expected }, got EOF");
+            return GS_JsonError.make("After Object value '"..last_element.."', expected }, got EOF");
         }
 		else
 		{
-            return GFJsonError.make("On Empty Object, expected }, got EOF");
+            return GS_JsonError.make("On Empty Object, expected }, got EOF");
         }
 	}
 	
-	private static GFJsonElementOrError parseArray(out string data, out uint i, uint len, out uint line) 
+	private static GS_JsonElementOrError parseArray(out string data, out uint i, uint len, out uint line) 
 	{ // parse a json array, allows trailing commas
-		if(i >= len) return GFJsonError.make("Expected Array, got EOF");
+		if(i >= len) return GS_JsonError.make("Expected Array, got EOF");
 		uint c, next_i;
 		[c, next_i] = data.getNextCodePoint(i);
 		if(c != "[")
 		{
-			return GFJsonError.make("Expected '[' (Array), got '"..data.mid(i, 1).."'");
+			return GS_JsonError.make("Expected '[' (Array), got '"..data.mid(i, 1).."'");
 		}
 		i = next_i;
-		GFJsonArray arr=GFJsonArray.make();
+		GS_JsonArray arr=GS_JsonArray.make();
 		while(i<len)
 		{
 			skipWhitespace(data, i, len, line);
@@ -291,15 +291,15 @@ class GFJSON
 				return arr;
 			}
 			let elem = parseElement(data, i, len, line);
-			if(elem is "GFJsonError")
+			if(elem is "GS_JsonError")
 			{
-				return GFJsonError.make("On Array index "..arr.size()..", "..GFJsonError(elem).what);
+				return GS_JsonError.make("On Array index "..arr.size()..", "..GS_JsonError(elem).what);
 			}
-			arr.push(GFJsonElement(elem));
+			arr.push(GS_JsonElement(elem));
 			skipWhitespace(data, i, len, line);
 			if(i >= len)
 			{
-				return GFJsonError.make("On Array index "..(arr.size() - 1)..", expected ',', got EOF");
+				return GS_JsonError.make("On Array index "..(arr.size() - 1)..", expected ',', got EOF");
 			}
 			[c, next_i] = data.getNextCodePoint(i);
 			if(c != ",")
@@ -308,29 +308,29 @@ class GFJSON
 				{
 					continue;
 				}
-				return GFJsonError.make("After Array index "..(arr.size() - 1)..", expected ',', got '"..data.mid(i, 1).."'");
+				return GS_JsonError.make("After Array index "..(arr.size() - 1)..", expected ',', got '"..data.mid(i, 1).."'");
 			}
 			i = next_i;
 		}
         if(arr.size() == 0)
 		{
-            return GFJsonError.make("On Empty Array, expected ], got EOF");
+            return GS_JsonError.make("On Empty Array, expected ], got EOF");
         }
 		else
 		{
-            return GFJsonError.make("After Array index "..(arr.size() - 1)..", expected ], got EOF");
+            return GS_JsonError.make("After Array index "..(arr.size() - 1)..", expected ], got EOF");
             
         }
 	}
 	
     
-	private static GFJsonElementOrError parseNumber(out string data, out uint i, uint len)
+	private static GS_JsonElementOrError parseNumber(out string data, out uint i, uint len)
 	{ // parse a number in the format [0-9]+(?:\.[0-9]+)?
 	  // TODO match floating point numbers in exponent format
-		if(i >= len) return GFJsonError.make("Expected Number, got EOF");
+		if(i >= len) return GS_JsonError.make("Expected Number, got EOF");
 		uint next_i, i3, c;
 		[c, next_i] = data.getNextCodePoint(i);
-		if(!isNumber(c)) return GFJsonError.make("Expected '0'-'9' (Number), got '"..data.mid(i, 1).."'");
+		if(!isNumber(c)) return GS_JsonError.make("Expected '0'-'9' (Number), got '"..data.mid(i, 1).."'");
 		next_i = i;
 		bool is_double=false;
 		while(next_i < data.length())
@@ -340,7 +340,7 @@ class GFJSON
 			{
 				if(is_double)
 				{
-					return GFJsonError.make("On Number, duplicate dot");
+					return GS_JsonError.make("On Number, duplicate dot");
 				}
 				is_double = true;
 			}
@@ -351,33 +351,33 @@ class GFJSON
 			next_i = i3;
 		}
 		uint n = next_i - i;
-		GFJsonElement o;
+		GS_JsonElement o;
 		if(is_double)
 		{
-			o = GFJsonDouble.make(data.mid(i,n).toDouble());
+			o = GS_JsonDouble.make(data.mid(i,n).toDouble());
 		}
 		else
 		{
-			o = GFJsonInt.make(data.mid(i,n).toInt());
+			o = GS_JsonInt.make(data.mid(i,n).toInt());
 		}
 		i = next_i;
 		return o;
 	}
 	
 	
-	private static GFJsonElementOrError parseElement(out string data,out uint i,uint len,out uint line)
+	private static GS_JsonElementOrError parseElement(out string data,out uint i,uint len,out uint line)
 	{ // returns one of:
-	  //	GFJsonArray
-	  //	GFJsonObject
-	  //	GFJsonString
-	  //	GFJsonInt
-	  //	GFJsonDouble
-	  //	GFJsonNull
-	  //	GFJsonError
+	  //	GS_JsonArray
+	  //	GS_JsonObject
+	  //	GS_JsonString
+	  //	GS_JsonInt
+	  //	GS_JsonDouble
+	  //	GS_JsonNull
+	  //	GS_JsonError
 		skipWhitespace(data, i, len, line);
 		if(i >= len)
 		{
-			return GFJsonError.make("Expected JSON Element, got EOF");
+			return GS_JsonError.make("Expected JSON Element, got EOF");
 		}
 		uint c, next_i;
 		[c, next_i] = data.getNextCodePoint(i);
@@ -390,9 +390,9 @@ class GFJSON
 			i = next_i;
 			skipWhitespace(data,i,len,line);
 			let num = parseNumber(data,i,len);
-			if(c == "-" && num is "GFJsonNumber")
+			if(c == "-" && num is "GS_JsonNumber")
 			{
-				return GFJsonNumber(num).negate();
+				return GS_JsonNumber(num).negate();
 			}
 			else
 			{
@@ -414,31 +414,31 @@ class GFJSON
 		else if(data.mid(i, 4) == "true")
 		{ // bool, true
 			i+=4;
-			return GFJsonBool.make(true);
+			return GS_JsonBool.make(true);
 		}
 		else if(data.mid(i, 5) == "false")
 		{ // bool, false
 			i+=5;
-			return GFJsonBool.make(false);
+			return GS_JsonBool.make(false);
 		}
 		else if(data.mid(i, 4) == "null")
 		{ // null
 			i+=4;
-			return GFJsonNull.make();
+			return GS_JsonNull.make();
 		}
 		else
 		{
-			return GFJsonError.make("Expected JSON Element, got '"..data.mid(i, 1).."'");
+			return GS_JsonError.make("Expected JSON Element, got '"..data.mid(i, 1).."'");
 		}
 	}
 	
-	static GFJsonElementOrError parse(string json_string,bool allow_data_past_end=false)
+	static GS_JsonElementOrError parse(string json_string,bool allow_data_past_end=false)
 	{ // roughly O(n), has extra complexity from data structures (DynArray, HashTable) and string copying
 		uint index = 0;
 		uint line = 1;
 		uint len = json_string.length();
-		GFJsonElementOrError elem = parseElement(json_string, index, len, line);
-		if(!(elem is "GFJsonError"))
+		GS_JsonElementOrError elem = parseElement(json_string, index, len, line);
+		if(!(elem is "GS_JsonError"))
 		{
 			skipWhitespace(json_string, index, len, line);
 			if(
@@ -449,12 +449,12 @@ class GFJSON
 				)
 			  )
 			{
-				return GFJsonError.make("On JSON line "..line.." - expected EOF, got '"..json_string.mid(index, 1).."'");
+				return GS_JsonError.make("On JSON line "..line.." - expected EOF, got '"..json_string.mid(index, 1).."'");
 			}
 		}
 		else
 		{
-			return GFJsonError.make("On JSON line "..line.." - "..GFJsonError(elem).what);
+			return GS_JsonError.make("On JSON line "..line.." - "..GS_JsonError(elem).what);
 		}
 		return elem;
 	}

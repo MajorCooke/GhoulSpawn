@@ -31,7 +31,7 @@ in tight areas.
 Recommended Weapon: Chaingun
 ==============================================================================*/
 
-Class GFEyesore : GFGhoulBase abstract
+class GS_Eyesore : GS_GhoulBase abstract
 {
 	Default
 	{

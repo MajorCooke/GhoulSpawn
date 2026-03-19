@@ -1,8 +1,8 @@
 
-Class GFEventStatic : StaticEventHandler
+class GS_EventStatic : StaticEventHandler
 {
-	static clearscope GFEventStatic Fetch()
-	{	return GFEventStatic(Find('GFEventStatic'));	}
+	static clearscope GS_EventStatic Fetch()
+	{	return GS_EventStatic(Find('GS_EventStatic'));	}
 	
 	override void NetworkProcess(ConsoleEvent e)
 	{
@@ -33,9 +33,9 @@ Class GFEventStatic : StaticEventHandler
 		RefreshGhoulList();
 	}
 	
-	private Array<Class<GFGhoulBase> > Ghouls;
+	private Array<Class<GS_GhoulBase> > Ghouls;
 	private Array<Int> Weights;
-	Class<GFGhoulBase> PickGhoul()
+	Class<GS_GhoulBase> PickGhoul()
 	{
 		// Get the total counters and add them together.
 		int total = 0;
@@ -74,14 +74,14 @@ Class GFEventStatic : StaticEventHandler
 	{
 		Ghouls.Clear();
 		Weights.Clear();
-		// Get a list of all classes inheriting from GFGhoulBase.
+		// Get a list of all classes inheriting from GS_GhoulBase.
 		int i = 0;
 		for (i = 0; i < AllActorClasses.Size(); i++)
 		{
-			let gh = (class<GFGhoulBase>)(AllActorClasses[i]);
+			let gh = (class<GS_GhoulBase>)(AllActorClasses[i]);
 			if (gh)	
 			{
-				gh = (class<GFGhoulBase>)(Actor.GetReplacement(gh));
+				gh = (class<GS_GhoulBase>)(Actor.GetReplacement(gh));
 				if (!gh || gh.isAbstract())
 					continue;
 				let defs = GetDefaultByType(gh);
@@ -95,19 +95,19 @@ Class GFEventStatic : StaticEventHandler
 	}
 }
 
-Class GFEvent : EventHandler
+class GS_Event : EventHandler
 {
 	
 	private bool NoSpawn; // ultimate killswitch.
-	private GFEventStatic SEvent;
-	private Array<Class<GFGhoulBase> > Order;
-	private Array<GFGhoulBase> Ghouls;
+	private GS_EventStatic SEvent;
+	private Array<Class<GS_GhoulBase> > Order;
+	private Array<GS_GhoulBase> Ghouls;
 	private int Timer;
 	private bool NG;
 	
 	
-	static clearscope GFEvent Fetch()
-	{	return GFEvent(Find('GFEvent'));	}
+	static clearscope GS_Event Fetch()
+	{	return GS_Event(Find('GS_Event'));	}
 	
 	override void NewGame()
 	{
@@ -125,7 +125,7 @@ Class GFEvent : EventHandler
 	override void WorldThingSpawned(WorldEvent e)
 	{
 		let mo = e.Thing;
-		if (mo && mo.bMISSILE && !(mo.Target is 'GFJitterskull'))
+		if (mo && mo.bMISSILE && !(mo.Target is 'GS_Jitterskull'))
 		{
 			mo.AddBehavior('JitterMislCrasher');
 		}
@@ -151,12 +151,12 @@ Class GFEvent : EventHandler
 		if (SEvent) SEvent.RefreshGhoulList();
 	}
 	
-	private GFGhoulBase Ghoul;
+	private GS_GhoulBase Ghoul;
 	private void PickGhoul()
 	{	
 		if (Ghoul)	return;
-		if (!SEvent)	SEvent = GFEventStatic.Fetch();
-		Class<GFGhoulBase> pick = SEvent.PickGhoul();
+		if (!SEvent)	SEvent = GS_EventStatic.Fetch();
+		Class<GS_GhoulBase> pick = SEvent.PickGhoul();
 		
 		if (!pick)
 		{
@@ -164,7 +164,7 @@ Class GFEvent : EventHandler
 			return;
 		}
 		
-		Ghoul = GFGhoulBase(Actor.Spawn(pick, (0,0,0), ALLOW_REPLACE));
+		Ghoul = GS_GhoulBase(Actor.Spawn(pick, (0,0,0), ALLOW_REPLACE));
 		if (Ghoul)
 		{
 			Ghoul.ev = self;
@@ -245,7 +245,7 @@ Class GFEvent : EventHandler
 	
 	override void WorldThingDied(WorldEvent e)
 	{
-		let mo = GFGhoulBase(e.Thing);
+		let mo = GS_GhoulBase(e.Thing);
 		if (mo)		Ghouls.Delete(Ghouls.Find(mo));
 		else		CheckJitterKill(e);
 	}
@@ -253,7 +253,7 @@ Class GFEvent : EventHandler
 	override void WorldThingDestroyed(WorldEvent e)
 	{
 		if (Ghouls.Size() < 1)	return;
-		let mo = GFGhoulBase(e.Thing);
+		let mo = GS_GhoulBase(e.Thing);
 		if (mo)	
 			Ghouls.Delete(Ghouls.Find(mo));
 	}

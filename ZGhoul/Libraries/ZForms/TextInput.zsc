@@ -2,14 +2,14 @@
 ///
 /// This element uses the events [`ZF_Handler.textInputChanged`] and
 /// [`ZF_Handler.textInputExit`].
-class GF_TextInput : GF_Element {
+class GS_TextInput : GS_Element {
 	private void config(
 		Font fnt = NULL, double textScale = 1, int textColor = Font.CR_WHITE,
-		GF_BoxTextures background = NULL, bool multiline = false,
-		GF_Handler cmdHandler = NULL, Name command = '',
+		GS_BoxTextures background = NULL, bool multiline = false,
+		GS_Handler cmdHandler = NULL, Name command = '',
 		double scrollbarWidth = 0.0,
-		GF_BoxTextures scrollBarNormal = NULL, GF_BoxTextures scrollBarHover = NULL,
-		GF_BoxTextures scrollBarClick = NULL, GF_BoxTextures scrollBg = NULL
+		GS_BoxTextures scrollBarNormal = NULL, GS_BoxTextures scrollBarHover = NULL,
+		GS_BoxTextures scrollBarClick = NULL, GS_BoxTextures scrollBg = NULL
 	) {
 
 		setFont(fnt);
@@ -61,19 +61,19 @@ class GF_TextInput : GF_Element {
 	/// to. [`ZF_Handler.textInputChanged`] is sent whenever the user changes
 	/// the text inside the input box, and [`ZF_Handler.textInputExit`] is sent
 	/// when a text input is exited by the user.
-	static GF_TextInput create(
+	static GS_TextInput create(
 		Vector2 pos, Vector2 size, Font fnt = NULL, double textScale = 1,
-		int textColor = Font.CR_WHITE, GF_BoxTextures background = NULL,
-		bool multiline = false, GF_Handler cmdHandler = NULL, Name command = '',
+		int textColor = Font.CR_WHITE, GS_BoxTextures background = NULL,
+		bool multiline = false, GS_Handler cmdHandler = NULL, Name command = '',
 		double scrollbarWidth = 0.0,
-		GF_BoxTextures scrollBarNormal = NULL, GF_BoxTextures scrollBarHover = NULL,
-		GF_BoxTextures scrollBarClick = NULL, GF_BoxTextures scrollBg = NULL
+		GS_BoxTextures scrollBarNormal = NULL, GS_BoxTextures scrollBarHover = NULL,
+		GS_BoxTextures scrollBarClick = NULL, GS_BoxTextures scrollBg = NULL
 	) {
 
-		let ret = new('GF_TextInput');
+		let ret = new('GS_TextInput');
 
 		ret.setBox(pos, size);
-		ret.bar = GF_Scrollbar.create((0, 0), (0, 0), NULL, NULL);
+		ret.bar = GS_Scrollbar.create((0, 0), (0, 0), NULL, NULL);
 		ret.bar.master = ret;
 		ret.config(fnt, textScale, textColor, background, multiline, cmdHandler, command, scrollbarWidth, scrollBarNormal, scrollBarHover, scrollBarClick, scrollBg);
 
@@ -111,14 +111,14 @@ class GF_TextInput : GF_Element {
 	/// This is really a [`Font.EColorRange`], but ZScript currently is a bit limited here.
 	void setTextColor(int textColor) { self.textColor = textColor; }
 
-	private GF_BoxTextures background;
+	private GS_BoxTextures background;
 	/// Returns the box textures used for drawing the background of the text
 	/// input.
-	GF_BoxTextures getBackgroundTexture() { return self.background; }
+	GS_BoxTextures getBackgroundTexture() { return self.background; }
 	/// Sets the box textures used for drawing the background of the text
 	/// input.
-	void setBackgroundTexture(GF_BoxTextures background) { self.background = background; }
-	private GF_BoxDrawer bgDrawer;
+	void setBackgroundTexture(GS_BoxTextures background) { self.background = background; }
+	private GS_BoxDrawer bgDrawer;
 
 	private string text;
 
@@ -146,7 +146,7 @@ class GF_TextInput : GF_Element {
 	private double upDownX;
 
 	private bool multiline;
-	private GF_Scrollbar bar;
+	private GS_Scrollbar bar;
 	private double scrollbarWidth;
 
 	/// Returns the text currently inside the text box.
@@ -375,8 +375,8 @@ class GF_TextInput : GF_Element {
 			if (scrollbarWidth > 0.0) bar.drawer();
 		}
 
-		GF_AABB beforeClip, clipRect;
-		GF_AABB aabb;
+		GS_AABB beforeClip, clipRect;
+		GS_AABB aabb;
 		aabb.size = (getXSize(), box.size.y);
 		screenClip(beforeClip, clipRect, aabb);
 		Screen.setClipRect(int(clipRect.pos.x), int(clipRect.pos.y), int(clipRect.size.x), int(clipRect.size.y));
@@ -473,7 +473,7 @@ class GF_TextInput : GF_Element {
 	}
 
 	private double, int, bool getCursorPositionFromMouse() {
-		GF_AABB screenBox; boxToScreen(screenBox);
+		GS_AABB screenBox; boxToScreen(screenBox);
 		let mousePos = getGlobalStore().mousePos;
 		let diff = mousePos - screenBox.pos;
 		diff /= getScale();
@@ -631,8 +631,8 @@ class GF_TextInput : GF_Element {
 		else upDownX = fnt.stringWidth(lines[selCursorLine].left(selCursorRelative)) * textScale;
 	}
 
-	override bool onNavEvent(GF_NavEventType type, bool fromController) {
-		if (isEnabled() && isFocused() && type == GF_NavEventType_Confirm) {
+	override bool onNavEvent(GS_NavEventType type, bool fromController) {
+		if (isEnabled() && isFocused() && type == GS_NavEventType_Confirm) {
 			setHoverBlock(self);
 			getGlobalStore().blockMenuEvent = true;
 			typing = true;
@@ -650,14 +650,14 @@ class GF_TextInput : GF_Element {
 		return false;
 	}
 
-	override bool onUIEvent(GF_UiEvent ev) {
+	override bool onUIEvent(GS_UiEvent ev) {
 		if (bar != NULL) bar.onUIEvent(ev);
 		let mousePos = getGlobalStore().mousePos;
 		mouseBlock |= bar.blocksMouse(mousePos);
 
 		bool dontFixOffset = false;
 		
-		GF_AABB screenBox; boxToScreen(screenBox);
+		GS_AABB screenBox; boxToScreen(screenBox);
 
 		// if the player's clicked, and their mouse is in the right place, set the state accordingly
 		if (ev.type == UIEvent.Type_LButtonDown) {

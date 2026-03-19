@@ -1,31 +1,31 @@
 
-class GFJsonObjectKeys
+class GS_JsonObjectKeys
 {
 	Array<String> keys;
 }
 
 
-class GFJsonObject : GFJsonElement
+class GS_JsonObject : GS_JsonElement
 {
-	Map<String,GFJsonElement> data;
+	Map<String,GS_JsonElement> data;
 	
-	static GFJsonObject make()
+	static GS_JsonObject make()
 	{
-		return new("GFJsonObject");
+		return new("GS_JsonObject");
 	}
 	
-	GFJsonElement Get(String key)
+	GS_JsonElement Get(String key)
 	{
 		if(!data.CheckKey(key)) return null;
 		return data.Get(key);
 	}
 	
-	void Set(String key,GFJsonElement e)
+	void Set(String key,GS_JsonElement e)
 	{
 		data.Insert(key,e);
 	}
 	
-	bool Insert(String key, GFJsonElement e)
+	bool Insert(String key, GS_JsonElement e)
 	{ // only inserts if key doesn't exist, otherwise fails and returns false
 		if(data.CheckKey(key)) return false;
 		data.Insert(key,e);
@@ -42,16 +42,16 @@ class GFJsonObject : GFJsonElement
 	void GetKeysInto(out Array<String> keys)
 	{
 		keys.Clear();
-		MapIterator<String,GFJsonElement> it;
+		MapIterator<String,GS_JsonElement> it;
 		it.Init(data);
 		while(it.Next()){
 			keys.Push(it.GetKey());
 		}
 	}
     
-	GFJsonObjectKeys GetKeys()
+	GS_JsonObjectKeys GetKeys()
 	{
-		GFJsonObjectKeys keys = new("GFJsonObjectKeys");
+		GS_JsonObjectKeys keys = new("GS_JsonObjectKeys");
         GetKeysInto(keys.keys);
 		return keys;
 	}
@@ -82,14 +82,14 @@ class GFJsonObject : GFJsonElement
 		s.AppendCharacter("{");
 		bool first = true;
 		
-		MapIterator<String,GFJsonElement> it;
+		MapIterator<String,GS_JsonElement> it;
 		it.Init(data);
 		
 		while(it.Next()){
 			if(!first){
 				s.AppendCharacter(",");
 			}
-			s.AppendFormat("%s:%s", GFJSON.serialize_string(it.GetKey()), it.GetValue().serialize());
+			s.AppendFormat("%s:%s", GS_JSON.serialize_string(it.GetKey()), it.GetValue().serialize());
 			first = false;
 		}
 		

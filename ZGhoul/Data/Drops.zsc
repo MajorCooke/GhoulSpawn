@@ -1,5 +1,5 @@
 
-Class GFDropData
+Class GS_DropData
 {
 	internal readonly Name 	ID,			// Name of thing to spawn
 							Type;		// <Damage/Death>type needed to drop this thing
@@ -17,15 +17,15 @@ Class GFDropData
 	//--------------------------------------------------------------------------
 	// Serialization functions
 	//--------------------------------------------------------------------------
-	static GFDropData Deserialize(GFJsonElement elem)
+	static GS_DropData Deserialize(GS_JsonElement elem)
 	{
-		if (!elem)	ThrowAbortException("GFDropData: element is null");
-		let obj = GFJsonObject(elem);
-		if (!obj)	ThrowAbortException("GFDropData: expected object, got "..elem.GetClassName());
-		return new('GFDropData').ProcessObject(obj);
+		if (!elem)	ThrowAbortException("GS_DropData: element is null");
+		let obj = GS_JsonObject(elem);
+		if (!obj)	ThrowAbortException("GS_DropData: expected object, got "..elem.GetClassName());
+		return new('GS_DropData').ProcessObject(obj);
 	}
 	
-	private GFDropData ProcessObject(GFJsonObject obj)
+	private GS_DropData ProcessObject(GS_JsonObject obj)
 	{
 		Init();
 		return self;

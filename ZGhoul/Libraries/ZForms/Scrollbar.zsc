@@ -1,10 +1,10 @@
 /// A scrollbar element, intended for use in any other element that wants to
 /// draw a scrollbar.
-class GF_Scrollbar : GF_Element {
+class GS_Scrollbar : GS_Element {
 	/// Reconfigures the scrollbar. See [`create`] for argument details.
 	void config(
-		GF_BoxTextures normal, GF_BoxTextures hover = NULL,
-		GF_BoxTextures click = NULL, GF_BoxTextures background = NULL
+		GS_BoxTextures normal, GS_BoxTextures hover = NULL,
+		GS_BoxTextures click = NULL, GS_BoxTextures background = NULL
 	) {
 		self.background = background;
 		self.textures[BarState_Normal] = normal;
@@ -22,12 +22,12 @@ class GF_Scrollbar : GF_Element {
 	/// unclicked, the handle will be drawn using `normal`. When unclicked but
 	/// hovered, the handle will be drawn using `hover`. When clicked, the
 	/// handle will be drawn using `click`.
-	static GF_Scrollbar create(
+	static GS_Scrollbar create(
 		Vector2 pos, Vector2 size,
-		GF_BoxTextures normal, GF_BoxTextures hover = NULL,
-		GF_BoxTextures click = NULL, GF_BoxTextures background = NULL
+		GS_BoxTextures normal, GS_BoxTextures hover = NULL,
+		GS_BoxTextures click = NULL, GS_BoxTextures background = NULL
 	) {
-		let ret = new('GF_Scrollbar');
+		let ret = new('GS_Scrollbar');
 
 		ret.config(normal, hover, click, background);
 		ret.setBox(pos, size);
@@ -41,11 +41,11 @@ class GF_Scrollbar : GF_Element {
 	// encapsulation itself
 	
 	/// The background used.
-	GF_BoxTextures background;
-	private GF_BoxDrawer bgDrawer;
+	GS_BoxTextures background;
+	private GS_BoxDrawer bgDrawer;
 	/// Textures drawn for each state in [`BarState`].
-	GF_BoxTextures textures[3];
-	private GF_BoxDrawer barDrawers[3];
+	GS_BoxTextures textures[3];
+	private GS_BoxDrawer barDrawers[3];
 
 	/// The various states the bar's handle can be drawn in.
 	enum BarState {
@@ -74,7 +74,7 @@ class GF_Scrollbar : GF_Element {
 	private Vector2 originalMousePos;
 	private bool clicking;
 
-	private void barBox(GF_AABB ret) {
+	private void barBox(GS_AABB ret) {
 		ret.pos = (0, box.size.y * position);
 		ret.size = (box.size.x, box.size.y * size);
 	}
@@ -89,8 +89,8 @@ class GF_Scrollbar : GF_Element {
 			}
 		}
 		else {
-			GF_AABB box; barBox(box);
-			GF_AABB screenBox; aabbToScreen(screenBox, box);
+			GS_AABB box; barBox(box);
+			GS_AABB screenBox; aabbToScreen(screenBox, box);
 			if (!mouseBlock && isEnabled() && !getHoverBlock() && screenBox.pointCollides(mousePos)) {
 				curBarState = BarState_Hover;
 			}
@@ -103,7 +103,7 @@ class GF_Scrollbar : GF_Element {
 	}
 
 	override void drawer() {
-		GF_AABB beforeClip, clipRect;
+		GS_AABB beforeClip, clipRect;
 		screenClip(beforeClip, clipRect);
 		Screen.setClipRect(int(clipRect.pos.x), int(clipRect.pos.y), int(clipRect.size.x), int(clipRect.size.y));
 
@@ -112,7 +112,7 @@ class GF_Scrollbar : GF_Element {
 		}
 
 		if (size < 1.0) {
-			GF_AABB box; barBox(box);
+			GS_AABB box; barBox(box);
 			barDrawers[curBarState].draw(self, box.pos, box.size, textures[curBarState], true);
 		}
 
@@ -124,11 +124,11 @@ class GF_Scrollbar : GF_Element {
 		position = clamp(position, 0.0, 1.0 - size);
 	}
 
-	override bool onUIEvent(GF_UiEvent ev) {
+	override bool onUIEvent(GS_UiEvent ev) {
 		let mousePos = getGlobalStore().mousePos;
 		if (ev.type == UIEvent.Type_LButtonDown) {
-			GF_AABB box; barBox(box);
-			GF_AABB screenBox; aabbToScreen(screenBox, box);
+			GS_AABB box; barBox(box);
+			GS_AABB screenBox; aabbToScreen(screenBox, box);
 			if (!mouseBlock && isEnabled() && screenBox.pointCollides(mousePos)) {
 				curBarState = BarState_Click;
 				originalPos = position;
@@ -137,8 +137,8 @@ class GF_Scrollbar : GF_Element {
 			}
 		}
 		else if (ev.type == UIEvent.Type_LButtonUp) {
-			GF_AABB box; barBox(box);
-			GF_AABB screenBox; aabbToScreen(screenBox, box);
+			GS_AABB box; barBox(box);
+			GS_AABB screenBox; aabbToScreen(screenBox, box);
 			if (!mouseBlock && screenBox.pointCollides(mousePos) && curBarState == BarState_Click) {
 				curBarState = BarState_Hover;
 			}

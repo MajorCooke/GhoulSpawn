@@ -32,7 +32,7 @@ weaponry such as rockets to drive him back until he dies.
 Recommended Weapon: Rocket Launcher
 ==============================================================================*/
 
-Class GFClowny : GFGhoulBase abstract
+class GS_Clowny : GS_GhoulBase abstract
 {
 	Default
 	{

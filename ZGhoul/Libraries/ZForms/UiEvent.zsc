@@ -1,7 +1,7 @@
 /// A direct mirror of GZDoom's own `UiEvent`.
 ///
 /// This exists to facilitate [`ZF_EventHandlerMenu`], where we create fake `UiEvent`s.
-struct GF_UiEvent ui {
+struct GS_UiEvent ui {
 	///
 	int Type;
 	///
@@ -20,7 +20,7 @@ struct GF_UiEvent ui {
 	bool IsAlt;
 
 	/// Converts from a GZDoom `UiEvent` into this, placing the result into `ev`.
-	static void fromGZDUiEvent(UiEvent gzdEv, GF_UiEvent ev) {
+	static void fromGZDUiEvent(UiEvent gzdEv, GS_UiEvent ev) {
 		ev.Type = gzdEv.Type;
 		ev.KeyString = gzdEv.KeyString;
 		ev.KeyChar = gzdEv.KeyChar;

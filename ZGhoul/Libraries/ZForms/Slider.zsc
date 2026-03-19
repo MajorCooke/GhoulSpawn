@@ -2,11 +2,11 @@
 /// endpoint values.
 ///
 /// This element uses the event [`ZF_Handler.sliderChanged`].
-class GF_Slider : GF_Element {
+class GS_Slider : GS_Element {
 	private void config(
 		double low, double high, double value, double step, double handleWidth,
-		GF_BoxTextures handle, GF_BoxTextures handleHover, GF_BoxTextures handleClick = NULL,
-		GF_BoxTextures background = NULL, GF_Handler cmdHandler = NULL, Name command = ''
+		GS_BoxTextures handle, GS_BoxTextures handleHover, GS_BoxTextures handleClick = NULL,
+		GS_BoxTextures background = NULL, GS_Handler cmdHandler = NULL, Name command = ''
 	) {
 		setLow(low);
 		setHigh(high);
@@ -46,13 +46,13 @@ class GF_Slider : GF_Element {
 	/// `cmdHandler` and `command` determine where the button's events are sent
 	/// to. [`ZF_Handler.sliderChanged`] is sent whenever the user changes the
 	/// value of the slider.
-	static GF_Slider create(
+	static GS_Slider create(
 		Vector2 pos, Vector2 size,
 		double low, double high, double value, double step, double handleWidth,
-		GF_BoxTextures handle, GF_BoxTextures handleHover, GF_BoxTextures handleClick = NULL,
-		GF_BoxTextures background = NULL, GF_Handler cmdHandler = NULL, Name command = ''
+		GS_BoxTextures handle, GS_BoxTextures handleHover, GS_BoxTextures handleClick = NULL,
+		GS_BoxTextures background = NULL, GS_Handler cmdHandler = NULL, Name command = ''
 	) {
-		let ret = new("GF_Slider");
+		let ret = new("GS_Slider");
 
 		ret.setBox(pos, size);
 		ret.config(low, high, value, step, handleWidth, handle, handleHover, handleClick, background, cmdHandler, command);
@@ -98,12 +98,12 @@ class GF_Slider : GF_Element {
 	/// Sets the value that this slider is currently set to.
 	void setValue(double value) { self.value = value; }
 
-	private GF_BoxTextures background;
+	private GS_BoxTextures background;
 	/// Returns the box textures used for drawing the background of the slider.
-	GF_BoxTextures getBackgroundTexture() { return self.background; }
+	GS_BoxTextures getBackgroundTexture() { return self.background; }
 	/// Sets the box textures used for drawing the background of the slider.
-	void setBackgroundTexture(GF_BoxTextures background) { self.background = background; }
-	private GF_BoxDrawer backgroundDrawer;
+	void setBackgroundTexture(GS_BoxTextures background) { self.background = background; }
+	private GS_BoxDrawer backgroundDrawer;
 
 	/// An enum representing the visual states a slider's handle can be in.
 	enum HandleState {
@@ -114,30 +114,30 @@ class GF_Slider : GF_Element {
 		/// The slider is being clicked on.
 		Handle_Click
 	}
-	private GF_BoxTextures handle[3];
+	private GS_BoxTextures handle[3];
 
 	/// Returns the box textures used when the slider is in the
 	/// [normal](HandleState.Handle_Normal) state.
-	GF_BoxTextures getHandleTexture() { return handle[Handle_Normal]; }
+	GS_BoxTextures getHandleTexture() { return handle[Handle_Normal]; }
 	/// Sets the box textures used when the slider is in the
 	/// [normal](HandleState.Handle_Normal) state.
-	void setHandleTexture(GF_BoxTextures tex) { handle[Handle_Normal] = tex; }
+	void setHandleTexture(GS_BoxTextures tex) { handle[Handle_Normal] = tex; }
 
 	/// Returns the box textures used when the slider is in the
 	/// [hover](HandleState.Handle_Hover) state.
-	GF_BoxTextures getHandleHoverTexture() { return handle[Handle_Hover]; }
+	GS_BoxTextures getHandleHoverTexture() { return handle[Handle_Hover]; }
 	/// Sets the box textures used when the slider is in the
 	/// [hover](HandleState.Handle_Hover) state.
-	void setHandleHoverTexture(GF_BoxTextures tex) { handle[Handle_Hover] = (tex != NULL) ? tex : handle[Handle_Normal]; }
+	void setHandleHoverTexture(GS_BoxTextures tex) { handle[Handle_Hover] = (tex != NULL) ? tex : handle[Handle_Normal]; }
 	
 	/// Returns the box textures used when the slider is in the
 	/// [click](HandleState.Handle_Click) state.
-	GF_BoxTextures getHandleClickTexture() { return handle[Handle_Click]; }
+	GS_BoxTextures getHandleClickTexture() { return handle[Handle_Click]; }
 	/// Sets the box textures used when the slider is in the
 	/// [click](HandleState.Handle_Click) state.
-	void setHandleClickTexture(GF_BoxTextures tex) { handle[Handle_Click] = (tex != NULL) ? tex : handle[Handle_Normal]; }
+	void setHandleClickTexture(GS_BoxTextures tex) { handle[Handle_Click] = (tex != NULL) ? tex : handle[Handle_Normal]; }
 
-	private GF_BoxDrawer handleDrawer[3];
+	private GS_BoxDrawer handleDrawer[3];
 
 	private double handleWidth;
 	/// Returns the desired width of the handle.
@@ -177,7 +177,7 @@ class GF_Slider : GF_Element {
 	}
 
 	override void drawer() {
-		GF_AABB screenBox; boxToScreen(screenBox);
+		GS_AABB screenBox; boxToScreen(screenBox);
 		let mousePos = getGlobalStore().mousePos;
 		if (!mouseBlock && !getHoverBlock() && isEnabled() && screenBox.pointCollides(mousePos)) {
 			hover = true;
@@ -188,7 +188,7 @@ class GF_Slider : GF_Element {
 
 		double oldVal = value;
 		if (clicking) {
-			GF_AABB screenBox; boxToScreen(screenBox);
+			GS_AABB screenBox; boxToScreen(screenBox);
 			let diff = mousePos - screenBox.pos;
 			diff /= getScale();
 			diff.x -= getDrawHandleWidth() / 2;
@@ -207,7 +207,7 @@ class GF_Slider : GF_Element {
 			cmdHandler.sliderChanged(self, command);
 		}
 
-		GF_AABB beforeClip, clipRect;
+		GS_AABB beforeClip, clipRect;
 		screenClip(beforeClip, clipRect);
 		Screen.setClipRect(int(clipRect.pos.x), int(clipRect.pos.y), int(clipRect.size.x), int(clipRect.size.y));
 		
@@ -225,7 +225,7 @@ class GF_Slider : GF_Element {
 		Screen.setClipRect(int(beforeClip.pos.x), int(beforeClip.pos.y), int(beforeClip.size.x), int(beforeClip.size.y));
 	}
 
-	override bool onNavEvent(GF_NavEventType type, bool fromController) {
+	override bool onNavEvent(GS_NavEventType type, bool fromController) {
 		if (isEnabled() && isFocused()) {
 			let newStep = step;
 			if (step == 0.0) {
@@ -233,7 +233,7 @@ class GF_Slider : GF_Element {
 			}
 			let oldVal = value;
 			switch (type) {
-			case GF_NavEventType_Left: {
+			case GS_NavEventType_Left: {
 				value -= newStep;
 				value = clamp(value, low, high);
 				if (cmdHandler != NULL && oldVal != value) {
@@ -241,7 +241,7 @@ class GF_Slider : GF_Element {
 				}
 				return true;
 			}
-			case GF_NavEventType_Right: {
+			case GS_NavEventType_Right: {
 				value += newStep;
 				value = clamp(value, low, high);
 				if (cmdHandler != NULL && oldVal != value) {
@@ -254,9 +254,9 @@ class GF_Slider : GF_Element {
 		return false;
 	}
 
-	override bool onUIEvent(GF_UiEvent ev) {
+	override bool onUIEvent(GS_UiEvent ev) {
 		if (ev.type == UIEvent.Type_LButtonDown) {
-			GF_AABB screenBox; boxToScreen(screenBox);
+			GS_AABB screenBox; boxToScreen(screenBox);
 			let mousePos = getGlobalStore().mousePos;
 			if (!mouseBlock && isEnabled() && screenBox.pointCollides(mousePos)) {
 				clicking = true;

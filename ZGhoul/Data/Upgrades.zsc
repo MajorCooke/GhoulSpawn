@@ -1,4 +1,4 @@
-Class GFUpgradeData
+Class GS_UpgradeData
 {
 	Name ID;
 	Map<Name, Int> Cost;		// Needs these items to purchase.
@@ -8,15 +8,15 @@ Class GFUpgradeData
 	//--------------------------------------------------------------------------
 	// Serialization functions
 	//--------------------------------------------------------------------------
-	static GFUpgradeData Deserialize(GFJsonElement elem)
+	static GS_UpgradeData Deserialize(GS_JsonElement elem)
 	{
-		if (!elem)		ThrowAbortException("GFUpgradeData: Expected a GFJsonObject, got null");
-		let obj = GFJsonObject(elem);
-		if (!obj)		ThrowAbortException("GFUpgradeData: Expected a GFJsonObject, got "..elem.GetClassName());
-		return new('GFUpgradeData').ProcessObject(obj);
+		if (!elem)		ThrowAbortException("GS_UpgradeData: Expected a GS_JsonObject, got null");
+		let obj = GS_JsonObject(elem);
+		if (!obj)		ThrowAbortException("GS_UpgradeData: Expected a GS_JsonObject, got "..elem.GetClassName());
+		return new('GS_UpgradeData').ProcessObject(obj);
 	}
 	
-	private GFUpgradeData ProcessObject(GFJsonObject obj)
+	private GS_UpgradeData ProcessObject(GS_JsonObject obj)
 	{
 		return self;
 	}

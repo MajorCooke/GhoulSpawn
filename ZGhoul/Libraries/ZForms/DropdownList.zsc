@@ -1,6 +1,6 @@
 /// A simple wrapper class around a string array, which represents the item
 /// choices in a [dropdown list](ZF_DropdownList).
-class GF_DropdownItems {
+class GS_DropdownItems {
 	/// The items, of which one item in the array corresponds to one shown
 	/// choice.
 	Array<string> items;
@@ -10,12 +10,12 @@ class GF_DropdownItems {
 /// drawing a list when clicked on.
 ///
 /// This element uses the event [`ZF_Handler.dropdownChanged`].
-class GF_DropdownList : GF_Element {
+class GS_DropdownList : GS_Element {
 	private void config(
-		GF_DropdownItems items, Font fnt = NULL, double textScale = 1.0, int textColor = Font.CR_WHITE,
-		GF_BoxTextures boxBg = NULL, GF_BoxTextures listBg = NULL, GF_BoxTextures highlightBg = NULL,
-		string dropTex = "", int defaultSelection = -1, GF_Handler cmdHandler = NULL, Name command = '',
-		GF_Frame bindingFrame = NULL
+		GS_DropdownItems items, Font fnt = NULL, double textScale = 1.0, int textColor = Font.CR_WHITE,
+		GS_BoxTextures boxBg = NULL, GS_BoxTextures listBg = NULL, GS_BoxTextures highlightBg = NULL,
+		string dropTex = "", int defaultSelection = -1, GS_Handler cmdHandler = NULL, Name command = '',
+		GS_Frame bindingFrame = NULL
 	) {
 		setFont(fnt);
 		setItems(items);
@@ -66,14 +66,14 @@ class GF_DropdownList : GF_Element {
 	/// `cmdHandler` and `command` determine where the button's events are sent
 	/// to. [`ZF_Handler.dropdownChanged`] is sent whenever the user changes
 	/// the dropdown choice.
-	static GF_DropdownList create(
+	static GS_DropdownList create(
 		Vector2 pos, Vector2 size,
-		GF_DropdownItems items, Font fnt = NULL, double textScale = 1.0, int textColor = Font.CR_WHITE,
-		GF_BoxTextures boxBg = NULL, GF_BoxTextures listBg = NULL, GF_BoxTextures highlightBg = NULL,
-		string dropTex = "", int defaultSelection = -1, GF_Handler cmdHandler = NULL, Name command = '',
-		GF_Frame bindingFrame = NULL
+		GS_DropdownItems items, Font fnt = NULL, double textScale = 1.0, int textColor = Font.CR_WHITE,
+		GS_BoxTextures boxBg = NULL, GS_BoxTextures listBg = NULL, GS_BoxTextures highlightBg = NULL,
+		string dropTex = "", int defaultSelection = -1, GS_Handler cmdHandler = NULL, Name command = '',
+		GS_Frame bindingFrame = NULL
 	) {
-		let ret = new("GF_DropdownList");
+		let ret = new("GS_DropdownList");
 
 		ret.config(
 			items, fnt, textScale, textColor, boxBg, listBg, highlightBg, dropTex,
@@ -84,11 +84,11 @@ class GF_DropdownList : GF_Element {
 		return ret;
 	}
 
-	private GF_DropdownItems items;
+	private GS_DropdownItems items;
 	/// Returns the dropdown items list that this element uses.
-	GF_DropdownItems getItems() { return self.items; }
+	GS_DropdownItems getItems() { return self.items; }
 	/// Sets the dropdown items list that this element uses.
-	void setItems(GF_DropdownItems items) { self.items = items; }
+	void setItems(GS_DropdownItems items) { self.items = items; }
 
 	private int textColor;
 	/// Returns the dropdown list's text's color.
@@ -126,46 +126,46 @@ class GF_DropdownList : GF_Element {
 	/// [`getItems`]`()`, or `-1` if nothing has been chosen yet.
 	int getSelection() { return self.selection; }
 
-	private GF_Frame bindingFrame;
+	private GS_Frame bindingFrame;
 	/// Returns the frame that binds this dropdown list.
 	/// 
 	/// If a dropdown list cannot fit inside of the `bindingFrame` by going
 	/// downwards, it will instead go upwards. If `bindingFrame == NULL`, then
 	/// the entire screen is effectively used as a binding frame.
-	GF_Frame getBindingFrame() { return self.bindingFrame; }
+	GS_Frame getBindingFrame() { return self.bindingFrame; }
 	/// Sets the frame that binds this dropdown list.
 	/// 
 	/// If a dropdown list cannot fit inside of the `bindingFrame` by going
 	/// downwards, it will instead go upwards. If `bindingFrame == NULL`, then
 	/// the entire screen is effectively used as a binding frame.
-	void setBindingFrame(GF_Frame bindingFrame) { self.bindingFrame = bindingFrame; }
+	void setBindingFrame(GS_Frame bindingFrame) { self.bindingFrame = bindingFrame; }
 
-	private GF_BoxTextures boxBg;
+	private GS_BoxTextures boxBg;
 	/// Returns the box textures used for drawing the part of the element that
 	/// is clicked on to drop down the list.
-	GF_BoxTextures getBoxBgTexture() { return self.boxBg; }
+	GS_BoxTextures getBoxBgTexture() { return self.boxBg; }
 	/// Sets the box textures used for drawing the part of the element that is
 	/// clicked on to drop down the list.
-	void setBoxBgTexture(GF_BoxTextures boxBg) { self.boxBg = boxBg; }
-	private GF_BoxDrawer boxBgDrawer;
+	void setBoxBgTexture(GS_BoxTextures boxBg) { self.boxBg = boxBg; }
+	private GS_BoxDrawer boxBgDrawer;
 
-	private GF_BoxTextures listBg;
+	private GS_BoxTextures listBg;
 	/// Returns the box textures used for drawing the list part of the element
 	/// that shows up when the element is clicked.
-	GF_BoxTextures getListBgTexture() { return self.listBg; }
+	GS_BoxTextures getListBgTexture() { return self.listBg; }
 	/// Sets the box textures used for drawing the list part of the element
 	/// that shows up when the element is clicked.
-	void setListBgTexture(GF_BoxTextures listBg) { self.listBg = listBg; }
-	private GF_BoxDrawer listBgDrawer;
+	void setListBgTexture(GS_BoxTextures listBg) { self.listBg = listBg; }
+	private GS_BoxDrawer listBgDrawer;
 
-	private GF_BoxTextures highlightBg;
+	private GS_BoxTextures highlightBg;
 	/// Returns the box textures used to draw the higlight for the current
 	/// option of the user.
-	GF_BoxTextures getHighlightBgTexture() { return self.highlightBg; }
+	GS_BoxTextures getHighlightBgTexture() { return self.highlightBg; }
 	/// Sets the box textures used to draw the higlight for the current option
 	/// of the user.
-	void setHighlightBgTexture(GF_BoxTextures highlightBg) { self.highlightBg = highlightBg; }
-	private GF_BoxDrawer highlightBgDrawer;
+	void setHighlightBgTexture(GS_BoxTextures highlightBg) { self.highlightBg = highlightBg; }
+	private GS_BoxDrawer highlightBgDrawer;
 
 	private string dropTex;
 	/// Returns the texture drawn to indicate that this is a dropdown list.
@@ -180,13 +180,13 @@ class GF_DropdownList : GF_Element {
 	private int hover;
 	private bool lastKey;
 
-	private void dropdownAABB(GF_AABB screenBox) {
-		GF_AABB aabb;
+	private void dropdownAABB(GS_AABB screenBox) {
+		GS_AABB aabb;
 		aabb.pos = (0.0, getDropdownYOff());
 		aabb.size = (box.size.x, box.size.y * items.items.size());
 		aabbToScreen(screenBox, aabb, false);
 		if (bindingFrame != NULL) {
-			GF_AABB bindingBox; bindingFrame.boxToScreen(bindingBox);
+			GS_AABB bindingBox; bindingFrame.boxToScreen(bindingBox);
 			screenBox.rectOfIntersection(screenBox, bindingBox);
 		}
 	}
@@ -194,14 +194,14 @@ class GF_DropdownList : GF_Element {
 	override bool blocksMousePriority(Vector2 mousePos) {
 		if (getDontBlockMouse()) return false;
 		if (!active) return false;
-		GF_AABB screenBox; dropdownAABB(screenBox);
+		GS_AABB screenBox; dropdownAABB(screenBox);
 		return screenBox.pointCollides(mousePos);
 	}
 
 	override void drawer() {
 		if (hidden) { return; }
 
-		GF_AABB beforeClip, clipRect;
+		GS_AABB beforeClip, clipRect;
 		screenClip(beforeClip, clipRect);
 		Screen.setClipRect(int(clipRect.pos.x), int(clipRect.pos.y), int(clipRect.size.x), int(clipRect.size.y));
 
@@ -226,11 +226,11 @@ class GF_DropdownList : GF_Element {
 	}
 
 	private double getDropdownYOff() {
-		GF_AABB aabb;
+		GS_AABB aabb;
 		aabb.pos = (0.0, box.size.y);
 		aabb.size = (box.size.x, box.size.y * items.items.size());
-		GF_AABB dropdownBox; aabbToScreen(dropdownBox, aabb, false);
-		GF_AABB masterBox;
+		GS_AABB dropdownBox; aabbToScreen(dropdownBox, aabb, false);
+		GS_AABB masterBox;
 		if (bindingFrame != NULL) {
 			bindingFrame.boxToScreen(masterBox);
 		}
@@ -257,7 +257,7 @@ class GF_DropdownList : GF_Element {
 		if (hidden) { return; }
 		if (!active) return;
 
-		GF_AABB screenBox; dropdownAABB(screenBox);
+		GS_AABB screenBox; dropdownAABB(screenBox);
 		let mousePos = getGlobalStore().mousePos;
 		if (screenBox.pointCollides(mousePos)) {
 			hover = -1;
@@ -270,7 +270,7 @@ class GF_DropdownList : GF_Element {
 			hover = -1;
 		}
 
-		GF_AABB beforeClip, clipRect;
+		GS_AABB beforeClip, clipRect;
 		if (bindingFrame != NULL) {
 			bindingFrame.screenClip(beforeClip, clipRect);
 			Screen.setClipRect(int(clipRect.pos.x), int(clipRect.pos.y), int(clipRect.size.x), int(clipRect.size.y));
@@ -297,7 +297,7 @@ class GF_DropdownList : GF_Element {
 
 	private bool setSelectionFromMouse() {
 		let mousePos = getGlobalStore().mousePos;
-		GF_AABB dropdownBox; dropdownAABB(dropdownBox);
+		GS_AABB dropdownBox; dropdownAABB(dropdownBox);
 		if (dropdownBox.pointCollides(mousePos) && hover != -1) {
 			let newSelection = hover;
 			let fireEvent = selection != newSelection;
@@ -307,15 +307,15 @@ class GF_DropdownList : GF_Element {
 			}
 			return true;
 		}
-		GF_AABB screenBox; boxToScreen(screenBox);
+		GS_AABB screenBox; boxToScreen(screenBox);
 		return screenBox.pointCollides(mousePos);
 	}
 
-	override bool onNavEvent(GF_NavEventType type, bool fromController) {
+	override bool onNavEvent(GS_NavEventType type, bool fromController) {
 		if (isEnabled()) {
 			if (active) {
 				switch (type) {
-				case GF_NavEventType_Confirm: {
+				case GS_NavEventType_Confirm: {
 					let newSelection = hover;
 					let fireEvent = selection != newSelection;
 					selection = newSelection;
@@ -325,7 +325,7 @@ class GF_DropdownList : GF_Element {
 					active = false;
 					break;
 				}
-				case GF_NavEventType_Down: {
+				case GS_NavEventType_Down: {
 					if (hover == -1) { hover = 0; }
 					else {
 						hover += 1;
@@ -336,7 +336,7 @@ class GF_DropdownList : GF_Element {
 					lastKey = true;
 					break;
 				}
-				case GF_NavEventType_Up: {
+				case GS_NavEventType_Up: {
 					if (hover == -1) { hover = items.items.size() - 1; }
 					else {
 						hover -= 1;
@@ -349,7 +349,7 @@ class GF_DropdownList : GF_Element {
 				}
 				}
 				return true;
-			} else if (isFocused() && type == GF_NavEventType_Confirm) {
+			} else if (isFocused() && type == GS_NavEventType_Confirm) {
 				active = true;
 				setHoverBlock(self);
 				hover = -1;
@@ -359,7 +359,7 @@ class GF_DropdownList : GF_Element {
 		return false;
 	}
 
-	override bool onUIEventPriority(GF_UiEvent ev) {
+	override bool onUIEventPriority(GS_UiEvent ev) {
 		let mousePos = getGlobalStore().mousePos;
 		if (ev.type == UIEvent.Type_LButtonDown) {
 			if (isEnabled()) {
@@ -373,7 +373,7 @@ class GF_DropdownList : GF_Element {
 		else if (ev.type == UIEvent.Type_LButtonUp && clicking) {
 			clicking = false;
 			setHoverBlock(NULL);
-			GF_AABB screenBox; dropdownAABB(screenBox);
+			GS_AABB screenBox; dropdownAABB(screenBox);
 			if (active && screenBox.pointCollides(mousePos)) {
 				active = false;
 				return setSelectionFromMouse();
@@ -385,16 +385,16 @@ class GF_DropdownList : GF_Element {
 		return false;
 	}
 
-	override bool onUIEvent(GF_UiEvent ev) {
+	override bool onUIEvent(GS_UiEvent ev) {
 		if (ev.type == UIEvent.Type_LButtonDown) {
 			if (isEnabled()) {
-				GF_AABB screenBox; boxToScreen(screenBox);
+				GS_AABB screenBox; boxToScreen(screenBox);
 				let mousePos = getGlobalStore().mousePos;
 				if (!active && !mouseBlock && screenBox.pointCollides(mousePos)) {
 					active = true;
 					hover = -1;
 					clicking = true;
-					GF_AABB dropdownBox; dropdownAABB(dropdownBox);
+					GS_AABB dropdownBox; dropdownAABB(dropdownBox);
 					if (dropdownBox.pointCollides(mousePos)) {
 						clicking = false;
 					}

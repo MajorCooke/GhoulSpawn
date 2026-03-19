@@ -2,7 +2,7 @@
 /// things.
 ///
 /// For specific button types see [`ZF_Button`], [`ZF_ToggleButton`] and [`ZF_RadioButton`].
-class GF_ButtonBase : GF_Element {
+class GS_ButtonBase : GS_Element {
 	/// An enum containing the states buttons are able to be in.
 	enum ButtonState {
 		/// The button is isn't being clicked on, or hovered.
@@ -15,55 +15,55 @@ class GF_ButtonBase : GF_Element {
 		ButtonState_Disabled
 	}
 
-	private GF_BoxTextures textures[4];
+	private GS_BoxTextures textures[4];
 
 	/// Returns the box textures used for when the button is in the inactive state.
 	///
 	/// See [`ButtonState`] for state descriptions.
-	GF_BoxTextures getInactiveTexture() { return textures[ButtonState_Inactive]; }
+	GS_BoxTextures getInactiveTexture() { return textures[ButtonState_Inactive]; }
 	/// Sets the box textures used for when the button is in the inactive state.
 	///
 	/// See [`ButtonState`] for state descriptions.
-	void setInactiveTexture(GF_BoxTextures tex) { textures[ButtonState_Inactive] = tex; }
+	void setInactiveTexture(GS_BoxTextures tex) { textures[ButtonState_Inactive] = tex; }
 
 	/// Returns the box textures used for when the button is in the hover state.
 	///
 	/// See [`ButtonState`] for state descriptions.
-	GF_BoxTextures getHoverTexture() { return textures[ButtonState_Hover]; }
+	GS_BoxTextures getHoverTexture() { return textures[ButtonState_Hover]; }
 	/// Sets the box textures used for when the button is in the hover state.
 	///
 	/// See [`ButtonState`] for state descriptions.
-	void setHoverTexture(GF_BoxTextures tex) { textures[ButtonState_Hover] = tex; }
+	void setHoverTexture(GS_BoxTextures tex) { textures[ButtonState_Hover] = tex; }
 
 	/// Returns the box textures used for when the button is in the click state.
 	///
 	/// See [`ButtonState`] for state descriptions.
-	GF_BoxTextures getClickTexture() { return textures[ButtonState_Click]; }
+	GS_BoxTextures getClickTexture() { return textures[ButtonState_Click]; }
 	/// Sets the box textures used for when the button is in the click state.
 	///
 	/// See [`ButtonState`] for state descriptions.
-	void setClickTexture(GF_BoxTextures tex) { textures[ButtonState_Click] = tex; }
+	void setClickTexture(GS_BoxTextures tex) { textures[ButtonState_Click] = tex; }
 
 	/// Returns the box textures used for when the button is in the disabled state.
 	///
 	/// See [`ButtonState`] for state descriptions.
-	GF_BoxTextures getDisabledTexture() { return textures[ButtonState_Disabled]; }
+	GS_BoxTextures getDisabledTexture() { return textures[ButtonState_Disabled]; }
 	/// Sets the box textures used for when the button is in the disabled state.
 	///
 	/// See [`ButtonState`] for state descriptions.
-	void setDisabledTexture(GF_BoxTextures tex) { textures[ButtonState_Disabled] = tex; }
+	void setDisabledTexture(GS_BoxTextures tex) { textures[ButtonState_Disabled] = tex; }
 
 	/// Sets all four of the textures a button uses in one function.
 	///
 	/// See [`ButtonState`] for state descriptions.
-	void setTextures(GF_BoxTextures inactive, GF_BoxTextures hover, GF_BoxTextures click, GF_BoxTextures disabled) {
+	void setTextures(GS_BoxTextures inactive, GS_BoxTextures hover, GS_BoxTextures click, GS_BoxTextures disabled) {
 		self.textures[ButtonState_Inactive] = inactive;
 		self.textures[ButtonState_Hover] = hover;
 		self.textures[ButtonState_Click] = click;
 		self.textures[ButtonState_Disabled] = disabled;
 	}
 
-	private GF_BoxDrawer drawers[4];
+	private GS_BoxDrawer drawers[4];
 
 	private Font fnt;
 	/// Returns the font this button will use for drawing its text.
@@ -116,11 +116,11 @@ class GF_ButtonBase : GF_Element {
 	override void drawer() {
 		if (hidden) { return; }
 
-		GF_AABB beforeClip, clipRect;
+		GS_AABB beforeClip, clipRect;
 		screenClip(beforeClip, clipRect);
 		Screen.setClipRect(int(clipRect.pos.x), int(clipRect.pos.y), int(clipRect.size.x), int(clipRect.size.y));
 
-		GF_BoxTextures textures = textures[curButtonState];
+		GS_BoxTextures textures = textures[curButtonState];
 		if (textures != NULL) {
 			drawers[curButtonState].draw(self, (0, 0), box.size, textures, true);
 		}

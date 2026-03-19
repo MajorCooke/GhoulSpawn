@@ -1,6 +1,6 @@
 
 
-Class GFDamageTypeData
+Class GS_DamageTypeData
 {
 	internal readonly Name Type;		// Damage type to affect
 	internal readonly double Factor;
@@ -8,15 +8,15 @@ Class GFDamageTypeData
 	//--------------------------------------------------------------------------
 	// Serialization functions
 	//--------------------------------------------------------------------------
-	static GFDamageTypeData Deserialize(GFJsonElement elem)
+	static GS_DamageTypeData Deserialize(GS_JsonElement elem)
 	{
-		if (!elem)	ThrowAbortException("GFDamageTypeData: Expected GFJsonElement, got null");
-		let obj = GFJsonObject(elem);
-		if (!obj)	ThrowAbortException("GFDamageTypeData: Expected GFJsonObject, got "..elem.GetClassName());
-		return new('GFDamageTypeData').ProcessObject(obj);
+		if (!elem)	ThrowAbortException("GS_DamageTypeData: Expected GS_JsonElement, got null");
+		let obj = GS_JsonObject(elem);
+		if (!obj)	ThrowAbortException("GS_DamageTypeData: Expected GS_JsonObject, got "..elem.GetClassName());
+		return new('GS_DamageTypeData').ProcessObject(obj);
 	}
 	
-	private GFDamageTypeData ProcessObject(GFJsonObject obj)
+	private GS_DamageTypeData ProcessObject(GS_JsonObject obj)
 	{
 		
 		return self;
@@ -25,7 +25,7 @@ Class GFDamageTypeData
 
 // Used for specifying how much damage a particular ghoul can do to a particular
 // enemy, and how much others can do to it. Includes damage types as well.
-Class GFDamageData
+Class GS_DamageData
 {
 	Name Thing;		// The thing to affect the damage around.
 	Name Ghoul;		// Ghoul this affects.
@@ -47,15 +47,15 @@ Class GFDamageData
 	//--------------------------------------------------------------------------
 	// Serialization functions
 	//--------------------------------------------------------------------------
-	static GFDamageData Deserialize(GFJsonElement elem)
+	static GS_DamageData Deserialize(GS_JsonElement elem)
 	{
-		if (!elem)	ThrowAbortException("GFDamageData: Expected GFJsonElement, got null");
-		let obj = GFJsonObject(elem);
-		if (!obj)	ThrowAbortException("GFDamageData: Expected GFJsonElement, got "..elem.GetClassName());
-		return new('GFDamageData').ProcessObject(obj);
+		if (!elem)	ThrowAbortException("GS_DamageData: Expected GS_JsonElement, got null");
+		let obj = GS_JsonObject(elem);
+		if (!obj)	ThrowAbortException("GS_DamageData: Expected GS_JsonElement, got "..elem.GetClassName());
+		return new('GS_DamageData').ProcessObject(obj);
 	}
 	
-	private GFDamageData ProcessObject(GFJsonObject obj)
+	private GS_DamageData ProcessObject(GS_JsonObject obj)
 	{
 		return self;
 	}

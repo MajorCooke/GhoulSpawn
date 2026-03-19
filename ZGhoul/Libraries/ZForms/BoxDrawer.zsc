@@ -9,20 +9,20 @@
 /// `Shape2DTransform`, so this also uses that to move them around.
 ///
 /// It then also handles drawing shapes when needed.
-struct GF_BoxDrawer ui {
+struct GS_BoxDrawer ui {
 	private Shape2D shape;
 	private Shape2DTransform transform;
 
 	private bool initialised;
 	private Vector2 lastPos;
 	private Vector2 lastSize;
-	private GF_BoxTextures lastTextures;
+	private GS_BoxTextures lastTextures;
 	private Vector2 lastScale;
 
 	/// Draws the [`ZF_BoxTextures`] in the context of `master`, changing the cached information if
 	/// necessary.
 	void draw(
-		GF_Element master, Vector2 pos, Vector2 size, GF_BoxTextures textures,
+		GS_Element master, Vector2 pos, Vector2 size, GS_BoxTextures textures,
 		bool animate, Vector2 scale = (1, 1)
 	) {
 		let absPos = master.relToScreen(pos) * master.getScale();
@@ -46,7 +46,7 @@ struct GF_BoxDrawer ui {
 		}
 		shape.setTransform(transform);
 		let texID = TexMan.checkForTexture(textures.getBoxTexture(), TexMan.Type_Any);
-		GF_AABB clipRect; master.getClipAABB(clipRect);
+		GS_AABB clipRect; master.getClipAABB(clipRect);
 		Screen.drawShape(
 			texID, animate, shape, DTA_Alpha, master.getDrawAlpha(),
 			DTA_ClipLeft, int(floor(clipRect.pos.x)),
@@ -119,7 +119,7 @@ struct GF_BoxDrawer ui {
 	}
 
 	private Shape2D calc(
-		GF_Element master, Vector2 size, GF_BoxTextures textures, Vector2 scale = (1, 1)
+		GS_Element master, Vector2 size, GS_BoxTextures textures, Vector2 scale = (1, 1)
 	) {
 		double screenScale = master.getScale();
 

@@ -21,12 +21,12 @@ The only upside is, he's the easiest ghoul to kill.
 Recommended Weapon: Rocket Launcher or Shotgun
 ==============================================================================*/
 
-Class GFCreeper : GFGhoulBase
+class GS_Creeper : GS_GhoulBase
 {
 	const ChanVoice = 400;
 	Default
 	{
-		GFGhoulBase.PainDelay 2;
+		GS_GhoulBase.PainDelay 2;
 		Health 400;
 		Height 16;
 		Radius 13;
@@ -42,15 +42,17 @@ Class GFCreeper : GFGhoulBase
 		+FORCERADIUSDMG
 		MaxSlopeSteepness 0;
 		Tag "Creeper";
-		Species "GFCreeper";
-		DamageType "CreeperBoo";
-		DamageFactor "Sjas", 0.6;
-		DamageFactor "Jitter", 0.2;
-		DamageFactor "CreeperBoo", 0.0;
+		Species "GS_Creeper";
 		SeeSound "GCreeper/Taunt";
 	//	ActiveSound "GCreeper/Chase";
 		PainSound "GCreeper/Pain";
 		DeathSound "GCreeper/Death";
+		
+		
+		DamageType "CreeperBoo";
+		DamageFactor "Sjas", 0.6;
+		DamageFactor "Jitter", 0.2;
+		DamageFactor "CreeperBoo", 0.0;
 	}
 	
 	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
@@ -94,8 +96,8 @@ Class GFCreeper : GFGhoulBase
 				if (st) SetState(st);				
 			}
 		}
-		
-		HandlePainSound(i, s, damage, mod, flags);
+		if (dmg > 0)
+			HandlePainSound(i, s, damage, mod, flags);
 		return dmg;
 	}
 	
@@ -134,7 +136,7 @@ Class GFCreeper : GFGhoulBase
 		if (!mo || mo == self || bKILLED)
 			return;
 			
-		let pop = GFCreeperPopup(Spawn("GFCreeperPopup", mo.pos, ALLOW_REPLACE));
+		let pop = GS_CreeperPopup(Spawn("GS_CreeperPopup", mo.pos, ALLOW_REPLACE));
 		if (pop)
 		{
 			pop.target = self;
@@ -163,13 +165,13 @@ Class GFCreeper : GFGhoulBase
 				}
 				*/
 				Peekaboo(target);
-				let it = GFGlobal.MakeBTIPos(pos, (128, 256));
+				let it = GS_Global.MakeBTIPos(pos, (128, 256));
 				Actor mo;
 				int count = 0;
 				while (it.Next())
 				{
 					mo = it.thing;
-					if (!mo || !mo.bSHOOTABLE || mo.bKILLED || (mo is 'GFGhoulBase') || (master && master == mo) || (mo is 'PlayerPawn'))
+					if (!mo || !mo.bSHOOTABLE || mo.bKILLED || (mo is 'GS_GhoulBase') || (master && master == mo) || (mo is 'PlayerPawn'))
 						continue;
 					Peekaboo(mo, true);
 					count++;
@@ -178,7 +180,7 @@ Class GFCreeper : GFGhoulBase
 		}
 		else
 		{
-			let mo = Spawn("GFCreeperball", Vec3Offset(0, 0, 10), ALLOW_REPLACE);
+			let mo = Spawn("GS_Creeperball", Vec3Offset(0, 0, 10), ALLOW_REPLACE);
 			if (mo)
 			{
 				mo.target = self;
@@ -250,7 +252,7 @@ Class GFCreeper : GFGhoulBase
 	{
 		if (Target is 'PlayerPawn')
 		{
-			let tr = new('GFCreeperTrace');
+			let tr = new('GS_CreeperTrace');
 			tr.to = self;
 			tr.from = target;
 			Vector3 dir;
@@ -388,7 +390,7 @@ Class GFCreeper : GFGhoulBase
 }
 
 //------------------------------------------------------------------------------	
-Class GFCreeperTrace : LineTracer
+class GS_CreeperTrace : LineTracer
 {
 	Actor from, to;
 	override ETraceStatus TraceCallback()
@@ -423,7 +425,7 @@ Class GFCreeperTrace : LineTracer
 }
 //------------------------------------------------------------------------------	
 
-Class GFCreeperPopup : Actor
+class GS_CreeperPopup : Actor
 {
 	const maxdiv = 4;
 	const _height = 56;
@@ -482,14 +484,14 @@ Class GFCreeperPopup : Actor
 			{
 				if (Tracer is 'PlayerPawn')
 					BOO();
-				Tracer.A_GiveInventory("GFCreeperImmunity",1);
+				Tracer.A_GiveInventory("GS_CreeperImmunity",1);
 				break;
 			}
 			Case 12:
 			{
 				if (killcheck && target && tracer)
 				{
-					let cr = GFCreeper(Target);
+					let cr = GS_Creeper(Target);
 					if (cr && !cr.bKILLED)	cr.GotEm();
 				}
 				break;
@@ -516,7 +518,7 @@ Class GFCreeperPopup : Actor
 	}
 }
 
-Class GFCreeperImmunity : PowerProtection
+class GS_CreeperImmunity : PowerProtection
 {
 	Default
 	{
@@ -526,7 +528,7 @@ Class GFCreeperImmunity : PowerProtection
 }
 
 const CreeperSlowDuration = 35;
-Class GFCreeperSlow : PowerSpeed
+class GS_CreeperSlow : PowerSpeed
 {
 	const MaxTime = 35 * 10;
 	Default
@@ -596,13 +598,13 @@ Class GFCreeperSlow : PowerSpeed
 	
 }
 
-Class GFCreeperBall : Actor
+class GS_CreeperBall : Actor
 {
 	int DmgMin, DmgMax;
 	Property Dmg: DmgMin, DmgMax;
 	Default
 	{
-		GFCreeperBall.Dmg 2, 4;
+		GS_CreeperBall.Dmg 2, 4;
 		Projectile;
 		+THRUSPECIES
 		+MTHRUSPECIES
@@ -613,7 +615,7 @@ Class GFCreeperBall : Actor
 		radius 6;
 		scale 0.6;
 		renderstyle "Add";
-		Species "GFCreeper";
+		Species "GS_Creeper";
 		seesound "GCreeper/Curse";
 		deathsound "GCreeper/Cursed";
 	//	obituary "%o was unlucky enough to be slow-deathed by a Creeper's balls." ;
@@ -631,9 +633,9 @@ Class GFCreeperBall : Actor
 		{
 			if ((!mo.bREFLECTIVE || bDONTREFLECT) && !mo.bINVULNERABLE)
 			{
-				let inv = 	GFCreeperSlow(mo.FindInventory("GFCreeperSlow"));
+				let inv = 	GS_CreeperSlow(mo.FindInventory("GS_CreeperSlow"));
 				if (inv)	inv.EffectTics += CreeperSlowDuration;
-				else		mo.A_GiveInventory("GFCreeperSlow",1);
+				else		mo.A_GiveInventory("GS_CreeperSlow",1);
 			}
 			if (mo.bFLOAT)
 				mo.DamageMobj(self, target, random[rng](DmgMin,DmgMax), Damagetype);
@@ -653,7 +655,7 @@ Class GFCreeperBall : Actor
 	{
 		if (trg)
 		{
-			if (trg is 'GFGhoulBase')
+			if (trg is 'GS_GhoulBase')
 				if (!trg.bBOSS)
 					dmg *= 10;
 			else if (trg.bISMONSTER)

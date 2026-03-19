@@ -7,7 +7,7 @@
 ///
 /// Note that this class is immutable. Once set, it can never be changed, so simply checking the
 /// pointer equality is enough to check if one has changed, for caching purposes.
-class GF_BoxTextures ui {
+class GS_BoxTextures ui {
 	/// Creates a box textures from a single texture.
 	///
 	/// Returns a box textures from a single texture named `tex`, without using the 9-slicing at
@@ -15,8 +15,8 @@ class GF_BoxTextures ui {
 	///
 	/// `scaleTex` being `true` makes the texture scale to grow larger or smaller, otherwise it
 	/// will repeat to fill the space
-	static GF_BoxTextures createSingleTexture(string tex, bool scaleTex) {
-		let ret = new('GF_BoxTextures');
+	static GS_BoxTextures createSingleTexture(string tex, bool scaleTex) {
+		let ret = new('GS_BoxTextures');
 
 		ret.setSingleTexture(tex);
 		ret.scaleMiddle = scaleTex;
@@ -31,11 +31,11 @@ class GF_BoxTextures ui {
 	///
 	/// `scaleSides` and `scaleMiddle` being true make the side and middle textures (respectively)
 	/// scale to grow larger or smaller, otherwise they will repeat to fit the space.
-	static GF_BoxTextures createTexturePixels(
+	static GS_BoxTextures createTexturePixels(
 		string boxTex, Vector2 topLeft, Vector2 bottomRight, bool scaleSides,
 		bool scaleMiddle
 	) {
-		let ret = new('GF_BoxTextures');
+		let ret = new('GS_BoxTextures');
 
 		ret.setTexturePixels(boxTex, topLeft, bottomRight);
 		ret.scaleSides = scaleSides;
@@ -55,11 +55,11 @@ class GF_BoxTextures ui {
 	///
 	/// `scaleSides` and `scaleMiddle` being true make the side and middle textures (respectively)
 	/// scale to grow larger or smaller, otherwise they will repeat to fit the space.
-	static GF_BoxTextures createTextureNormalized(
+	static GS_BoxTextures createTextureNormalized(
 		string boxTex, Vector2 topLeft, Vector2 bottomRight, bool scaleSides,
 		bool scaleMiddle
 	) {
-		let ret = new('GF_BoxTextures');
+		let ret = new('GS_BoxTextures');
 
 		ret.setTextureNormalized(boxTex, topLeft, bottomRight);
 		ret.scaleSides = scaleSides;

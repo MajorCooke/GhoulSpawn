@@ -1,15 +1,15 @@
-enum GFCustomDmgFlags
+enum GS_CustomDmgFlags
 {
 	DMG_INFO = 1 << 30
 };
 
-enum GFThrustFlags
+enum GS_ThrustFlags
 {
 	RADF_ALWAYSTHRUST = 	1 << 30,
 	RADF_NOFACTORTHRUST = 	1 << 31
 };
 
-enum GFExploFlags
+enum GS_ExploFlags
 {	
 	EXF_PARENT = 		1 << 0,
 	EXF_INVERSE =		1 << 1,
@@ -24,7 +24,7 @@ enum GFExploFlags
 	EXF_HITLEVEL = EXF_HITFLOOR|EXF_HITWALL|EXF_HITCEILING
 };
 
-Class GFGlobal play
+class GS_Global play
 {
 	//x = (((x - x_min) % (x_max - x_min)) + (x_max - x_min)) % (x_max - x_min) + x_min;
 	
@@ -156,7 +156,7 @@ Class GFGlobal play
 		
 	--------------------------------------------------------------------------*/
 	static double GetDamageFalloff(Actor bomb, Actor victim, double radius, double full, 
-		GFExploFlags flags)
+		GS_ExploFlags flags)
 	{
 		// No point running this when without something to trace towards.
 		if (!bomb || !victim || radius <= 0)		return 0.0;
@@ -189,7 +189,7 @@ Class GFGlobal play
 		// to ensure they're more affected than what GZDoom's code uses, which is
 		// the center. This also turns it radial instead of using a box.
 		
-		let trc = new('GFBoomTracer');
+		let trc = new('GS_BoomTracer');
 		trc.trg = victim;
 		
 		trc.Trace(bpos, bomb.cursector, APR, radius * 2, 0); // *2: Just to make sure it hits.
@@ -282,9 +282,9 @@ Class GFGlobal play
 	static int Explode(Actor bomb, Actor source, 
 		int damage = -1, int radius = -1, int full = 0, 
 		double thrust = -1, double trad = -1, int tfull = -1,
-		int flags = XF_HURTSOURCE, GFThrustFlags radflags = 0, 
+		int flags = XF_HURTSOURCE, GS_ThrustFlags radflags = 0, 
 		bool alert = false, Name DamageType = 'None', 
-		Class<Actor> filter = null, GFExploFlags eflags = EXF_PARENT|EXF_HITLEVEL|EXF_CENTERZ)
+		Class<Actor> filter = null, GS_ExploFlags eflags = EXF_PARENT|EXF_HITLEVEL|EXF_CENTERZ)
 	{
 		if (!bomb)	
 			return 0;
@@ -393,7 +393,7 @@ Class GFGlobal play
 				if (bomb.bOLDRADIUSDMG)		eflags |= EXF_2D;
 				if (flags & XF_NOTMISSILE)	eflags |= EXF_CENTERZ;
 			}
-			double falloff = GFGlobal.GetDamageFalloff(bomb, mo, double(radius), double(full), eflags);
+			double falloff = GS_Global.GetDamageFalloff(bomb, mo, double(radius), double(full), eflags);
 			dmg = int(round(dmg * mo.RadiusDamageFactor * falloff));
 			
 			// Bear in mind the division by mass GREATLY dilutes the thrusting
@@ -402,7 +402,7 @@ Class GFGlobal play
 			if (thrust > 0 && !mo.bDONTTHRUST && (!bomb.bNODAMAGETHRUST || (tflags & RADF_NODAMAGE)))
 			{
 				double newthrust = thrust;
-				double tfall = GFGlobal.GetDamageFalloff(bomb, mo, double(trad), double(tfull), eflags);
+				double tfall = GS_Global.GetDamageFalloff(bomb, mo, double(trad), double(tfull), eflags);
 				if (DamageAsVel)
 					newthrust = double(dmg * thrustmul);
 				
@@ -557,7 +557,7 @@ Class GFGlobal play
 		}
 		if (!(caller.vel ~== (0,0,0)))
 			caller.A_FaceMovementDirection();
-		GFGlobal.StaticTurnAng(caller, caller.tracer, angl, heightoffset, true, flags);
+		GS_Global.StaticTurnAng(caller, caller.tracer, angl, heightoffset, true, flags);
 	}
 	
 	//--------------------------------------------------------------------------
@@ -606,7 +606,7 @@ Class GFGlobal play
 	}
 }
 
-Class GFBoomTracer : LineTracer
+class GS_BoomTracer : LineTracer
 {
 	Actor trg;
 	bool HitFloor, HitWall, HitCeiling;
@@ -655,12 +655,12 @@ Class GFBoomTracer : LineTracer
 	}
 }
 
-mixin class GFLightMixin
+mixin class GS_LightMixin
 {
 	
 }
 
-class GFGLLight : Thinker
+class GS_GLLight : Thinker
 {
 	private Actor mo;
 	private Name cname;
@@ -668,12 +668,12 @@ class GFGLLight : Thinker
 	private Vector2 size;
 	private int time, stime;
 	private double div;
-	static GFGLLight SetLightAnim(Actor mo, Name cname, Color cstart, Color cend, Vector2 csize, int ctime)
+	static GS_GLLight SetLightAnim(Actor mo, Name cname, Color cstart, Color cend, Vector2 csize, int ctime)
 	{
 		if (!mo || cname == '' || cname == 'None' || csize ~== (0,0) || ctime < 1)
 			return null;
 			
-		let gl = new('GFGLLight');
+		let gl = new('GS_GLLight');
 		if (gl) gl.InitLight(mo, cname, cstart, cend, csize, ctime);
 		return gl;
 	}
@@ -714,11 +714,11 @@ class GFGLLight : Thinker
 		{	// Do this backwards since the steps are going from 1.0 to 0.0.
 			Vector3 c1 = (end.r, end.g, end.b),
 					c2 = (start.r, start.g, start.b),
-					cc = GFGlobal.lerpVec3(c1, c2, step);
+					cc = GS_Global.lerpVec3(c1, c2, step);
 			cf = VecToCol(cc);
 			
 		}		
-		double sc = (size.x ~== size.y) ? size.x : GFGlobal.LerpDouble(size.y, size.x, step);
+		double sc = (size.x ~== size.y) ? size.x : GS_Global.LerpDouble(size.y, size.x, step);
 		
 		mo.A_AttachLight(cname, 
 			DynamicLight.PointLight,

@@ -24,7 +24,7 @@ health pool, but isn't hard to evade.
 Recommended Weapon: BFG 9000
 ==============================================================================*/
 
-Class GFSoulHarvester : GFGhoulBase abstract
+class GS_SoulHarvester : GS_GhoulBase abstract
 {
 	Default
 	{

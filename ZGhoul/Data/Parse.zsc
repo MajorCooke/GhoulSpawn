@@ -3,10 +3,10 @@
 // This is where all the primary parsing takes place. This reads in and processes
 // all data, and then sends it off for other areas to handle them.
 
-extend Class GFEventStatic
+extend Class GS_EventStatic
 {
 //	ExampleOptions example_data;
-	private GFData JData;
+	private GS_Data JData;
 	override void OnRegister() //ParseJSON()
 	{
 		if (JData)	JData.Destroy();
@@ -14,7 +14,7 @@ extend Class GFEventStatic
 		
 		// Search all files named GHOUSPWN.json after clearing all previous data.
 		String lname = "GHOUSPWN.json";
-		Array<GFData> datas;
+		Array<GS_Data> datas;
 		int lump = 0;
 		
 		
@@ -23,15 +23,15 @@ extend Class GFEventStatic
 			lump = Wads.FindLumpFullName(lname, lump);
 			if (lump < 0)	break;
 			
-			GFJsonElementOrError data = GFJSON.Parse(Wads.ReadLump(lump),false);
-			if (data is 'GFJsonError') // Parser detected an error with syntax.
+			GS_JsonElementOrError data = GS_JSON.Parse(Wads.ReadLump(lump),false);
+			if (data is 'GS_JsonError') // Parser detected an error with syntax.
 			{
-				ThrowAbortException(""..WADs.GetLumpFullPath(lump)..": "..GFJsonError(data).what);
+				ThrowAbortException(""..WADs.GetLumpFullPath(lump)..": "..GS_JsonError(data).what);
 				return;
 			}
-			else if (data is 'GFJsonElement') // Found good data, open it up.
+			else if (data is 'GS_JsonElement') // Found good data, open it up.
 			{
-				let dat = GFData.Deserialize(GFJsonElement(data));
+				let dat = GS_Data.Deserialize(GS_JsonElement(data));
 				if (dat)
 				{
 					if (dat.ModID == 'GhoulSpawn')
@@ -64,7 +64,7 @@ extend Class GFEventStatic
 		}
 	}
 	
-	private void HandleAddon(GFData data)
+	private void HandleAddon(GS_Data data)
 	{
 		if (!data)	return;
 		
@@ -73,14 +73,14 @@ extend Class GFEventStatic
 
 // These are a bunch of wrapper functions to avoid copy/pasting over and over again.
 /*
-enum EGFErrType
+enum EGS_ErrType
 {
-	GFErr_None = 0,
-	GFErr_Warn,
-	GFErr_Abort,
-	GFErr_AbortWrongType, // Only abort on wrong types, not nulls.
+	GS_Err_None = 0,
+	GS_Err_Warn,
+	GS_Err_Abort,
+	GS_Err_AbortWrongType, // Only abort on wrong types, not nulls.
 	
-	GFErr_Default = GFErr_None
+	GS_Err_Default = GFErr_None
 };
 
 Class GFGlobalParser

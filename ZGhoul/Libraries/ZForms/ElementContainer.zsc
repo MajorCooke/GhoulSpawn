@@ -4,7 +4,7 @@
 /// element that contains elements, see [`ZF_Frame`].
 ///
 /// This handles drawing each element, calling their tickers, etc.
-class GF_ElementContainer : GF_Element {
+class GS_ElementContainer : GS_Element {
 	/// The elements that belong to this element container.
 	///
 	/// Elements later in the array are drawn on top of earlier ones.
@@ -12,7 +12,7 @@ class GF_ElementContainer : GF_Element {
 	/// Note that some care must be taken when adding to this - you must set the pushed element's
 	/// [`master`](ZF_Element.master) pointer to be equal to the element container that contains
 	/// it.
-	protected Array<GF_Element> elements;
+	protected Array<GS_Element> elements;
 
 	override bool handleBack() {
 		let ret = false;
@@ -32,10 +32,10 @@ class GF_ElementContainer : GF_Element {
 		}
 	}
 
-	private void drawFocusIndicator(GF_ElementTreeGlobal globalStore) {
+	private void drawFocusIndicator(GS_ElementTreeGlobal globalStore) {
 		if (globalStore.focusIndicator == NULL) return;
 
-		GF_AABB beforeClip;
+		GS_AABB beforeClip;
 		getClipAABB(beforeClip);
 		Screen.clearClipRect();
 
@@ -52,10 +52,10 @@ class GF_ElementContainer : GF_Element {
 		if (hidden) { return; }
 
 		// stuff in the frame shouldn't draw outside the frame
-		GF_AABB beforeClip; getClipAABB(beforeClip);
+		GS_AABB beforeClip; getClipAABB(beforeClip);
 		if (master != NULL) {
-			GF_AABB clipCoords; boxToScreen(clipCoords);
-			GF_AABB screenClip;
+			GS_AABB clipCoords; boxToScreen(clipCoords);
+			GS_AABB screenClip;
 			screenClip.size = screenSize();
 			clipCoords.rectOfIntersection(clipCoords, screenClip);
 
@@ -72,7 +72,7 @@ class GF_ElementContainer : GF_Element {
 		}
 
 		if (!top) {
-			if (master == NULL && globalStore.focusPriority == GF_FocusPriority_AboveAll) {
+			if (master == NULL && globalStore.focusPriority == GS_FocusPriority_AboveAll) {
 				drawFocusIndicator(globalStore);
 			}
 		}
@@ -118,7 +118,7 @@ class GF_ElementContainer : GF_Element {
 		drawerInternal(true);
 	}
 	
-	override bool onNavEvent(GF_NavEventType type, bool fromController) {
+	override bool onNavEvent(GS_NavEventType type, bool fromController) {
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			let elem = elements[i];
 			if (elem != NULL && !elem.hidden) {
@@ -129,7 +129,7 @@ class GF_ElementContainer : GF_Element {
 		return false;
 	}
 
-	override bool onUIEventPriority(GF_UiEvent ev) {
+	override bool onUIEventPriority(GS_UiEvent ev) {
 		let mousePos = getGlobalStore().mousePos;
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			let elem = elements[i];
@@ -141,7 +141,7 @@ class GF_ElementContainer : GF_Element {
 		return false;
 	}
 
-	override bool onUIEvent(GF_UiEvent ev) {
+	override bool onUIEvent(GS_UiEvent ev) {
 		let mousePos = getGlobalStore().mousePos;
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			let elem = elements[i];

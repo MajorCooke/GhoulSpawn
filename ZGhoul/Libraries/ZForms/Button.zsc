@@ -8,11 +8,11 @@
 ///
 /// Also see the documentation for [`ZF_ButtonBase`] as a lot of button things are documented
 /// there.
-class GF_Button : GF_ButtonBase {
+class GS_Button : GS_ButtonBase {
 	private void config(
-		string text = "", GF_Handler cmdHandler = NULL, Name command = '',
-		GF_BoxTextures inactive = NULL, GF_BoxTextures hover = NULL,
-		GF_BoxTextures click = NULL, GF_BoxTextures disabled = NULL,
+		string text = "", GS_Handler cmdHandler = NULL, Name command = '',
+		GS_BoxTextures inactive = NULL, GS_BoxTextures hover = NULL,
+		GS_BoxTextures click = NULL, GS_BoxTextures disabled = NULL,
 		Font fnt = NULL, double textScale = 1, int textColor = Font.CR_WHITE,
 		int holdInterval = -1, AlignType alignment = AlignType_Center
 	) {
@@ -47,13 +47,13 @@ class GF_Button : GF_ButtonBase {
 	/// on button clicks. Otherwise, if `holdInterval` is `>= 0`, then a
 	/// [`ZF_Handler.buttonHeldCommand`] is sent every `holdInterval + 1`
 	/// ticks.
-	static GF_Button create(
-		Vector2 pos, Vector2 size, string text = "", GF_Handler cmdHandler = NULL, Name command = '',
-		GF_BoxTextures inactive = NULL, GF_BoxTextures hover = NULL, GF_BoxTextures click = NULL,
-		GF_BoxTextures disabled = NULL, Font fnt = NULL, double textScale = 1, int textColor = Font.CR_WHITE,
+	static GS_Button create(
+		Vector2 pos, Vector2 size, string text = "", GS_Handler cmdHandler = NULL, Name command = '',
+		GS_BoxTextures inactive = NULL, GS_BoxTextures hover = NULL, GS_BoxTextures click = NULL,
+		GS_BoxTextures disabled = NULL, Font fnt = NULL, double textScale = 1, int textColor = Font.CR_WHITE,
 		int holdInterval = -1, AlignType alignment = AlignType_Center
 	) {
-		let ret = new('GF_Button');
+		let ret = new('GS_Button');
 
 		ret.config(text, cmdHandler, command, inactive, hover, click, disabled, fnt, textScale, textColor, holdInterval, alignment);
 		ret.setBox(pos, size);
@@ -99,7 +99,7 @@ class GF_Button : GF_ButtonBase {
 	}
 
 	override bool handleMousePosition(bool mouseBlock, Vector2 mousePos) {
-		GF_AABB screenBox; boxToScreen(screenBox);
+		GS_AABB screenBox; boxToScreen(screenBox);
 		if (!isEnabled()) {
 			curButtonState = ButtonState_Disabled;
 		}
@@ -114,19 +114,19 @@ class GF_Button : GF_ButtonBase {
 		return false;
 	}
 
-	override bool onNavEvent(GF_NavEventType type, bool fromController) {
-		if (isEnabled() && isFocused() && type == GF_NavEventType_Confirm && holdTicInterval == -1) {
+	override bool onNavEvent(GS_NavEventType type, bool fromController) {
+		if (isEnabled() && isFocused() && type == GS_NavEventType_Confirm && holdTicInterval == -1) {
 			if (cmdHandler != NULL) cmdHandler.buttonClickCommand(self, command);
 			return true;
 		}
 		return false;
 	}
 
-	override bool onUIEvent(GF_UiEvent ev) {
+	override bool onUIEvent(GS_UiEvent ev) {
 		// if the player's clicked, and their mouse is in the right place, set the state accordingly
 		if (ev.type == UIEvent.Type_LButtonDown) {
 			let mousePos = getGlobalStore().mousePos;
-			GF_AABB screenBox; boxToScreen(screenBox);
+			GS_AABB screenBox; boxToScreen(screenBox);
 			if (!mouseBlock && isEnabled() && screenBox.pointCollides(mousePos)) {
 				if (cmdHandler && holdTicInterval >= 0) {
 					cmdHandler.buttonClickCommand(self, command);
@@ -139,7 +139,7 @@ class GF_Button : GF_ButtonBase {
 		// if the player's releasing, check if their mouse is still in the correct range and trigger method if it was
 		else if (ev.type == UIEvent.Type_LButtonUp) {
 			let mousePos = getGlobalStore().mousePos;
-			GF_AABB screenBox; boxToScreen(screenBox);
+			GS_AABB screenBox; boxToScreen(screenBox);
 			if (!isEnabled()) {
 				curButtonState = ButtonState_Disabled;
 			}

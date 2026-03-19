@@ -1,13 +1,13 @@
-Class GFTraitClass
+Class GS_TraitClass
 {
 	Class<Actor> mo;
 	bool parent;
 }
 
-Class GFTraitReq
+Class GS_TraitReq
 {
 	Name TraitBase;
-	GFTraitData Defs;
+	GS_TraitData Defs;
 	int Power[2];
 	
 	void Init()
@@ -20,7 +20,7 @@ Class GFTraitReq
 }
 
 // Base definition of all traits and what to give them
-Class GFTraitData
+Class GS_TraitData
 {
 	internal readonly Name ID;				// Name of trait
 	internal readonly Name Tag;				// Nice name
@@ -29,15 +29,15 @@ Class GFTraitData
 	internal readonly String Icon;			// graphic file name
 	internal readonly TextureID tex;			// texture used by VisualThinkers if enabled
 	internal readonly double Chance[2];		// [0] / [1] chance - defaults to 20 / 100 or 20% chance to apply on spawn
-	internal readonly EGFTraitRank Rank;		// see ZGhoul/Constants.zsc
+	internal readonly EGS_TraitRank Rank;		// see ZGhoul/Constants.zsc
 	internal readonly Array<Name> Items;		// Name of items to give, if any.
 	internal readonly Array<Name> Behaviors;	// Name of behaviors to apply
 	
-	internal readonly Array<GFTraitClass> Classes; // Applicable classes, with parent check.
+	internal readonly Array<GS_TraitClass> Classes; // Applicable classes, with parent check.
 //	internal readonly bool Blacklist;			// Classes is a blacklist if true (default: false)
 	internal readonly int LevelReq[2];	// [min, max] range a ghoul level must be to gain it
 	internal readonly int MaxPower;			// How many levels this trait has
-	internal readonly Map<Name, GFTraitReq> Reqs; // Required traits for this to apply.
+	internal readonly Map<Name, GS_TraitReq> Reqs; // Required traits for this to apply.
 	
 	void Init()
 	{
@@ -62,7 +62,7 @@ Class GFTraitData
 	clearscope String GetDescription() const { return Desc; }
 	clearscope String GetIconString() const { return Icon; }
 	clearscope TextureID GetIconTex() const { return tex; }
-	clearscope EGFTraitRank GetRank() const { return Rank; }
+	clearscope EGS_TraitRank GetRank() const { return Rank; }
 	clearscope double GetChance() const { return Chance[0] / Chance[1]; }
 	clearscope int, int GetLevelReq() const { return LevelReq[0], LevelReq[1]; }
 	clearscope int GetMaxTraitLevel() const { return Cap; }
@@ -70,13 +70,13 @@ Class GFTraitData
 //	clearscope bool IsBlacklist() const { return Blacklist; }
 	
 	
-	private bool PCheckClass(Class<Actor> mo, GFTraitClass cls) const
+	private bool PCheckClass(Class<Actor> mo, GS_TraitClass cls) const
 	{
 		if (!mo || !cls)	return false;
 		return (cls && (mo == cls.mo || (cls.parent && (mo is cls.mo))));
 	}
 	
-	private GFTraitClass GetClassMatch(Class<Actor> mo, bool noparent = false) const
+	private GS_TraitClass GetClassMatch(Class<Actor> mo, bool noparent = false) const
 	{
 		if (!mo || Classes.Size() < 1)	return null;
 		foreach (cls : Classes)
@@ -122,9 +122,9 @@ Class GFTraitData
 	
 	protected void AddClass(Class<Actor> mo, bool parent = false)
 	{
-		if (!mo || mo == 'GFGhoulBase')	return;
+		if (!mo || mo == 'GS_GhoulBase')	return;
 		if (CheckClassMatch(mo))		return;
-		let cl = new('GFTraitClass');
+		let cl = new('GS_TraitClass');
 		cl.mo = mo;
 		cl.parent = parent;
 		Classes.Push(cl);
@@ -153,24 +153,24 @@ Class GFTraitData
 	//--------------------------------------------------------------------------
 	// Serialization functions
 	//--------------------------------------------------------------------------
-	static GFTraitData Deserialize(GFJsonElement elem)
+	static GS_TraitData Deserialize(GS_JsonElement elem)
 	{
-		if (!elem)	ThrowAbortException("GFTraitData: Expected a GFJsonObject, got null");
+		if (!elem)	ThrowAbortException("GS_TraitData: Expected a GS_JsonObject, got null");
 		
-		let obj = GFJsonObject(elem);
-		if (!obj)	ThrowAbortException("GFTraitData: Expected a GFJsonObject, got "..elem.GetClassName());
-		return new('GFTraitData').ProcessObject(obj);
+		let obj = GS_JsonObject(elem);
+		if (!obj)	ThrowAbortException("GS_TraitData: Expected a GS_JsonObject, got "..elem.GetClassName());
+		return new('GS_TraitData').ProcessObject(obj);
 	}
 	
-	private GFTraitData ProcessObject(GFJsonObject obj)
+	private GS_TraitData ProcessObject(GS_JsonObject obj)
 	{
 		Init();
 		// for string lookups. handles _name, _desc, _icon and _long.
 		let eStr = obj.Get("langstr");
 		if (eStr)
 		{
-			let sStr = GFJsonString(eStr);
-			if (!sStr)	ThrowAbortException("GFTraitData: Expected 'langstr' as string, got "..eName.GetClassName());
+			let sStr = GS_JsonString(eStr);
+			if (!sStr)	ThrowAbortException("GS_TraitData: Expected 'langstr' as string, got "..eName.GetClassName());
 			
 			String s = sStr.s; s.MakeUpper(); 
 			bool prefix = (s.IndexOf("$") == 0);
@@ -182,41 +182,41 @@ Class GFTraitData
 			LDesc = StringTable.Localize(s.."_LONG", prefix);
 		}
 		
-		GFJsonElement eBase = obj.Get("base");
+		GS_JsonElement eBase = obj.Get("base");
 		if (!eBase)
 		{
 			if (id == '' || id == ' ' || id == 'None')
-				ThrowAbortException("GFTraitData: 'base' is missing from a trait or is not lowercase!");
+				ThrowAbortException("GS_TraitData: 'base' is missing from a trait or is not lowercase!");
 		}
 		else
 		{
-			let sBase = GFJsonString(eBase);
-			if (!sBase)	ThrowAbortException("GFTraitData: Expected 'base' as string, got "..eBase.GetClassName());
+			let sBase = GS_JsonString(eBase);
+			if (!sBase)	ThrowAbortException("GS_TraitData: Expected 'base' as string, got "..eBase.GetClassName());
 			ID = sBase.s;
 		}
 		
-		GFJsonElement eName = obj.Get("name");
+		GS_JsonElement eName = obj.Get("name");
 		if (eName)
 		{
-			let str = GFJsonString(eName);
-			if (!str) ThrowAbortException("GFTraitData: Expected 'name' as string, got "..eName.GetClassName());
+			let str = GS_JsonString(eName);
+			if (!str) ThrowAbortException("GS_TraitData: Expected 'name' as string, got "..eName.GetClassName());
 			Tag = str.s;
 		}
 		else Tag = ID;
 		
-		GFJsonElement eDesc = obj.Get("desc");
+		GS_JsonElement eDesc = obj.Get("desc");
 		if (eDesc)
 		{
-			let sDesc = GFJsonString(eDesc);
-			if (!sDesc)	ThrowAbortException("GFTraitData: Expected 'desc' as string, got "..eDesc.GetClassName());
+			let sDesc = GS_JsonString(eDesc);
+			if (!sDesc)	ThrowAbortException("GS_TraitData: Expected 'desc' as string, got "..eDesc.GetClassName());
 			Desc = sDesc.s;
 		}
 		
-		GFJsonElement eIcon = obj.Get("icon");
+		GS_JsonElement eIcon = obj.Get("icon");
 		if (eIcon)
 		{
-			let sIcon = GFJsonString(eIcon);
-			if (!sIcon)	ThrowAbortException("GFTraitData: Expected 'icon' as string, got "..eDesc.GetClassName());
+			let sIcon = GS_JsonString(eIcon);
+			if (!sIcon)	ThrowAbortException("GS_TraitData: Expected 'icon' as string, got "..eDesc.GetClassName());
 			if (sIcon.s.Length() > 0)
 			{
 				Icon = sIcon.s;
@@ -230,32 +230,32 @@ Class GFTraitData
 			}
 		}
 		
-		GFJsonElement eLong = obj.Get("long");
+		GS_JsonElement eLong = obj.Get("long");
 		if (eLong)
 		{
-			let sLong = GFJsonString(eLong);
-			if (!sLong)	ThrowAbortException("GFTraitData: Expected 'long' as string, got "..eDesc.GetClassName());
+			let sLong = GS_JsonString(eLong);
+			if (!sLong)	ThrowAbortException("GS_TraitData: Expected 'long' as string, got "..eDesc.GetClassName());
 			LDesc = sLong.s;
 		}
 		
 		// 'chance' array<double/int>, double or int vars
-		GFJsonElement eChance = obj.Get("chance");
+		GS_JsonElement eChance = obj.Get("chance");
 		if (eChance)
 		{
-			if (eChance is 'GFJsonArray')
+			if (eChance is 'GS_JsonArray')
 			{
-				let carr = GFJsonArray(eChance);
+				let carr = GS_JsonArray(eChance);
 				for (uint i = 0; i < carr.Size(); i++)
 				{
 					if (i > 1)	break;
 					let ele = carr.Get(i);
-					let jd = GFJsonDouble(ele);
+					let jd = GS_JsonDouble(ele);
 					if (jd)
 					{
 						Chance[i] = jd.AsDouble();
 						continue;
 					}
-					let ji = GFJsonInt(ele);
+					let ji = GS_JsonInt(ele);
 					if (ji)
 					{
 						Chance[i] = ji.AsDouble();
@@ -264,48 +264,48 @@ Class GFTraitData
 					
 					// Not an int or double so abort everything.
 					
-					String s = "GFTraitData: Expected 'chance' array members to be int or double, got ";
+					String s = "GS_TraitData: Expected 'chance' array members to be int or double, got ";
 					if (ele)	s = s..ele.GetClassName();
 					else		s = s.." null";
 					ThrowAbortException(s);
 					return null;
 				}
 			}
-			else if (eChance is 'GFJsonDouble')
+			else if (eChance is 'GS_JsonDouble')
 			{
-				let cval = GFJsonDouble(eChance);
+				let cval = GS_JsonDouble(eChance);
 				Chance[0] = cval.AsDouble();
 			}
-			else if (eChance is 'GFJsonInt')
+			else if (eChance is 'GS_JsonInt')
 			{
-				let cval = GFJsonInt(eChance);
+				let cval = GS_JsonInt(eChance);
 				Chance[0] = cval.AsDouble();
 			}
-			else	ThrowAbortException("GFTraitData: Expected 'chance' as int, double or int/double array, got "..eDesc.GetClassName());
+			else	ThrowAbortException("GS_TraitData: Expected 'chance' as int, double or int/double array, got "..eDesc.GetClassName());
 		}
 		
 		// 'rank'
-		GFJsonElement elem = obj.Get("rank");
+		GS_JsonElement elem = obj.Get("rank");
 		if (elem)
 		{
-			let num = GFJsonInt(elem);
-			if (!num) ThrowAbortException("GFTraitData: Expected 'rank' as int, got "..elem.GetClassName());
-			Rank = Clamp(num.AsInt(), GFTR_NORMAL, GFTR_LEGENDARY);
+			let num = GS_JsonInt(elem);
+			if (!num) ThrowAbortException("GS_TraitData: Expected 'rank' as int, got "..elem.GetClassName());
+			Rank = Clamp(num.AsInt(), GSTR_NORMAL, GSTR_LEGENDARY);
 		}
 		
 		// 'items' array (can be inventory OR behaviors!)
-		GFJsonElement eItems = obj.Get("items");
+		GS_JsonElement eItems = obj.Get("items");
 		if (eItems)
 		{
-			if (!(eItems is 'GFJsonArray'))
-				ThrowAbortException("GFTraitData: Expected 'items' as string array, got "..eItems.GetClassName());
+			if (!(eItems is 'GS_JsonArray'))
+				ThrowAbortException("GS_TraitData: Expected 'items' as string array, got "..eItems.GetClassName());
 			
-			let arr = GFJsonArray(eItems);
+			let arr = GS_JsonArray(eItems);
 			
 			for (uint i = 0; i < arr.Size(); i++)
 			{
-				let sid = GFJsonString(arr.Get(i));
-				if (!sid)	ThrowAbortException("GFTraitData: 'items' array members are strings only");
+				let sid = GS_JsonString(arr.Get(i));
+				if (!sid)	ThrowAbortException("GS_TraitData: 'items' array members are strings only");
 				if (FindClass(sid.s, 'Inventory'))	Items.Push(sid.s);
 				if (FindClass(sid.s, 'Behavior'))	Behaviors.Push(sid.s);
 			}
@@ -314,20 +314,20 @@ Class GFTraitData
 		elem = obj.Get("maxpower");
 		if (elem)
 		{
-			let num = GFJsonInt(elem);
-			if (!num) ThrowAbortException("GFTraitData: Expected 'cap' as int, got "..elem.GetClassName());
+			let num = GS_JsonInt(elem);
+			if (!num) ThrowAbortException("GS_TraitData: Expected 'cap' as int, got "..elem.GetClassName());
 			cap = Max(1, num.AsInt());
 		}
 		
 		elem = obj.Get("classes");
 		if (elem)
 		{
-			let arr = GFJsonArray(elem);
-			if (!arr) ThrowAbortException("GFTraitData: Expected 'classes' as string array, got "..elem.GetClassName());
+			let arr = GS_JsonArray(elem);
+			if (!arr) ThrowAbortException("GS_TraitData: Expected 'classes' as string array, got "..elem.GetClassName());
 			for (uint i = 0; i < arr.Size(); i++)
 			{
-				let str = GFJsonString(arr.Get(i));
-				if (!str) ThrowAbortException("GFTraitData: Expected 'classes' as strings only: check member #%d", i);
+				let str = GS_JsonString(arr.Get(i));
+				if (!str) ThrowAbortException("GS_TraitData: Expected 'classes' as strings only: check member #%d", i);
 				HandleClass(str.s);
 			}
 		}
@@ -335,24 +335,24 @@ Class GFTraitData
 		elem = obj.Get("levelreq");
 		if (elem)
 		{
-			if (elem is 'GFJsonInt')
+			if (elem is 'GS_JsonInt')
 			{
-				let num = GFJsonInt(elem);
+				let num = GS_JsonInt(elem);
 				
 				LevelReq[0] = Max(0, num.AsInt());
 			}
-			else if (elem is 'GFJsonArray')
+			else if (elem is 'GS_JsonArray')
 			{
-				let arr = GFJsonArray(elem);
+				let arr = GS_JsonArray(elem);
 				for (uint i = 0; i < arr.Size(); i++)
 				{
 					if (i > 1)	break;
-					let num = GFJsonInt(arr.Get(i));
-					if (!num) ThrowAbortException("GFTraitData: 'levelreq' members are int only");
+					let num = GS_JsonInt(arr.Get(i));
+					if (!num) ThrowAbortException("GS_TraitData: 'levelreq' members are int only");
 					LevelReq[i] = Max(0, num.AsInt());
 				}
 			}
-			else ThrowAbortException("GFTraitData: Expected 'levelreq' as int array/variable, got "..elem.GetClassName());
+			else ThrowAbortException("GS_TraitData: Expected 'levelreq' as int array/variable, got "..elem.GetClassName());
 			
 		}
 		

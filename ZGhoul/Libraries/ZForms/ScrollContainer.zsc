@@ -1,10 +1,10 @@
 /// An element which adds a scrollbar to any other element, defaulting to a
 /// [frame](ZF_Frame).
-class GF_ScrollContainer : GF_ElementContainer {
+class GS_ScrollContainer : GS_ElementContainer {
 	private void config(
 		double scrollWidth, double scrollAreaHeight, double scrollNotchJump,
-		GF_BoxTextures scrollBarNormal, GF_BoxTextures scrollBarHover = NULL,
-		GF_BoxTextures scrollBarClick = NULL, GF_BoxTextures scrollBg = NULL,
+		GS_BoxTextures scrollBarNormal, GS_BoxTextures scrollBarHover = NULL,
+		GS_BoxTextures scrollBarClick = NULL, GS_BoxTextures scrollBg = NULL,
 		double contentBarGap = 0.0
 	) {
 		self.scrollAreaHeight = max(scrollAreaHeight, box.size.y);
@@ -39,24 +39,24 @@ class GF_ScrollContainer : GF_ElementContainer {
 	/// unclicked, the handle will be drawn using `scrollBarNormal`. When
 	/// unclicked but hovered, the handle will be drawn using `scrollBarHover`.
 	/// When clicked, the handle will be drawn using `scrollBarClick`.
-	static GF_ScrollContainer create(
+	static GS_ScrollContainer create(
 		Vector2 pos, Vector2 size,
 		double scrollWidth, double scrollAreaHeight, double scrollNotchJump,
-		GF_BoxTextures scrollBarNormal, GF_BoxTextures scrollBarHover = NULL,
-		GF_BoxTextures scrollBarClick = NULL, GF_BoxTextures scrollBg = NULL,
-		GF_Element scrollArea = NULL, double contentBarGap = 0.0
+		GS_BoxTextures scrollBarNormal, GS_BoxTextures scrollBarHover = NULL,
+		GS_BoxTextures scrollBarClick = NULL, GS_BoxTextures scrollBg = NULL,
+		GS_Element scrollArea = NULL, double contentBarGap = 0.0
 	) {
-		let ret = new('GF_ScrollContainer');
+		let ret = new('GS_ScrollContainer');
 
 		ret.setBox(pos, size);
 
 		if (scrollArea == NULL) {
-			ret.scrollArea = GF_Frame.create((0, 0), (0, 0));
+			ret.scrollArea = GS_Frame.create((0, 0), (0, 0));
 		}
 		else {
 			ret.scrollArea = scrollArea;
 		}
-		ret.bar = GF_Scrollbar.create((0, 0), (0, 0), NULL, NULL);
+		ret.bar = GS_Scrollbar.create((0, 0), (0, 0), NULL, NULL);
 
 		ret.config(scrollWidth, scrollAreaHeight, scrollNotchJump, scrollBarNormal, scrollBarHover, scrollBarClick, scrollBg, contentBarGap);
 		ret.elements.push(ret.bar);
@@ -67,27 +67,27 @@ class GF_ScrollContainer : GF_ElementContainer {
 		return ret;
 	}
 
-	private GF_Element scrollArea;
+	private GS_Element scrollArea;
 	/// Returns the wrapped scroll area element so that it can be read from or
 	/// modified.
-	GF_Element getScrollArea() { return scrollArea; }
-	private GF_Scrollbar bar;
+	GS_Element getScrollArea() { return scrollArea; }
+	private GS_Scrollbar bar;
 
 	private double scrollWidth;
 	private double scrollAreaHeight;
 	private double scrollNotchJump;
 	private double contentBarGap;
 
-	override bool onNavEvent(GF_NavEventType type, bool fromController) {
+	override bool onNavEvent(GS_NavEventType type, bool fromController) {
 		if (isFocused() && isEnabled()) {
 			switch (type) {
-			case GF_NavEventType_Down: {
+			case GS_NavEventType_Down: {
 				let oldPos = bar.position;
 				bar.position += scrollNotchJump / scrollAreaHeight;
 				bar.clampBarPos();
 				return bar.position != oldPos;
 			}
-			case GF_NavEventType_Up: {
+			case GS_NavEventType_Up: {
 				let oldPos = bar.position;
 				bar.position -= scrollNotchJump / scrollAreaHeight;
 				bar.clampBarPos();
@@ -98,11 +98,11 @@ class GF_ScrollContainer : GF_ElementContainer {
 		return Super.onNavEvent(type, fromController);
 	}
 
-	override bool onUIEvent(GF_UiEvent ev) {
+	override bool onUIEvent(GS_UiEvent ev) {
 		if (Super.onUIEvent(ev)) return true;
 		let mousePos = getGlobalStore().mousePos;
 		if (ev.type == UiEvent.Type_WheelDown || ev.type == UiEvent.Type_WheelUp) {
-			GF_AABB screenBox; boxToScreen(screenBox);
+			GS_AABB screenBox; boxToScreen(screenBox);
 			if (isEnabled() && screenBox.pointCollides(mousePos)) {
 				let dir = ev.type == UiEvent.Type_WheelDown ? 1.0 : -1.0;
 				let oldPos = bar.position;

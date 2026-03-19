@@ -1,14 +1,14 @@
-class GFJsonElementOrError {}
+class GS_JsonElementOrError {}
 
-class GFJsonElement : GFJsonElementOrError abstract
+class GS_JsonElement : GS_JsonElementOrError abstract
 {
 	abstract string Serialize();
 	abstract string GetPrettyName();
 }
 
-class GFJsonNumber : GFJsonElement abstract
+class GS_JsonNumber : GS_JsonElement abstract
 {
-	abstract GFJsonNumber Negate();
+	abstract GS_JsonNumber Negate();
 	abstract double  asDouble();
 	abstract int asInt();
 	
@@ -18,17 +18,17 @@ class GFJsonNumber : GFJsonElement abstract
 	}
 }
 
-class GFJsonInt : GFJsonNumber
+class GS_JsonInt : GS_JsonNumber
 {
 	int i;
 	
-	static GFJsonInt make(int i = 0)
+	static GS_JsonInt make(int i = 0)
 	{
-		let elem = new("GFJsonInt");
+		let elem = new("GS_JsonInt");
 		elem.i = i;
 		return elem;
 	}
-	override GFJsonNumber Negate()
+	override GS_JsonNumber Negate()
 	{
 		i = -i;
 		return self;
@@ -49,17 +49,17 @@ class GFJsonInt : GFJsonNumber
 	}
 }
 
-class GFJsonDouble : GFJsonNumber
+class GS_JsonDouble : GS_JsonNumber
 {
 	double d;
 	
-	static GFJsonDouble Make(double d = 0)
+	static GS_JsonDouble Make(double d = 0)
 	{
-		GFJsonDouble elem = new("GFJsonDouble");
+		GS_JsonDouble elem = new("GS_JsonDouble");
 		elem.d = d;
 		return elem;
 	}
-	override GFJsonNumber Negate()
+	override GS_JsonNumber Negate()
 	{
 		d = -d;
 		return self;
@@ -80,13 +80,13 @@ class GFJsonDouble : GFJsonNumber
 	}
 }
 
-class GFJsonBool : GFJsonElement
+class GS_JsonBool : GS_JsonElement
 {
 	bool b;
 	
-	static GFJsonBool Make(bool b = false)
+	static GS_JsonBool Make(bool b = false)
 	{
-		GFJsonBool elem = new("GFJsonBool");
+		GS_JsonBool elem = new("GS_JsonBool");
 		elem.b = b;
 		return elem;
 	}
@@ -102,20 +102,20 @@ class GFJsonBool : GFJsonElement
 	}
 }
 
-class GFJsonString : GFJsonElement
+class GS_JsonString : GS_JsonElement
 {
 	string s;
 	
-	static GFJsonString make(string s = "")
+	static GS_JsonString make(string s = "")
 	{
-		GFJsonString elem = new("GFJsonString");
+		GS_JsonString elem = new("GS_JsonString");
 		elem.s=s;
 		return elem;
 	}
 	
 	override string Serialize()
 	{
-		return GFJSON.serialize_string(s);
+		return GS_JSON.serialize_string(s);
 	}
 	
 	override string GetPrettyName()
@@ -124,11 +124,11 @@ class GFJsonString : GFJsonElement
 	}
 }
 
-class GFJsonNull : GFJsonElement
+class GS_JsonNull : GS_JsonElement
 {
-	static GFJsonNull Make()
+	static GS_JsonNull Make()
 	{
-		return new("GFJsonNull");
+		return new("GS_JsonNull");
 	}
 	
 	override string Serialize()
@@ -142,13 +142,13 @@ class GFJsonNull : GFJsonElement
 	}
 }
 
-class GFJsonError : GFJsonElementOrError
+class GS_JsonError : GS_JsonElementOrError
 {
 	String what;
 	
-	static GFJsonError make(string s)
+	static GS_JsonError make(string s)
 	{
-		GFJsonError err = new("GFJsonError");
+		GS_JsonError err = new("GS_JsonError");
 		err.what = s;
 		return err;
 	}

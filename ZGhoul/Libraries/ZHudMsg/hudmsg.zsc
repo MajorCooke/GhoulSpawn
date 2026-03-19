@@ -1,9 +1,9 @@
 // ZScript HudMessage by Agent_Ash
 // (c) Agent_Ash aka Jekyll Grim Payne aka jekyllgrim
 
-extend Class GFEventStatic
+extend Class GS_EventStatic
 {
-	Array<GFHudMessage> hudmessages;
+	Array<GS_HudMessage> hudmessages;
 
 	private void TickMessages()
 	{
@@ -26,7 +26,7 @@ extend Class GFEventStatic
 		// test code (type "interfaceevent testhudmsg" in console to test):
 		if (e.name == "testhudmsg")
 		{
-			GFHudMessage.CreateUI("$GOTSHOTGUN", id: 1, fontname: 'BigUpper', fontcolor: Font.CR_Green, alignment: GFHudMessage.ALIGN_CENTER, fadeinTime: 0, typeTime: 2, holdtime: 35, fadeOutTime: 50, scale: (0.5, 0.5));
+			GS_HudMessage.CreateUI("$GOTSHOTGUN", id: 1, fontname: 'BigUpper', fontcolor: Font.CR_Green, alignment: GS_HudMessage.ALIGN_CENTER, fadeinTime: 0, typeTime: 2, holdtime: 35, fadeOutTime: 50, scale: (0.5, 0.5));
 		}
 	}
 
@@ -35,7 +35,7 @@ extend Class GFEventStatic
 		// test code (type "netevent testhudmsg" in console to test):
 		if (e.name == "testhudmsg")
 		{
-			GFHudMessage.Create("$GOTSHOTGUN", id: 1, fontname: 'BigUpper', fontcolor: Font.CR_Green, alignment: GFHudMessage.ALIGN_CENTER, fadeinTime: 0, typeTime: 2, holdtime: 35, fadeOutTime: 50, scale: (0.5, 0.5), playerNumber: e.Player);
+			GS_HudMessage.Create("$GOTSHOTGUN", id: 1, fontname: 'BigUpper', fontcolor: Font.CR_Green, alignment: GS_HudMessage.ALIGN_CENTER, fadeinTime: 0, typeTime: 2, holdtime: 35, fadeOutTime: 50, scale: (0.5, 0.5), playerNumber: e.Player);
 		}
 		else if (e.name.IndexOf("createzshudmessage") >= 0)
 		{
@@ -43,7 +43,7 @@ extend Class GFEventStatic
 			e.name.Split(msg,":");
 			if (msg.Size() == 14)
 			{
-				GFHudMessage.Create(
+				GS_HudMessage.Create(
 					msg[1], //text
 					id: msg[2].ToInt(10),
 					fontname: msg[3], 
@@ -89,7 +89,7 @@ extend Class GFEventStatic
 	}
 }
 
-class GFHudMessage play
+class GS_HudMessage play
 {
 	int playerNumber;
 
@@ -141,10 +141,10 @@ class GFHudMessage play
 		);
 	}
 
-	static GFHudMessage Create(string text, uint id = 0, name fontname = 'NewSmallFont', int fontColor = Font.CR_Red, vector2 pos = (160, 50), int alignment = ALIGN_LEFT, uint fadeInTime = 0, uint typeTime = 0, uint holdTime = 35, uint fadeOutTime = 0, vector2 scale = (1,1), int playerNumber = -1)
+	static GS_HudMessage Create(string text, uint id = 0, name fontname = 'NewSmallFont', int fontColor = Font.CR_Red, vector2 pos = (160, 50), int alignment = ALIGN_LEFT, uint fadeInTime = 0, uint typeTime = 0, uint holdTime = 35, uint fadeOutTime = 0, vector2 scale = (1,1), int playerNumber = -1)
 	{
-		let hmsg = GFHudMessage(New("GFHudMessage"));
-		let handler = GFEventStatic.Fetch();
+		let hmsg = GS_HudMessage(New("GS_HudMessage"));
+		let handler = GS_EventStatic.Fetch();
 		if (!handler)
 		{
 			ThrowAbortException("HUDMessage handler not found");

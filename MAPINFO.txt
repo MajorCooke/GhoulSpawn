@@ -1,4 +1,4 @@
 GameInfo
 {
-	AddEventHandlers = "GFEventStatic", "GFEvent"
+	AddEventHandlers = "GS_EventStatic", "GS_Event"
 }

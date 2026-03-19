@@ -1,10 +1,10 @@
 // Main Ghoul Information
-Class GFGhoulData
+Class GS_GhoulData
 {
 	Name ID;						// Name of the ghoul
 	String Tag;						// For mods like TargetSpy
-	Map<Name, GFDropData> Drops;	// item drops
-	Map<Name, GFDamageData> Damages;// Special damage interactions via ZJSON
+	Map<Name, GS_DropData> Drops;	// item drops
+	Map<Name, GS_DamageData> Damages;// Special damage interactions via ZJSON
 	Map<Name, double> DamageFactors;// Customized damage factors via ZJSON
 	int Weight;						// Spawn Chance (RandomSpawner styled)
 	int CurLevel;					// Current level of the ghoul.
@@ -22,22 +22,22 @@ Class GFGhoulData
 	//--------------------------------------------------------------------------
 	// Serialization functions
 	//--------------------------------------------------------------------------
-	static GFGhoulData Deserialize(GFJsonElement elem)
+	static GS_GhoulData Deserialize(GS_JsonElement elem)
 	{
-		if (!elem)		ThrowAbortException("GFGhoulData: Expected a GFJsonObject, got null");
+		if (!elem)		ThrowAbortException("GS_GhoulData: Expected a GS_JsonObject, got null");
 		
-		let obj = GFJsonObject(elem);
-		if (!obj)		ThrowAbortException("GFGhoulData: Expected a GFJsonObject, got "..elem.GetClassName());
-		return new('GFGhoulData').ProcessObject(obj);
+		let obj = GS_JsonObject(elem);
+		if (!obj)		ThrowAbortException("GS_GhoulData: Expected a GS_JsonObject, got "..elem.GetClassName());
+		return new('GS_GhoulData').ProcessObject(obj);
 	}
 	
-	private GFGhoulData ProcessObject(GFJsonObject obj)
+	private GS_GhoulData ProcessObject(GS_JsonObject obj)
 	{
 		// "class" variable
 		/*
-		let gp = GFGlobalParser.Make("GFGhoulData");
+		let gp = GS_GlobalParser.Make("GS_GhoulData");
 		
-		let typeCls = gp.GetJsonObjString(obj, "class", GFErr_Abort);
+		let typeCls = gp.GetJsonObjString(obj, "class", GS_Err_Abort);
 		Class<Actor> check = typeCls.s;
 		if (!check)
 		{
@@ -49,43 +49,43 @@ Class GFGhoulData
 		
 		bool prop = false;
 		// "chances" 
-		GFJsonArray tChances = gp.GetJsonObjArray(obj, "chances", GFErr_AbortWrongType);
+		GS_JsonArray tChances = gp.GetJsonObjArray(obj, "chances", GS_Err_AbortWrongType);
 		if (tChances)
 		{
 			prop = true;
 		}
 		*/
 		String vid = "actor";
-		GFJsonElement elemCls = obj.Get(vid);
-		if (!elemCls)	ThrowAbortException("GFGhoulData: Expected '"..vid.."' definition, is missing.");
-		let typeCls = GFJsonString(elemCls);
-		if (!typeCls)	ThrowAbortException ("GFGhoulData: expected '"..vid.."' as string, got "..elemCls.GetClassName());
+		GS_JsonElement elemCls = obj.Get(vid);
+		if (!elemCls)	ThrowAbortException("GS_GhoulData: Expected '"..vid.."' definition, is missing.");
+		let typeCls = GS_JsonString(elemCls);
+		if (!typeCls)	ThrowAbortException ("GS_GhoulData: expected '"..vid.."' as string, got "..elemCls.GetClassName());
 		
 		vid = "weight";
 		let eW = obj.Get(vid);
 		if (eW)
 		{
-			let dw = GFJsonInt(eW);
-			if (!dw)	ThrowAbortException("GFGhoulData: Expected '"..vid.."' as int, got "..eW.GetClassName());
+			let dw = GS_JsonInt(eW);
+			if (!dw)	ThrowAbortException("GS_GhoulData: Expected '"..vid.."' as int, got "..eW.GetClassName());
 			Weight = dw.AsInt();
 		}
 		else Weight = 50;
 		/*
-		GFJsonElement elemChances = obj.Get("chances");
+		GS_JsonElement elemChances = obj.Get("chances");
 		if (elemChances)
 		{
-			GFJsonArray typeChances = GFJsonArray(elemChances);
-			if (!typeChances)	ThrowAbortException("GFGhoulData: expected 'chances' as an array, got "..elemChances.GetClassName());
+			GS_JsonArray typeChances = GS_JsonArray(elemChances);
+			if (!typeChances)	ThrowAbortException("GS_GhoulData: expected 'chances' as an array, got "..elemChances.GetClassName());
 			prop = true;
 		}
 		*/
 		
 		// "tag" override
-		GFJsonElement elemTag = obj.Get("tag");
+		GS_JsonElement elemTag = obj.Get("tag");
 		if (elemTag)
 		{
-			GFJsonString typeTag = GFJsonString(elemTag);
-			if (!typeTag)	ThrowAbortException("GFGhoulData: expected 'tag' as a string, got "..elemTag.GetClassName());
+			GS_JsonString typeTag = GS_JsonString(elemTag);
+			if (!typeTag)	ThrowAbortException("GS_GhoulData: expected 'tag' as a string, got "..elemTag.GetClassName());
 			Tag = typeTag.s;
 			prop = true;
 		}

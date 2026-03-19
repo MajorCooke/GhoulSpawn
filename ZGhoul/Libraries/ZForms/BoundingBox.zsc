@@ -1,5 +1,5 @@
 /// An axis-aligned bounding box class, used for representing the positions and sizes of elements.
-struct GF_AABB {
+struct GS_AABB {
 	/// The position of the top-left corner of this AABB.
 	Vector2 pos;
 	/// The size of the AABB, with `x` meaning right and `y` meaning down.
@@ -17,7 +17,7 @@ struct GF_AABB {
 	/// Sets `ret` to be equal to the rectangle consisting of all points in both `self` and `other`.
 	///
 	/// If there is no intersection, the returned rectangle has [`pos`] and [`size`] equal to `(0, 0)`.
-	void rectOfIntersection(GF_AABB ret, GF_AABB other) {
+	void rectOfIntersection(GS_AABB ret, GS_AABB other) {
 		double left = max(pos.x, other.pos.x);
 		double right = min(pos.x + size.x, other.pos.x + other.size.x);
 		double top = max(pos.y, other.pos.y);

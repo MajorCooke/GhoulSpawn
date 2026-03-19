@@ -1,5 +1,5 @@
 /*
-Class GFPostTicker : Thinker
+class GS_PostTicker : Thinker
 {
 	static GFPostTicker MakePostTicker()
 	{
@@ -39,7 +39,7 @@ Class GFPostTicker : Thinker
 	}
 }
 */
-Class GFTargeting : Behavior
+class GS_Targeting : Behavior
 {
 	const CleanTimer = 35 * 5;
 	private bool DestroyMe;

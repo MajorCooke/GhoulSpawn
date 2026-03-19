@@ -21,7 +21,7 @@ quick on the trigger, or get her to infight with demons.
 Recommended Weapon: Plasma Rifle
 ==============================================================================*/
 
-Class GFMisty : GFGhoulBase abstract
+class GS_Misty : GS_GhoulBase abstract
 {
 	Default
 	{

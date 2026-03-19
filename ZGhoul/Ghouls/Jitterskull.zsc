@@ -22,7 +22,7 @@ get him attacking again.
 Recommended weapon: Super Shotgun
 ==============================================================================*/
 
-Class GFJitterPart : Actor
+class GS_JitterPart : Actor
 {
 	Default
 	{
@@ -34,7 +34,7 @@ Class GFJitterPart : Actor
 	}
 }
 
-Class GFJitterEyes : GFJitterPart
+class GS_JitterEyes : GS_JitterPart
 {
 	Default
 	{
@@ -49,7 +49,7 @@ Class GFJitterEyes : GFJitterPart
 	}
 }
 
-Class GFJitterDome : GFJitterPart
+class GS_JitterDome : GS_JitterPart
 {
 	States
 	{
@@ -59,7 +59,7 @@ Class GFJitterDome : GFJitterPart
 	}
 }
 
-Class GFJitterJaw : GFJitterPart
+class GS_JitterJaw : GS_JitterPart
 {
 	
 	Default
@@ -150,13 +150,13 @@ Class GFJitterJaw : GFJitterPart
 	}
 }
 
-Class GFJitterSkull : GFGhoulBase
+class GS_JitterSkull : GS_GhoulBase
 {
 	private Vector3 LaunchPos;
 	Default
 	{
-		GFGhoulBase.PainDelay 10;
-		GFGhoulBase.DmgThreshold 0;
+		GS_GhoulBase.PainDelay 10;
+		GS_GhoulBase.DmgThreshold 0;
 		Monster;
 		Health 1000;
 		Scale 0.13;
@@ -183,7 +183,7 @@ Class GFJitterSkull : GFGhoulBase
 	//	+NOCLIP //disable after april fools
 		MaxStepHeight 64;
 		MaxDropoffHeight 64;
-		BloodType "GFJitterChip";
+		BloodType "GS_JitterChip";
 		SeeSound "Jitterskull/Taunt";
 		PainSound "Jitterskull/Pain";
 		DeathSound "Jitterskull/Death";
@@ -210,9 +210,9 @@ Class GFJitterSkull : GFGhoulBase
 		if (victim)
 		{
 			string pick;
-			if (victim is 'GFGhoulBase')
+			if (victim is 'GS_GhoulBase')
 			{
-				if (victim is 'GFSjas')
+				if (victim is 'GS_Sjas')
 				{
 					static const string ob[] =
 					{
@@ -224,7 +224,7 @@ Class GFJitterSkull : GFGhoulBase
 					};
 					pick = ob[random(0, ob.Size()-1)];
 				}
-				else if (victim is 'GFCreeper')
+				else if (victim is 'GS_Creeper')
 				{
 					static const string ob[] =
 					{
@@ -236,7 +236,7 @@ Class GFJitterSkull : GFGhoulBase
 					};
 					pick = ob[random(0, ob.Size()-1)];
 				}
-				else if (victim is 'GFFrostbite')
+				else if (victim is 'GS_Frostbite')
 				{
 					static const string ob[] =
 					{
@@ -248,7 +248,7 @@ Class GFJitterSkull : GFGhoulBase
 					};
 					pick = ob[random(0, ob.Size()-1)];
 				}
-				else if (victim is 'GFChoke')
+				else if (victim is 'GS_Choke')
 				{
 					static const string ob[] =
 					{
@@ -301,13 +301,13 @@ Class GFJitterSkull : GFGhoulBase
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
-		Jaw = Spawn('GFJitterJaw', pos);
+		Jaw = Spawn('GS_JitterJaw', pos);
 		if (Jaw)
 			Jaw.Scale = Scale;
-		Dome = Spawn('GFJitterDome', pos);
+		Dome = Spawn('GS_JitterDome', pos);
 		if (Dome)
 			Dome.Scale = Scale;
-		Eyes = Spawn('GFJitterEyes', pos);
+		Eyes = Spawn('GS_JitterEyes', pos);
 		if (Eyes) 
 		{
 			Eyes.Scale = Scale;
@@ -574,7 +574,7 @@ Class GFJitterSkull : GFGhoulBase
 				}
 			}
 			
-			if (old && (!Goal || GFGlobal.IsTouching(self, Goal)))
+			if (old && (!Goal || GS_Global.IsTouching(self, Goal)))
 			{
 				let it = BehaviorIterator.CreateFrom(self);
 				Behavior be;
@@ -603,7 +603,7 @@ Class GFJitterSkull : GFGhoulBase
 	private void JitterChomp()
 	{
 		Lunging = true;
-		A_SpawnProjectile("GFJitterskullAttack",32,0,0);
+		A_SpawnProjectile("GS_JitterskullAttack",32,0,0);
 		if (vel ~== (0,0,0))
 			return;
 		Vector3 np = pos + vel;
@@ -623,7 +623,7 @@ Class GFJitterSkull : GFGhoulBase
 	private Array<Actor> Corpses;
 	bool AddCorpse(Actor mo, bool fresh = false)
 	{
-		if (!(mo is 'PlayerPawn') && !(mo is 'GFGhoulBase') &&
+		if (!(mo is 'PlayerPawn') && !(mo is 'GS_GhoulBase') &&
 			!mo.bNOBLOOD &&
 			(mo.bCORPSE || mo.bKILLED || fresh) &&
 			mo.Radius < 100 && mo.Height < 100 &&
@@ -857,7 +857,7 @@ Class GFJitterSkull : GFGhoulBase
 }
 
 // AOE bite that only damages non-players.
-Class GFJitterskullAttack : Actor
+class GS_JitterskullAttack : Actor
 {
 	Default
 	{
@@ -897,13 +897,13 @@ Class GFJitterskullAttack : Actor
 	}
 }
 
-Class GFJitterChip : Actor
+class GS_JitterChip : Actor
 {
 	bool shortdeath;
 	property shortdeath: shortdeath;
 	Default
 	{
-		GFJitterChip.shortdeath true;
+		GS_JitterChip.shortdeath true;
 		Projectile;
 		-NOGRAVITY
 		+THRUACTORS
@@ -952,14 +952,14 @@ Class GFJitterChip : Actor
 	}
 }
 
-extend class GFEvent
+extend class GS_Event
 {
 	private void CheckJitterKill(WorldEvent e)
 	{
 		let mo = e.Thing;
 		if (!mo)	return;
 		
-		let js = GFJitterskull(mo.Target);
+		let js = GS_Jitterskull(mo.Target);
 		if (js)	js.AddCorpse(mo, true);
 	}
 }

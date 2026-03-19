@@ -6,12 +6,12 @@
 ///
 /// Frames are a first-class element in ZForms and have a bit of special handling - namely, to add
 /// an element to a Frame you use [`ZF_Element.pack`] which takes a frame argument.
-class GF_Frame : GF_ElementContainer {
+class GS_Frame : GS_ElementContainer {
 	/// Returns a newly-created frame element.
 	///
 	/// The position used is relative to whatever the element is packed into later.
-	static GF_Frame create(Vector2 pos, Vector2 size) {
-		let ret = new('GF_Frame');
+	static GS_Frame create(Vector2 pos, Vector2 size) {
+		let ret = new('GS_Frame');
 
 		ret.setBox(pos, size);
 		ret.alpha = 1;
@@ -29,7 +29,7 @@ class GF_Frame : GF_ElementContainer {
 	/// Elements with higher indices are drawn on top of elements with lower indices.
 	///
 	///If the element isn't inside this frame, an index equal to [`elementCount`]`()` is returned.
-	int indexOfElement(GF_Element elem) { return elements.find(elem); }
+	int indexOfElement(GS_Element elem) { return elements.find(elem); }
 	/// Swaps the elements at the given indices in the frame.
 	///
 	/// To get the indices needed, see [`indexOfElement`].
@@ -56,7 +56,7 @@ class GF_Frame : GF_ElementContainer {
 	}
 
 	/// ?doc: hidden
-	void internalPack(GF_Element elem) {
+	void internalPack(GS_Element elem) {
 		if (elem.master != NULL) {
 			elem.unpack();
 		}
@@ -65,7 +65,7 @@ class GF_Frame : GF_ElementContainer {
 		self.onPack(elem);
 	}
 	/// ?doc: hidden
-	void internalUnpack(GF_Element elem) {
+	void internalUnpack(GS_Element elem) {
 		if (elem.master != self) {
 			throwAbortException("This shouldn't happen unless the user called internalUnpack themselves");
 		}
@@ -81,7 +81,7 @@ class GF_Frame : GF_ElementContainer {
 	///
 	/// This is for frame-deriving elements such as [`ZF_ListFrame`], which uses this to
 	/// recalculate the positions of the elements.
-	virtual void onPack(GF_Element elem) {}
+	virtual void onPack(GS_Element elem) {}
 
 	override Vector2 relToScreen(Vector2 relPos) {
 		if (master == NULL) {

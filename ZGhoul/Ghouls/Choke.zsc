@@ -24,15 +24,15 @@ But he's vulnerable to stunlocking. Rapid fire weapons are best.
 Recommended Weapon: Plasma Rifle or Chaingun
 ==============================================================================*/
 
-Class GFChoke : GFGhoulBase
+class GS_Choke : GS_GhoulBase
 {
 	const thres = int.max - 1;
 	Default
 	{
 		
 		+EXTREMEDEATH
-		GFGhoulBase.PainDelay 15;
-		GFGhoulBase.DmgThreshold thres;
+		GS_GhoulBase.PainDelay 15;
+		GS_GhoulBase.DmgThreshold thres;
 		Height 60;
 		Radius 20;
 		Speed 30;
@@ -42,7 +42,7 @@ Class GFChoke : GFGhoulBase
 		ActiveSound "Choke/Chase";
 		PainSound "Choke/Pain";
 		DeathSound "Choke/Death";
-		Species "GFChoke";
+		Species "GS_Choke";
 		Tag "Choke";
 	}
 	
@@ -60,7 +60,7 @@ Class GFChoke : GFGhoulBase
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
-		A_GiveInventory("GFChokeHeal",1);
+		A_GiveInventory("GS_ChokeHeal",1);
 	}
 	States
 	{
@@ -136,15 +136,15 @@ Class GFChoke : GFGhoulBase
 		Switch(type)
 		{
 			Default:	return;
-			Case 1:	cls = "GFChokeBallLil";	break;
-			Case 2:	cls = "GFChokeBallMed";	break;
-		//	Case 3:	cls = "GFChokeBallBig";	break;
+			Case 1:	cls = "GS_ChokeBallLil";	break;
+			Case 2:	cls = "GS_ChokeBallMed";	break;
+		//	Case 3:	cls = "GS_ChokeBallBig";	break;
 		}
 		A_StartSound("Choke/Spit", 6, CHANF_OVERLAP);
 		let mo = A_SpawnProjectile(cls, 24);
 		if (mo)
 		{
-			if (cls == "GFChokeBallLil")
+			if (cls == "GS_ChokeBallLil")
 			{
 				if (Target)
 				{
@@ -161,7 +161,7 @@ Class GFChoke : GFGhoulBase
 						frandom[rng](v1.y, v2.y),
 						frandom[rng](v1.z, v2.z)
 						);
-					[mo.Angle, mo.Pitch] = GFGlobal.GetVectorAngles(mo.pos, res);
+					[mo.Angle, mo.Pitch] = GS_Global.GetVectorAngles(mo.pos, res);
 					mo.Vel3DFromAngle(mo.speed, mo.angle, mo.pitch);
 				}
 			}
@@ -170,8 +170,8 @@ Class GFChoke : GFGhoulBase
 	
 	private void Jiggle(int stage)
 	{
-		if (stage < 0)	RemoveBehavior('GFChokeJiggler');
-		else			AddBehavior('GFChokeJiggler');
+		if (stage < 0)	RemoveBehavior('GS_ChokeJiggler');
+		else			AddBehavior('GS_ChokeJiggler');
 	}
 	
 	override String GetObituary(Actor s, Actor i, Name mod, bool pa)
@@ -197,7 +197,7 @@ Class GFChoke : GFGhoulBase
 		return ob[random(0, ob.Size())];
 	}
 	
-	enum EGFChokeMode
+	enum EGS_ChokeMode
 	{
 		PR_RANGE = 0,
 		PR_MELEE,
@@ -268,7 +268,7 @@ Class GFChoke : GFGhoulBase
 	}
 }
 
-Class GFChokeBall : GFMissile abstract
+class GS_ChokeBall : GS_Missile abstract
 {
 	Default
 	{
@@ -292,7 +292,7 @@ Class GFChokeBall : GFMissile abstract
 	}
 }
 
-Class GFChokeBallLil : GFChokeBall
+class GS_ChokeBallLil : GS_ChokeBall
 {
 	Default
 	{
@@ -302,7 +302,7 @@ Class GFChokeBallLil : GFChokeBall
 	}
 }
 
-Class GFChokeBallMed : GFChokeBall
+class GS_ChokeBallMed : GS_ChokeBall
 {
 	Default
 	{
@@ -312,7 +312,7 @@ Class GFChokeBallMed : GFChokeBall
 	}
 }
 
-Class GFChokeJiggler : Behavior
+class GS_ChokeJiggler : Behavior
 {
 	const moff = 10.0;
 	const delup = 1.0 / 70.0;	
@@ -375,7 +375,7 @@ Class GFChokeJiggler : Behavior
 	}
 }
 
-Class GFChokeHeal : PowerDrain
+class GS_ChokeHeal : PowerDrain
 {
 	Default
 	{

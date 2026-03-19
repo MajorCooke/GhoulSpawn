@@ -27,11 +27,11 @@ Recommended Weapon: Chaingun
 
 // Fightable boss
 // G015
-Class GFYurei : GFGhoulBase abstract
+class GS_Yurei : GS_GhoulBase abstract
 {
 	Default
 	{
-		GFGhoulBase.NormalSpawn false;
+		GS_GhoulBase.NormalSpawn false;
 		+BOSS
 		+BOSSDEATH
 		Tag "Yurei";
@@ -52,7 +52,7 @@ Class GFYurei : GFGhoulBase abstract
 }
 
 // Image only, used for summoning ghouls.
-Class GFYureiStatic : Actor
+class GS_YureiStatic : Actor
 {
 	Default
 	{

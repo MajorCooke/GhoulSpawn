@@ -10,7 +10,7 @@
 /// this `arrayOfChoices`) representing the choices, and to ensure that all
 /// `value`s of your radio buttons are in the range from `0` to `N - 1`. Then
 /// the user's choice can be gotten via `arrayOfChoices[controller.curVal]`.
-class GF_RadioController {
+class GS_RadioController {
 	/// An integer representing which radio button is on.
 	/// 
 	/// If and only if this value is equal to a radio button's `value` (see
@@ -26,14 +26,14 @@ class GF_RadioController {
 ///
 /// Also see the documentation for [`ZF_ButtonBase`] as a lot of button things are documented
 /// there.
-class GF_RadioButton : GF_ButtonBase {
+class GS_RadioButton : GS_ButtonBase {
 	/// ?doc: hidden
 	void config(
-		GF_RadioController variable, int value,
-		GF_BoxTextures inactive = NULL, GF_BoxTextures hover = NULL,
-		GF_BoxTextures click = NULL, GF_BoxTextures disabled = NULL,
+		GS_RadioController variable, int value,
+		GS_BoxTextures inactive = NULL, GS_BoxTextures hover = NULL,
+		GS_BoxTextures click = NULL, GS_BoxTextures disabled = NULL,
 		string text = "", Font fnt = NULL, double textScale = 1, int textColor = Font.CR_WHITE,
-		AlignType alignment = AlignType_Center, GF_Handler cmdHandler = NULL, Name command = ''
+		AlignType alignment = AlignType_Center, GS_Handler cmdHandler = NULL, Name command = ''
 	) {
 		setFont(fnt);
 		setText(text);
@@ -76,15 +76,15 @@ class GF_RadioButton : GF_ButtonBase {
 	/// to. [`ZF_Handler.radioButtonChanged`] is sent whenever this radio
 	/// button is used to change the state of the radio controller, i.e. when
 	/// it is clicked into the `on` state.
-	static GF_RadioButton create(
+	static GS_RadioButton create(
 		Vector2 pos, Vector2 size,
-		GF_RadioController variable, int value,
-		GF_BoxTextures inactive = NULL, GF_BoxTextures hover = NULL,
-		GF_BoxTextures click = NULL, GF_BoxTextures disabled = NULL,
+		GS_RadioController variable, int value,
+		GS_BoxTextures inactive = NULL, GS_BoxTextures hover = NULL,
+		GS_BoxTextures click = NULL, GS_BoxTextures disabled = NULL,
 		string text = "", Font fnt = NULL, double textScale = 1, int textColor = Font.CR_WHITE,
-		AlignType alignment = AlignType_Center, GF_Handler cmdHandler = NULL, Name command = ''
+		AlignType alignment = AlignType_Center, GS_Handler cmdHandler = NULL, Name command = ''
 	) {
-		let ret = new('GF_RadioButton');
+		let ret = new('GS_RadioButton');
 
 		ret.config(variable, value, inactive, hover, click, disabled, text, fnt, textScale, textColor, alignment, cmdHandler, command);
 		ret.setBox(pos, size);
@@ -92,13 +92,13 @@ class GF_RadioButton : GF_ButtonBase {
 		return ret;
 	}
 
-	private GF_RadioController variable;
+	private GS_RadioController variable;
 	/// Returns the shared variable that this radio button reads/writes from to
 	/// determine whether it is on or off.
-	GF_RadioController getVariable() { return self.variable; }
+	GS_RadioController getVariable() { return self.variable; }
 	/// Sets the shared variable that this radio button reads/writes from to
 	/// determine whether it is on or off.
-	void setVariable(GF_RadioController variable) { self.variable = variable; }
+	void setVariable(GS_RadioController variable) { self.variable = variable; }
 
 	private int value;
 	/// Returns the value that will cause this radio button to be considered.
@@ -115,8 +115,8 @@ class GF_RadioButton : GF_ButtonBase {
 	private bool click;
 	private bool hover;
 
-	override bool onNavEvent(GF_NavEventType type, bool fromController) {
-		if (isEnabled() && isFocused() && type == GF_NavEventType_Confirm) {
+	override bool onNavEvent(GS_NavEventType type, bool fromController) {
+		if (isEnabled() && isFocused() && type == GS_NavEventType_Confirm) {
 			variable.curVal = value;
 			if (cmdHandler != NULL) {
 				cmdHandler.radioButtonChanged(self, command, variable);
@@ -135,7 +135,7 @@ class GF_RadioButton : GF_ButtonBase {
 
 	override bool handleMousePosition(bool mouseBlock, Vector2 mousePos) {
 		if (isEnabled()) {
-			GF_AABB screenBox; boxToScreen(screenBox);
+			GS_AABB screenBox; boxToScreen(screenBox);
 			if (!mouseBlock && screenBox.pointCollides(mousePos)) {
 				hover = true;
 			}
@@ -154,11 +154,11 @@ class GF_RadioButton : GF_ButtonBase {
 		Super.drawer();
 	}
 
-	override bool onUIEvent(GF_UiEvent ev) {
+	override bool onUIEvent(GS_UiEvent ev) {
 		// if the player's clicked, and their mouse is in the right place, set the state accordingly
 		if (ev.type == UIEvent.Type_LButtonDown) {
 			let mousePos = getGlobalStore().mousePos;
-			GF_AABB screenBox; boxToScreen(screenBox);
+			GS_AABB screenBox; boxToScreen(screenBox);
 			if (!mouseBlock && isEnabled() && screenBox.pointCollides(mousePos)) {
 				click = true;
 				setHoverBlock(self);
@@ -168,7 +168,7 @@ class GF_RadioButton : GF_ButtonBase {
 		else if (ev.type == UIEvent.Type_LButtonUp) {
 			if (isEnabled()) {
 				let mousePos = getGlobalStore().mousePos;
-				GF_AABB screenBox; boxToScreen(screenBox);
+				GS_AABB screenBox; boxToScreen(screenBox);
 				if (screenBox.pointCollides(mousePos) && click) {
 					variable.curVal = value;
 					if (cmdHandler != NULL) {

@@ -60,59 +60,87 @@ Specifically everything with a : AFTER it. Values stored after it are insensitiv
 		},
 	],
 	*/
-	//--------------------------------------------------------------------------
-	// Ghoul Definitions
-	//--------------------------------------------------------------------------
+	
+	/*--------------------------------------------------------------------------
+	Item Pack Definition
+	
+	Used to define packs of items for easy re-use in the Ghoul definitions.
+	--------------------------------------------------------------------------*/
+	"itempacks":
+	[
+		"default":
+		[
+			"Megasphere",
+			"Backpack:3"
+		]
+	],
+	
+	
+	/*--------------------------------------------------------------------------
+	Ghoul Definitions
+	--------------------------------------------------------------------------*/
 
 	"ghouls":
 	[
 		{
-			"actor":		"GFSjas", 	// Actor name
+			"actor":		"GS_Sjas", 	// Actor name
+			"drops":
+			[
+				"Megasphere",
+				"Backpack:3"
+			]
 		},
 		{
-			"actor": 		"GFJitterskull",
+			"actor": 		"GS_Jitterskull",
 		},
 		{
 			
-			"actor": 		"GFCreeper",
+			"actor": 		"GS_Creeper",
 		},
 		{
-			"actor": 		"GFChoke",
+			"actor": 		"GS_Choke",
 		},
 		{
-			"actor": 		"GFFrostbite",
+			"actor": 		"GS_Frostbite",
 		},
 		{
-			"actor":		"GFMisty",
+			"actor":		"GS_Misty",
 		},
 		{
-			"actor":		"GFClowny",
+			"actor":		"GS_Clowny",
 		},
 		{
-			"actor":		"GFSoulHarvester",
+			"actor":		"GS_SoulHarvester",
 		},
 		{
-			"actor":		"GFJugulum",
+			"actor":		"GS_Jugulum",
 		},
 		{
-			"actor":		"GFYureiAvatar",
+			"actor":		"GS_YureiAvatar",
 		},
 	],
+	
+	/*--------------------------------------------------------------------------
+	Drop Data
+	
+	
+	--------------------------------------------------------------------------*/
+	"drops"
 	
 	/*--------------------------------------------------------------------------
 	Trait Data
 	
 	* langstr - The LANGUAGE lump string to look up, which will cover name, icon,
-		desc and long. Take note how the traits only have GFT_<TraitName> WITHOUT
+		desc and long. Take note how the traits only have GST_<TraitName> WITHOUT
 		the ending suffix of _<NAME/DESC/ICON/LONG>. If those vars are present,
 		they will override what's found by the langstr, even if blank! Requires
 		a string with _BASE defined in order to work.
 		
 	* base - Base name of the upgrade to use internally. 
-		langstr uses the part after 'GFT_' for this variable.
+		langstr uses the part after 'GST_' for this variable.
 	
 	* name - Nice name used for displaying in the codex.
-		langstr uses the value of 'GFT_<TraitName>_NAME' for this variable.
+		langstr uses the value of 'GST_<TraitName>_NAME' for this variable.
 		
 	* desc - Synopsis of the trait.
 	

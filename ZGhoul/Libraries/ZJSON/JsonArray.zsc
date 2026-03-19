@@ -1,23 +1,23 @@
-class GFJsonArray : GFJsonElement
+class GS_JsonArray : GS_JsonElement
 { // pretty much just a wrapper for a dynamic array
-	Array<GFJsonElement> arr;
+	Array<GS_JsonElement> arr;
 	
-	static GFJsonArray Make()
+	static GS_JsonArray Make()
 	{
-		return new("GFJsonArray");
+		return new("GS_JsonArray");
 	}
 	
-	GFJsonElement Get(uint index)
+	GS_JsonElement Get(uint index)
 	{
 		return arr[index];
 	}
 	
-	void Set(uint index,GFJsonElement obj)
+	void Set(uint index,GS_JsonElement obj)
 	{
 		arr[index]=obj;
 	}
 	
-	int Push(GFJsonElement obj)
+	int Push(GS_JsonElement obj)
 	{
 		return arr.Push(obj);
 	}
@@ -27,7 +27,7 @@ class GFJsonArray : GFJsonElement
 		return arr.Pop();
 	}
 	
-	void Insert(uint index, GFJsonElement obj)
+	void Insert(uint index, GS_JsonElement obj)
 	{
 		arr.Insert(index, obj);
 	}

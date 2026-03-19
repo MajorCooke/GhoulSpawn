@@ -8,35 +8,35 @@ The file structure is as such:
 * --> DropData
 * --> TraitData
 */
-Class GFData
+Class GS_Data
 {
 	internal readonly Name ModID;
-	internal readonly Map<Name, GFUpgradeData> Upgrades;
-	internal readonly Map<Name, GFGhoulData> Ghouls;
-	internal readonly Map<Name, GFTraitData> Traits;
+	internal readonly Map<Name, GS_UpgradeData> Upgrades;
+	internal readonly Map<Name, GS_GhoulData> Ghouls;
+	internal readonly Map<Name, GS_TraitData> Traits;
 	
 	//--------------------------------------------------------------------------
 	// Serialization functions
 	//--------------------------------------------------------------------------
-	static GFData Deserialize(GFJsonElement elem)
+	static GS_Data Deserialize(GS_JsonElement elem)
 	{
-		if (!elem)		ThrowAbortException("GFData: Expected a GFJsonObject, got null");
+		if (!elem)		ThrowAbortException("GS_Data: Expected a GS_JsonObject, got null");
 		
-		let obj = GFJsonObject(elem);
-		if (!obj)		ThrowAbortException("GFData: Expected a GFJsonObject, got "..elem.GetClassName());
+		let obj = GS_JsonObject(elem);
+		if (!obj)		ThrowAbortException("GS_Data: Expected a GS_JsonObject, got "..elem.GetClassName());
 		
-		return new('GFData').ProcessObject(obj);
+		return new('GS_Data').ProcessObject(obj);
 	}
 	
-	private GFData ProcessObject(GFJsonObject obj)
+	private GS_Data ProcessObject(GS_JsonObject obj)
 	{
 		// First make sure there is a ModID present.
-		GFJsonElement elem = obj.Get("mod_id");
+		GS_JsonElement elem = obj.Get("mod_id");
 		if (!elem)	ThrowAbortException("mod_id is missing. Add it with a unique name to fix.");
 		else
 		{
-			let miid = GFJsonString(elem);
-			if (!miid)	ThrowAbortException("mod_id: Expected a GFJsonString, got "..elem.getClassName());
+			let miid = GS_JsonString(elem);
+			if (!miid)	ThrowAbortException("mod_id: Expected a GS_JsonString, got "..elem.getClassName());
 			ModID = miid.s;
 		}
 		
@@ -44,13 +44,13 @@ Class GFData
 		elem = obj.Get("upgrades");
 		if (elem)
 		{
-			let arr = GFJsonArray(elem);
-			if (!arr)	ThrowAbortException(ModID.." upgrades: Expected GFJsonArray, got "..elem.getClassName());
+			let arr = GS_JsonArray(elem);
+			if (!arr)	ThrowAbortException(ModID.." upgrades: Expected GS_JsonArray, got "..elem.getClassName());
 			
 			// Now iterating through each object defined.
 			for (uint i = 0; i < arr.Size(); i++)
-			{	// GFGhoulData will handle the rest of the processing.
-				GFUpgradeData ud = GFUpgradeData.Deserialize(arr.Get(i));
+			{	// GS_GhoulData will handle the rest of the processing.
+				GS_UpgradeData ud = GS_UpgradeData.Deserialize(arr.Get(i));
 				if (ud)		Upgrades.Insert(ud.ID, ud);
 			}
 		}
@@ -59,13 +59,13 @@ Class GFData
 		elem = obj.Get("ghouls");
 		if (elem)
 		{
-			let arr = GFJsonArray(elem);
-			if (!arr)	ThrowAbortException(ModID.." ghouls: Expected GFJsonArray, got "..elem.getClassName());
+			let arr = GS_JsonArray(elem);
+			if (!arr)	ThrowAbortException(ModID.." ghouls: Expected GS_JsonArray, got "..elem.getClassName());
 			
 			// Now iterating through each object defined.
 			for (uint i = 0; i < arr.Size(); i++)
-			{	// GFGhoulData will handle the rest of the processing.
-				GFGhoulData gd = GFGhoulData.Deserialize(arr.Get(i));
+			{	// GS_GhoulData will handle the rest of the processing.
+				GS_GhoulData gd = GS_GhoulData.Deserialize(arr.Get(i));
 				if (gd)		Ghouls.Insert(gd.ID, gd);
 			}
 		}
@@ -74,13 +74,13 @@ Class GFData
 		elem = obj.Get("traits");
 		if (elem)
 		{
-			GFJsonArray arr = GFJsonArray(elem);
+			GS_JsonArray arr = GS_JsonArray(elem);
 			if (!arr)	ThrowAbortException(ModID.." traits: expected array of strings, got "..elem.GetClassName());
 			
-			// see GFTraitData 
+			// see GS_TraitData 
 			for (uint i = 0; i < arr.Size(); i++)
 			{
-				GFTraitData td = GFTraitData.Deserialize(arr.Get(i));
+				GS_TraitData td = GS_TraitData.Deserialize(arr.Get(i));
 				if (td)		Traits.Insert(td.ID, td);
 			}
 		}

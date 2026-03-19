@@ -3,11 +3,11 @@
 /// This has one-non aesthetic function, which is that when clicked on, it can activate other
 /// elements which support this, namely [`ZF_ToggleButton`], [`ZF_RadioButton`], and
 /// [`ZF_TextInput`].
-class GF_Label : GF_Element {
+class GS_Label : GS_Element {
 	private void config(
 		string text = "", Font fnt = NULL, AlignType alignment = AlignType_TopLeft, bool wrap = true,
 		bool autoSize = false, double textScale = 1, int textColor = Font.CR_WHITE, double lineSpacing = 0,
-		GF_Element forElement = NULL
+		GS_Element forElement = NULL
 	) {
 		calculate = false;
 		setFont(fnt);
@@ -39,12 +39,12 @@ class GF_Label : GF_Element {
 	///
 	/// If `forElement` is not `NULL`, clicking on the returned label will call
 	/// [`ZF_Element.activate`] on `forElement`.
-	static GF_Label create(
+	static GS_Label create(
 		Vector2 pos, Vector2 size, string text = "", Font fnt = NULL, AlignType alignment = AlignType_TopLeft,
 		bool wrap = true, bool autoSize = false, double textScale = 1, int textColor = Font.CR_WHITE,
-		double lineSpacing = 0, GF_Element forElement = NULL
+		double lineSpacing = 0, GS_Element forElement = NULL
 	) {
-		let ret = new('GF_Label');
+		let ret = new('GS_Label');
 
 		ret.setBox(pos, size);
 		ret.config(text, fnt, alignment, wrap, autoSize, textScale, textColor, lineSpacing, forElement);
@@ -114,15 +114,15 @@ class GF_Label : GF_Element {
 	/// Sets the amount of pixels between lines in the label.
 	void setLineSpacing(double lineSpacing) { self.lineSpacing = lineSpacing; }
 
-	private GF_Element forElement;
+	private GS_Element forElement;
 	/// Returns the element that will be sent `activate` function calls if this element is clicked.
 	///
 	/// A `NULL` return means no element will receive these calls from this label.
-	GF_Element getForElement() { return self.forElement; }
+	GS_Element getForElement() { return self.forElement; }
 	/// Sets the element that will be sent `activate` function calls if this element is clicked.
 	///
 	/// A `NULL` argument means that no element will receive these calls from this label.
-	void setForElement(GF_Element forElement) { self.forElement = forElement; }
+	void setForElement(GS_Element forElement) { self.forElement = forElement; }
 
 	private bool clicking;
 
@@ -155,7 +155,7 @@ class GF_Label : GF_Element {
 	}
 
 	override void drawer() {
-		GF_AABB beforeClip, clipRect;
+		GS_AABB beforeClip, clipRect;
 		screenClip(beforeClip, clipRect);
 		Screen.setClipRect(int(clipRect.pos.x), int(clipRect.pos.y), int(clipRect.size.x), int(clipRect.size.y));
 
@@ -185,10 +185,10 @@ class GF_Label : GF_Element {
 		Screen.setClipRect(int(beforeClip.pos.x), int(beforeClip.pos.y), int(beforeClip.size.x), int(beforeClip.size.y));
 	}
 
-	override bool onNavEvent(GF_NavEventType type, bool fromController) {
+	override bool onNavEvent(GS_NavEventType type, bool fromController) {
 		if (forElement == NULL) return false;
 
-		if (isFocused() && type == GF_NavEventType_Confirm) {
+		if (isFocused() && type == GS_NavEventType_Confirm) {
 			if (forElement.isEnabled()) {
 				forElement.activate();
 				return true;
@@ -197,10 +197,10 @@ class GF_Label : GF_Element {
 		return false;
 	}
 
-	override bool onUIEvent(GF_UiEvent ev) {
+	override bool onUIEvent(GS_UiEvent ev) {
 		if (forElement == NULL) return false;
 		if (ev.type == UIEvent.Type_LButtonDown) {
-			GF_AABB screenBox; boxToScreen(screenBox);
+			GS_AABB screenBox; boxToScreen(screenBox);
 			let mousePos = getGlobalStore().mousePos;
 			if (!mouseBlock && isEnabled() && screenBox.pointCollides(mousePos)) {
 				clicking = true;
@@ -208,7 +208,7 @@ class GF_Label : GF_Element {
 			}
 		}
 		else if (ev.type == UIEvent.Type_LButtonUp) {
-			GF_AABB screenBox; boxToScreen(screenBox);
+			GS_AABB screenBox; boxToScreen(screenBox);
 			let mousePos = getGlobalStore().mousePos;
 			if (isEnabled() && screenBox.pointCollides(mousePos) && clicking) {
 				if (forElement.isEnabled()) forElement.activate();

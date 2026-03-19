@@ -13,7 +13,7 @@ humanity, once and for all...
 ==============================================================================*/
 
 // G005
-Class GFFrostbite : GFGhoulBase abstract
+class GS_Frostbite : GS_GhoulBase abstract
 {
 	Default
 	{

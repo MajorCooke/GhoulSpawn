@@ -15,7 +15,7 @@ GSC_CODEX_TIP_INFIGHT_1 =
 "perfect for taking out Arch-viles.";
 
 GSC_CODEX_TIP_INFIGHT_2 =
-"Ghouls may share an amicable hatred of humanity with the demons, but by no means"
+"Ghouls may share an amicable hatred of humanity with the demons, but by no means "
 "are they friends, and won't hesitate to retaliate swiftly. They also remember "
 "*everyone* who attacked them, pursuing them in order of who attacked first.";
 

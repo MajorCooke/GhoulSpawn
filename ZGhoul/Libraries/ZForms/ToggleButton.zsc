@@ -4,13 +4,13 @@
 ///
 /// Also see the documentation for [`ZF_ButtonBase`] as a lot of button things are documented
 /// there.
-class GF_ToggleButton : GF_ButtonBase {
+class GS_ToggleButton : GS_ButtonBase {
 	private void config(
 		string text = "",
-		GF_BoxTextures inactive = NULL, GF_BoxTextures hover = NULL,
-		GF_BoxTextures click = NULL, GF_BoxTextures disabled = NULL,
+		GS_BoxTextures inactive = NULL, GS_BoxTextures hover = NULL,
+		GS_BoxTextures click = NULL, GS_BoxTextures disabled = NULL,
 		Font fnt = NULL, double textScale = 1, int textColor = Font.CR_WHITE,
-		AlignType alignment = AlignType_Center, GF_Handler cmdHandler = NULL, Name command = ''
+		AlignType alignment = AlignType_Center, GS_Handler cmdHandler = NULL, Name command = ''
 	) {
 		setFont(fnt);
 		setText(text);
@@ -39,13 +39,13 @@ class GF_ToggleButton : GF_ButtonBase {
 	/// `cmdHandler` and `command` determine where the button's events are sent
 	/// to. [`ZF_Handler.toggleButtonChanged`] is sent whenever the user clicks
 	/// on the toggle button, changing its state.
-	static GF_ToggleButton create(
+	static GS_ToggleButton create(
 		Vector2 pos, Vector2 size, string text = "",
-		GF_BoxTextures inactive = NULL, GF_BoxTextures hover = NULL, GF_BoxTextures click = NULL,
-		GF_BoxTextures disabled = NULL, Font fnt = NULL, double textScale = 1, int textColor = Font.CR_WHITE,
-		AlignType alignment = AlignType_Center, GF_Handler cmdHandler = NULL, Name command = ''
+		GS_BoxTextures inactive = NULL, GS_BoxTextures hover = NULL, GS_BoxTextures click = NULL,
+		GS_BoxTextures disabled = NULL, Font fnt = NULL, double textScale = 1, int textColor = Font.CR_WHITE,
+		AlignType alignment = AlignType_Center, GS_Handler cmdHandler = NULL, Name command = ''
 	) {
-		let ret = new('GF_ToggleButton');
+		let ret = new('GS_ToggleButton');
 
 		ret.config(text, inactive, hover, click, disabled, fnt, textScale, textColor, alignment, cmdHandler, command);
 		ret.setBox(pos, size);
@@ -64,7 +64,7 @@ class GF_ToggleButton : GF_ButtonBase {
 
 	override bool handleMousePosition(bool mouseBlock, Vector2 mousePos) {
 		if (isEnabled()) {
-			GF_AABB screenBox; boxToScreen(screenBox);
+			GS_AABB screenBox; boxToScreen(screenBox);
 			if (!mouseBlock && screenBox.pointCollides(mousePos)) {
 				hover = true;
 			}
@@ -83,8 +83,8 @@ class GF_ToggleButton : GF_ButtonBase {
 		Super.drawer();
 	}
 
-	override bool onNavEvent(GF_NavEventType type, bool fromController) {
-		if (isEnabled() && isFocused() && type == GF_NavEventType_Confirm) {
+	override bool onNavEvent(GS_NavEventType type, bool fromController) {
+		if (isEnabled() && isFocused() && type == GS_NavEventType_Confirm) {
 			on = !on;
 			if (cmdHandler != NULL) {
 				cmdHandler.toggleButtonChanged(self, command, on);
@@ -101,11 +101,11 @@ class GF_ToggleButton : GF_ButtonBase {
 		}
 	}
 
-	override bool onUIEvent(GF_UiEvent ev) {
+	override bool onUIEvent(GS_UiEvent ev) {
 		// if the player's clicked, and their mouse is in the right place, set the state accordingly
 		if (ev.type == UIEvent.Type_LButtonDown) {
 			let mousePos = getGlobalStore().mousePos;
-			GF_AABB screenBox; boxToScreen(screenBox);
+			GS_AABB screenBox; boxToScreen(screenBox);
 			if (!mouseBlock && isEnabled() && screenBox.pointCollides(mousePos)) {
 				click = true;
 				setHoverBlock(self);
@@ -115,7 +115,7 @@ class GF_ToggleButton : GF_ButtonBase {
 		else if (ev.type == UIEvent.Type_LButtonUp) {
 			if (isEnabled()) {
 				let mousePos = getGlobalStore().mousePos;
-				GF_AABB screenBox; boxToScreen(screenBox);
+				GS_AABB screenBox; boxToScreen(screenBox);
 				if (screenBox.pointCollides(mousePos) && click) {
 					on = !on;
 					if (cmdHandler != NULL) {

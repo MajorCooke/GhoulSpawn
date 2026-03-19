@@ -5,6 +5,13 @@ Developed by Major Cooke
 Currently the mod is in Alpha state, meaning many mechanics aren't done yet or
 missing. This information will be updated as they're completed.
 --------------------------------------------------------------------------------
+*** Download ***
+https://github.com/MajorCooke/GhoulSpawn
+
+*** FOUND A BUG? ***
+You can submit an issue on the Github and I'll work to fix it ASAP. Thank you!
+
+--------------------------------------------------------------------------------
 *** Story ***
 
 After the Hunter survived a harrowing trip to the Forbidden Forest, he returned
