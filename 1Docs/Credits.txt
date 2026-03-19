@@ -16,6 +16,9 @@ Ghouls vs Humans (& Multiverse)
 	
 Icytux
 	Soul Harvester, Clowny, Misty
+	
+OPERAINCEPTION
+	Sprite edits
 
 ==============
 *** Coding ***
@@ -43,3 +46,9 @@ Doom Punk
 <G/U>ZDoom Devs/Contributors
 	Made one of the best source ports for Doom 1 & 2. For a full list of contributors:
 	https://github.com/UZDoom/UZDoom/blob/trunk/CONTRIBUTORS
+	
+id Software
+	Doom
+	
+Have fun!
+-Major Cooke
