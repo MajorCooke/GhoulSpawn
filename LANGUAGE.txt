@@ -1,32 +1,26 @@
 [en default]
 
-GS_GHOULSPAWN_INFO = "Enables ghoul spawning";
+GS_VERSION = "Alpha 1";
 
-GS_DESPAWN_INFO = "Despawns ghouls if spawning is disabled";
+GS_KEYBINDS_NAME = "Ghoul Spawn Keybinds";
+GS_KEYBINDS_INFO = "Keybinds specific to Ghoul Spawn";
 
-GS_ENDLESS_INFO = "Yurei only spawns ghouls endlessly";
+GS_SPAWNER_NAME = "Ghoul Spawner";
+GS_SPAWNER_INFO = "Enables ghoul spawning";
 
-GS_SPAWNWAIT_INFO = "Wait until all ghouls are dead before spawning more";
+GS_DESPAWN_NAME = "Ghouls Despawn";
+GS_DESPAWN_INFO = "Ghouls despawn if the spawner is disabled";
 
-GS_SPAWNCOUNTDOWN_INFO_T = "Spawn timer ticks while ghouls are alive";
-GS_SPAWNCOUNTDOWN_INFO_F = "Spawn timer ticks only when all ghouls are dead";
-GS_QUANTITYTYPE_INFO_0 = "Use Spawn Amount";
-GS_QUANTITYTYPE_INFO_1 = "Randomize between 1 and Spawn Amount";
-GS_QUANTITYTYPE_INFO_2 = "Increases by 1 every full cycle, returns to 1 after";
-GS_QUANTITYTYPE_INFO_3 = "Increases by 1 but stays at max";
-GS_QUANTITYTYPE_INFO_4 = "No max cap, resets to 1 if option or map changes";
+GS_ALERT_NAME = "Spawn Alert";
+GS_ALERT_INFO = "Determines what sounds are played globally when a ghoul spawns.";
 
-GS_CYCLE_INFO_T = "Ghouls spawn in an order pre-determined on map start";
-GS_CYCLE_INFO_F = "Ghouls are absolutely randomized";
-
-GS_ABILITIES_INFO = "Determines some behaviors - not all of them";
-
-GS_INSTAKILL_INFO = "Doesn't apply to other ghouls";
-
+GS_TARGETING_NAME = "Targeting Behavior";
 GS_TARGETING_INFO = "Determines targeting rules, overriding map rules";
 
+GS_NOTARGETABLES_NAME = "Ignore NOTARGET flag";
 GS_NOTARGETABLES_INFO = "Ghouls can attack enemies that shouldn't be targetable";
 
+GS_GHOULSINFIGHT_NAME = "Ghoul Infighting";
 GS_GHOULSINFIGHT_INFO = "Ghouls can infight and hurt each other";
 
 /*==============================================================================
