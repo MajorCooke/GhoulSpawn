@@ -120,7 +120,7 @@ class GS_Creeper : GS_GhoulBase
 	override int DoSpecialDamage(Actor target, int damage, Name dtype)
 	{
 		if (!(target is 'PlayerPawn') && dtype == 'CreeperBoo')
-			damage *= 10;
+			damage *= 20;
 			
 		return Super.DoSpecialDamage(target, damage, dtype);
 	}
@@ -454,7 +454,7 @@ class GS_CreeperPopup : Actor
 	{
 		if (!Tracer)	return;
 		isalive = (primary && !Tracer.bKILLED);
-		int dmg = Tracer.DamageMobj(self, target, 100, DamageType, DMG_THRUSTLESS);
+		int dmg = Tracer.DamageMobj(self, target, 50, DamageType, DMG_THRUSTLESS);
 		if (heal && dmg > 0 && Target && !Target.bKILLED)	Target.GiveBody(10);
 		killcheck = (isalive && Tracer.bKILLED);
 	}
