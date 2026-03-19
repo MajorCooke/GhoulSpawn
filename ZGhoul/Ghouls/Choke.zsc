@@ -56,12 +56,9 @@ class GS_Choke : GS_GhoulBase
 	Choke/Interrupt
 	Choke/Pain
 	Choke/Death
-	*/
-	override void PostBeginPlay()
-	{
-		Super.PostBeginPlay();
-		A_GiveInventory("GS_ChokeHeal",1);
-	}
+	*/	
+	
+	
 	States
 	{
 	Spawn:
@@ -87,7 +84,7 @@ class GS_Choke : GS_GhoulBase
 		#### E 12 { bar = 0; }
 		#### F 15;
 		*/
-		#### C 8;
+		#### C 8 Jiggle(1);
 		---- A 0 
 		{
 			bar = 0; 
@@ -97,15 +94,16 @@ class GS_Choke : GS_GhoulBase
 		#### D 3 Spit(1);
 		#### C 3 ;
 		---- A 0 A_JumpIf(++bar < 5, "Barrage");
+		---- A 0 Jiggle(1);
 		Goto MislEnd;
 	Single:
 		#### D 10 Spit(2);
-		#### C 4;
+		#### C 4 Jiggle(1);
 		Goto MislEnd;
 	Huge:
 		#### F 55 Jiggle(1);
 		#### D 8 Spit(3);
-		#### C 5;
+		#### C 5 Jiggle(1);
 		Goto MislEnd;
 	MislEnd:
 		---- A 0
@@ -128,6 +126,7 @@ class GS_Choke : GS_GhoulBase
 		G004 GHIJ 3;
 		Stop;
 	}
+	
 	private int bar;
 	
 	private void Spit(int type)
@@ -168,10 +167,26 @@ class GS_Choke : GS_GhoulBase
 		}
 	}
 	
+	override int DoSpecialDamage(Actor tar, int dmg, Name type, int flags, double angle)
+	{
+		if (dmg > 0 && tar && tar != self && !tar.bKILLED && type == 'Melee')
+		{
+			GiveBody(2);
+		}
+		return dmg;
+	}
+	
 	private void Jiggle(int stage)
 	{
+		/*
+		GS_ChokeJiggler jig;
 		if (stage < 0)	RemoveBehavior('GS_ChokeJiggler');
-		else			AddBehavior('GS_ChokeJiggler');
+		else
+		{
+			jig = GS_ChokeJiggler(AddBehavior('GS_ChokeJiggler'));
+			
+		}
+		*/
 	}
 	
 	override String GetObituary(Actor s, Actor i, Name mod, bool pa)
@@ -210,10 +225,11 @@ class GS_Choke : GS_GhoulBase
 		if (bKILLED)	return;
 		if (--stimer < 1)
 		{
+			
 			stimer = 35 * random[rng](5, 20);
 			pref = (pref + 1) % PR_MAX;
 		}
-		
+		Jiggle(0);
 		if (pref == PR_MELEE)
 		{
 			A_Chase("Melee", null);
@@ -231,6 +247,7 @@ class GS_Choke : GS_GhoulBase
 	}
 	private void ChokeDeath()
 	{
+		Jiggle(0);
 		A_Scream();
 		A_Fall();
 	}
@@ -320,8 +337,7 @@ class GS_ChokeJiggler : Behavior
 	private Vector2 ofs, prev;
 	private double amp, step, goal, cur;
 	private bool endme;
-	
-	
+		
 	private double Lerp (double x, double y, double a) 
 	{	return x * (1.0 - a) + y * a;	}
 	
@@ -372,13 +388,5 @@ class GS_ChokeJiggler : Behavior
 		if (Owner && Owner.bKILLED)
 			Owner.SpriteOffset -= ofs;
 		Super.OnDestroy();
-	}
-}
-
-class GS_ChokeHeal : PowerDrain
-{
-	Default
-	{
-		Powerup.Duration 0x7FFFFFFD;
 	}
 }

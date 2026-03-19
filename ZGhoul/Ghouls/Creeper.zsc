@@ -26,7 +26,7 @@ class GS_Creeper : GS_GhoulBase
 	const ChanVoice = 400;
 	Default
 	{
-		GS_GhoulBase.PainDelay 2;
+		GS_GhoulBase.PainDelay 5;
 		Health 400;
 		Height 16;
 		Radius 13;
@@ -131,7 +131,7 @@ class GS_Creeper : GS_GhoulBase
 		bFRIGHTENED = on;
 	}
 	
-	private void Peekaboo(Actor mo, bool heal = false)
+	private void Peekaboo(Actor mo, bool noise = true, bool heal = true)
 	{
 		if (!mo || mo == self || bKILLED)
 			return;
@@ -143,6 +143,7 @@ class GS_Creeper : GS_GhoulBase
 			pop.tracer = mo;
 			pop.primary = (mo == target);
 			pop.heal = heal;
+			pop.noise = noise;
 		}
 	}
 	
@@ -164,7 +165,7 @@ class GS_Creeper : GS_GhoulBase
 					}
 				}
 				*/
-				Peekaboo(target);
+				Peekaboo(target, true);
 				let it = GS_Global.MakeBTIPos(pos, (128, 256));
 				Actor mo;
 				int count = 0;
@@ -173,7 +174,7 @@ class GS_Creeper : GS_GhoulBase
 					mo = it.thing;
 					if (!mo || !mo.bSHOOTABLE || mo.bKILLED || (mo is 'GS_GhoulBase') || (master && master == mo) || (mo is 'PlayerPawn'))
 						continue;
-					Peekaboo(mo, true);
+					Peekaboo(mo, (mo is 'PlayerPawn' || count < 4));
 					count++;
 				}
 			}
@@ -203,8 +204,8 @@ class GS_Creeper : GS_GhoulBase
 		bNOPAIN = true;
 		A_StopSounds(ChanVoice, ChanVoice+1);
 		SetFear(true);
-		SetFlashTimer(18);
-		DamageFlash(true);
+	//	SetFlashTimer(18);
+	//	DamageFlash(true);
 		S_StartSoundAt(pos, "Ghoul/Damaged", 5);
 	}
 	
@@ -430,7 +431,7 @@ class GS_CreeperPopup : Actor
 	const maxdiv = 4;
 	const _height = 56;
 	const hdiv = _height / maxdiv;
-	bool primary, heal;
+	bool primary, heal, noise;
 	Default
 	{
 		Projectile;
@@ -477,7 +478,7 @@ class GS_CreeperPopup : Actor
 			{
 				if (!(Tracer is 'PlayerPawn'))
 					BOO();
-				A_StartSound("GCreeper/Attack", 5);	
+				if (noise) A_StartSound("GCreeper/Attack", 5);	
 				break;
 			}
 			Case 6:
