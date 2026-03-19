@@ -1,0 +1,45 @@
+Ghoul Spawn
+A GZDoom Mod enabling Ghouls Forest Series enemies to spawn in game
+
+================
+*** The Team ***
+================
+Major Cooke
+	Author, developer, spriter, mapper.
+
+=================
+*** Resources ***
+=================
+Ghoul's Forest 
+Ghouls vs Humans (& Multiverse)
+	Sprites & Sounds
+	
+Icytux
+	Soul Harvester, Clowny, Misty
+
+==============
+*** Coding ***
+==============
+Jay
+	ZJSON - https://github.com/RicardoLuis0/ZJSON
+	
+Agent_Ash
+	ZHudMessage - https://github.com/jekyllgrim/ZScript-HudMessage
+	
+Phantombeta
+Gutawer
+	ZForms - https://gitlab.com/Gutawer/gzdoom-zforms
+	Additional code
+
+======================
+*** Special Thanks ***
+======================
+CutmanMike
+	Created Ghoul's Forest & Ghouls vs Humans. Without those, this wouldn't exist.
+	
+Doom Punk
+	Being an awesome bro and letting me use some content from GvH Multiverse.
+	
+<G/U>ZDoom Devs/Contributors
+	Made one of the best source ports for Doom 1 & 2. For a full list of contributors:
+	https://github.com/UZDoom/UZDoom/blob/trunk/CONTRIBUTORS

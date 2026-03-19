@@ -33,87 +33,90 @@ GS_GHOULSINFIGHT_INFO = "Ghouls can infight and hurt each other";
 	*** Upgrades ***
 ==============================================================================*/
 
-GSC_LIGHT_DESC =
-"From the Light comes forth the power of Smite. Striking down evil with unstoppable"
-"power ensures your foes cannot get back up again."
+/*------------------------------------------------------------------------------
+	Yurei
+------------------------------------------------------------------------------*/
+GSL_YUREI_LORE =
+"Born to abusive parents, the Yurei was often the subject of ruthless bullying "
+"and torment by her mother and father. They sought to make a child of greatness, "
+"but all she wanted to do was have a normal life. Viewing such weakness as "
+"intolerable, they savagely murdered her, seeing her as nothing more than a stain "
+"on their family legacy."
+"\n\n"
+"Anger and sorrow gripped her spirit, and as she sobbed with rage, unholy and "
+"supernatural powers rose within her. Rising from her mutilated corpse as an "
+"ethereal spirit, she carried out her vengeance upon her parents and devoured "
+"their souls."
+"\n\n"
+"She kept to herself for a long time, wanting to be left alone to her own devices. "
+"But the absence of her parents naturally brought inquiries from people connected "
+"to them, disappearing into the forest - never to be seen again."
+"\n\n"
+"Yet the memories of her being paraded around like a freak lingered, with many "
+"pointing and laughing while she was whipped and beaten without mercy. Her mind "
+"was made up... Humanity is evil, and all who enter her forest would pay the price "
+"in blood for their transgressions."
+"\n\n"
+"With the souls she devours, her power grows, and soon was able to manifest the "
+"aid of other beings as horrific undeath to grant death to the living. Despite "
+"the setback with a hunter, she was down but not out, and rose once more with "
+"an ever growing army, in time for Hell to begin its assault on humanity..."
 "";
 
-GSC_LIGHT_LORE =
-"In a different Earth, Shosonna lives. Empowered by holy radiance, she and the"
-"holy pope, who is ablaze with holy light shining from his eyes, are allies."
-"The One Above has willed to teach those capable of wielding Aurora Essence the"
-"power to strike against the ghoul scourge threatening to extinguish humanity"
-"across reality. The Light is your sword, for no evil can stand against it for long.";
-
-GSC_DARK_DESC =
-"The Dark provides the power to protect and defend oneseld and their allies."
-"A torrent of demon fire could be reduced to a mere candle, if used wisely.";
-
-GSC_DARK_LORE =
-"I am the demon lord you've been made aware of - Zatax. A pact has been made with "
-"your kind as such: in exchange for a Terminator body, the strongest among you "
-"capable of wielding Aurora Essence shall be granted the knowledge to safely wield the "
-"dark. For your sanity, we only scratch the surface - lest you become a slave who "
-"dooms all you see. This shall be enough to grant you the protective powers, allowing "
-"you to treat an ocean of fire as if it were no more threatening than a mere candle. "
-"With this, our mutual enemy shall melt in terror before your onslaught."
+/*------------------------------------------------------------------------------
+	Malisaf
+------------------------------------------------------------------------------*/
+GSL_MALIFAS_LORE =
+"Little is known about Satan's right hand, other than he is responsible for "
+"aiding Satan in corrupting the roots of the world long before humanity even "
+"existed. For meddling directly with the fates of mortals, he was cast down to "
+"Earth, and his impact would become the site of corruption. Enraged by this "
+"'betrayal', he sought to further undermine and twist everything he could as"
+"vengeance. He twisted his own aura to be one of pure malevolence and spread the "
+"seeds of hate and violence through all living things that came near his prison, "
+"and from there it would blossom to infect the giants roaming the land..."
 "\n\n"
-"There are others elements you can utilize with essence. To keep you out of corruption's "
-"grasp, I can give you no further than the protective elements of the Dark. Perhaps you "
-"might catch the eye of the Pope, and gain the power of the Light? I hear it's perfect "
-"for overwhelming assault."
+"Heaven would not take this insult lightly. Satan, just condemned for his refusal"
+"to bow to humanity and waging a losing war, was cast down with a meteor upon "
+"Malisaf's prison, blasting them both into a void that was soon flooded with their "
+"wrath and agony, along with those who sided with them. Thus, this void was warped "
+"into the fiery abyss known as the home of evil: Hell."
 "\n\n"
-"Regardles..."
+"Yet it wouldn't be the end of their attempts to corrupt humanity. Malifas still "
+"had a way to warp minds of any living entity, albeit highly limited. But it would "
+"set into motion the events of today - the infection of the Yurei, the twisting of "
+"Jitterskull and his race, and so much more. Eventually, such a shadow over the "
+"world would lead to the UAC opening a strong enough connection by mistake, and "
+"paving the way for a death toll ranging in the billions."
 "\n\n"
-"May your thirst for vengeance never quench and your will burn brighter than your sun.\n"
-"May your steps be paved with the flesh of my idiotic brethren, and the gore of ghouls.\n" 
-"May we meet on the battlefield one day and destroy this scourge together, gloriously.\n" 
-"May we part amicably come victory, as I take the Yurei with me straight to Hell.\n\n"
-""
-"Good hunting, warrior.";
-
-GSC_CHAOS_DESC =
-"Chaos, a mix of all flavors, brings forth the unexpected and anomalous, such as "
-"summoning allies... but this may come at a price...";
-
-GSC_CHAOS_LORE =
-"The very fabric of reality is formed by matter and chaos to drive it, consisting of "
-"every element to make the universe go 'round. With the Yurei's invasion, even Hell's, "
-"the forces of good and evil have been at an apocalyptic war for the fate of all. "
-"What other madness could bring us back from the brink of death and reform a lost limb"
-"with no explanation or reason? Yet this can work both ways."
-
-GSC_DEATH_DESC =
-"Special abilities that require certain events to conjure. Whether retaliatory or "
-"from onslaught, these powerful spells can easily turn the tide of battle, if lucky";
-
-GSC_DEATH_LORE =
-"Death comes to all in the end. Sometimes sooner than one may like. But the Universe"
-"has a way of balancing itself out. Every time one side grows in power, someone"
-"or something out there will become an equalizer - love it or hate it. Death is"
-"the great equalizer, and perhaps the universe has tipped too far in the Yurei's"
-"direction. Yet to master it requires an intricate balance in all things, including"
-"power. The Reapers may have their eyes on certain individuals, guiding their"
-"scythes whenever it's time to harvest the abundance. But then again, they are"
-"tales of the crypt. Or... Are they?..."
+"Yet even with the failure of the invasion and the Yurei suffering many setbacks, "
+"he continues to wait within the darkest pits of Hell, biding his time for a "
+"champion to arrive, one so powerful, but one that ultimately falls to his schemes. "
+"All according to his and Satan's plans..."
 "";
+
 
 /*------------------------------------------------------------------------------
 	Jitterskull
 ------------------------------------------------------------------------------*/
 GSL_JITTERSKULL_LORE =
-"Long ago, giants roamed the land. Their communication wasn't the best though, "
-"primarily speaking through grunts and gestures. Jitterskull particularly was a "
-"mighty warrior, revered by many and defender of his land, and a model giant at "
-"that. He had a little brother, but he was the star of the show. WHen his brother "
-"killed himself, Jitterskull personally buried Choke in a sacred place that would "
-"eventually become the Forbidden Forest. When his own time came, he requested to "
-"be buried by his brother's side. "
+"During the epoch of the dinosaur, giants roam the land. Jitterskull was a "
+"mighty warrior, who fought savagely amongst his own, as is the nature of the "
+"barbaric species. They waged near constant warfare upon themselves and the wild "
+"beasts of the world, their barbaric savagery unleashed with Jitterskull at the "
+"top of the food chain, having slain thousands of his kind."
 "\n\n"
-"Many years later, the giants had long since been extinct. With the forbidden forest "
-"overtaking their graves, long had they been forgotten until the Yurei rose in power. "
-"Finding his remains, the Yurei resurrected his head as a mindless servant that "
-"roams the forest to this day, devouring all who trespass on the Yurei's land.";
+"One could then view it as irony when a meteor fell from the sky directly onto "
+"Jitterskull, obliterating his body, his species and all dinosaurs, with his head "
+"the only remaining piece of his body buried by time with his brother's, and"
+"forgotten by all."
+"\n\n"
+"When the Yurei called out for aid unto the land of damnation, Jitterskull "
+"answered and was brought back to unlife within his skull. Now he charges skull"
+"first into battle with the unliving, fueled only by blind bloodlust and a "
+"hunger for carnage and fresh meat, gladly serving the Yurei for his freedom "
+"from Hell."
+"";
 
 GSL_JITTERSKULL_DESC =
 "Jitterskulls movement is either a 'leap' forward, or moving at a snail's pace. "
@@ -128,13 +131,17 @@ GSL_JITTERSKULL_DESC =
 "and munch on them, healing himself in the process.";
 
 GSL_JITTERSKULL_TIPS =
-"* Jitterskull is the worst ghoul to deal with in tight quarters.\m"
+"* Jitterskull is the worst ghoul to deal with in tight quarters.\n"
 "* He's the 'slowest' ghoul and can easily be lead around in circles, but he "
-"has the farthest reach for attack.\n"
+"has the farthest reaching attack.\n"
 "* When damaged enough, he will flinch and recoil, buying time. Keep hitting him "
 "with strong attacks and go on the offensive.\n"
 "* Take advantage of his limited mobility to get him stuck in a spot where you can "
 "unload on him.\n"
+"* He devours corpses to heal himself, which can be a boon for preventing "
+"resurrections, and getting him off your trail for a moment while he chews. "
+"He does not chew if he's at full health. Killing an enemy always forces him to "
+"eat his meals."
 "* Weak to crushing damage.";
 
 
@@ -143,23 +150,23 @@ GSL_JITTERSKULL_TIPS =
 	Sjas
 ------------------------------------------------------------------------------*/
 GSL_SJAS_LORE =
-"In the medieval times, Sjas was once a jester who told good jokes, serving as"
-"entertainer for a royal court. One day, his joke didn't quite land, and he tried"
-"retelling it again. But confusion soon turned into horror for the gathered as he"
-"seemingly snapped and started screaming it belligerently until he was forcefully"
-"removed from the stage. Several days later, after a few incidents, he swore"
-"revenge upon them all before summarily being executed."
+"In the medieval times, Sjas was once a jester who told good jokes, serving as an "
+"entertainer for a royal court. One day, his joke didn't quite land, and he tried "
+"retelling it again. But confusion soon turned into horror for the gathered as he "
+"seemingly snapped and started screaming it belligerently until he was forcefully "
+"removed from the stage. Several days later, after a few incidents, he swore "
+"revenge upon them all before summarily being executed. "
 "\n\n"
-"Now he has arisen frmo the grave, called by the Yurei to unleash the power of his"
-"screams to kill as many humans as possible, roaming the forest and exploding heads"
-"with the power of his voice.";
+"The Yurei resurrected him as an undead phantom, roaming the forest for her. Any "
+"human he comes across, he gladly blows their heads out with his supersonic "
+"screeching, capable of passing through matter as if it didn't exist...";
 
 GSL_SJAS_DESC =
-"Sjas emits loud vocals as he travels, but when holding still, emits none. He's"
-"very difficult to spot, even more so in the dark and is translucent. Listen for"
-"his audio and blast him when in sight. He has a low threshold for pain, and if he"
-"either attacks or takes enough damage, he'll vanish and attack from another angle."
-"He is most effective when an enemy suffers distractions, so stay on alert and keep"
+"Sjas emits loud vocals as he travels, but when holding still, emits none. He's "
+"very difficult to spot, even more so in the dark and is translucent. Listen for "
+"his audio and blast him when in sight. He has a low threshold for pain, and if he "
+"either attacks or takes enough damage, he'll vanish and attack from another angle. "
+"He is most effective when an enemy suffers distractions, so stay on alert and keep "
 "pumping him full of lead until he dies.";
 
 /*------------------------------------------------------------------------------
@@ -167,13 +174,12 @@ GSL_SJAS_DESC =
 ------------------------------------------------------------------------------*/
 GSL_CREEPER_LORE =
 "The Yurei found a baby floating down the creek near her wrecked home - the one "
-"human she actually took pity upon instead of violently murdering. He was crying "
-"and hungry, desperate for food. But there was no human food around, so without "
-"much choice, the Yurei fed him human souls instead. This eventually twisted him "
-"overtime into the monster he is today, transforming him into an eldritch creature "
-"made of ectoplasm. Now he stalks the forest, seeking out trespassers and showing "
-"them a terrifying visage that bypasses conventional defenses and goes straight "
-"for the soul, quite physically frightening them to death.";
+"human she actually took pity upon. Although long deceased, the Yurei brought him "
+"back and raised him by feeding him human souls, twisting his withered body into "
+"a ghastly visage. Despite being trapped between the living and the afterlife, "
+"he took to the Yurei as his own mother and now serves her by stealing the souls "
+"of the living who dare enter the Forbidden Forest.";
+
 
 GSL_CREEPER_DESC =
 "Creeper crawls through most solid entities and emits a breathing mutter while he"
@@ -226,3 +232,69 @@ GSL_CHOKE_TIPS =
 "* Use explosive weapons carefully, and only when charging his blood balls.\n"
 "* Stay moving to further minimize bite damage.\n"
 "* Lure him to corpses if low on health. He'll devour those first and buy you time. ";
+
+/*------------------------------------------------------------------------------
+	Frostbite
+------------------------------------------------------------------------------*/
+GSL_FROSTBITE_LORE =
+"Several accounts of Frostbite have been the topic of discussion. Some theorize "
+"it's an avatar of vengeance, rising up to deliver a chilly demise to those who "
+"murder others, avenging the souls of victims if murdered within the frozen parts "
+"of the world. Other accounts from those who barely survived freezing to death "
+"suggest it's a monster of mercy, appearing to those about to die, giving humans "
+"the option to have their pain ended in exchange for their souls. Whatever the case, "
+"now it has become a threat to everyone, taking the liberty of choosing death for all "
+"humans it comes across.";
+
+GSL_FROSTBITE_DESC =
+"Frostbite is a tanky ghoul with the power of ice breath and a strong bite."
+"His freezing gust deals maximum damage up close, but gradually loses power "
+"over time."
+"\n\n"
+"Frostbite also has armor that slowly regenerates after not taking damage for "
+"a short while that cuts damage in half."
+"";
+
+GSL_FROSTBITE_TIPS =
+"* Frostbite's melee allows it to lunge forward. It's not as strong as Jitter's, "
+"but he can get anyone stuck in a corner and eat them easily.\n"
+"* Freezing Gust bounces off of all terrain, making it dangerous in places with "
+"lots of surfaces around."
+"";
+
+/*------------------------------------------------------------------------------
+	Morphace
+------------------------------------------------------------------------------*/
+GSL_MORPHACE_LORE =
+"Once a man with only one goal, Morphace sought only to entertain. He loved the "
+"idea of practicing magic and impressing upon the stage, conducting big plays "
+"and dazzling crowds. Rather good at his work, he unfortunately gained a bit of "
+"a religious cult that saw what he did as practicing evil magic - a modern day "
+"witch hunt, effectively."
+"\n\n"
+"Just before another stage debut, there was a delay, and the crowd was confused "
+"about the hold-up. Upon peeling back the curtains revealed a horrendous fate "
+"befalling the magician - drawn and quartered most violently by the cult as a "
+"warning that had gone too far."
+"\n\n"
+"The yurei heard his despair, and gave him a chance to exact revenge which he "
+"readily accepted. He would make the world his stage to make the bastards pay, "
+"and he would make sure the Yurei would be the fabulous star of this new death "
+"show. For humanity, this performance would be to die for..."
+"";
+
+GSL_MORPHACE_DESC =
+"Morphace is averse to direct combat. It won't hesitate to use its Faces of "
+"Madness while near its target to damage them, but it much prefers to adopt one "
+"of several morphs of humans with their weapon of choice. He can only perform "
+"mostly basic attacks, but his morphs are his most offensive ability. The morphs "
+"have an average health pool, and Morphace needs time after a morph is worn or "
+"shot off."
+"";
+
+GSL_MORPHACE_TIPS =
+"* Hitting him with strong attacks while its morph is close to giving out is the "
+"best way to deal with him up close.\n"
+"* Keep your distance when unmorphed. Morphace's attacks are radial and can deal "
+"some serious damage."
+"";

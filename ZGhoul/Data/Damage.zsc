@@ -32,7 +32,7 @@ Class GFDamageData
 	bool Source,	// If true, affects all attacks coming from this thing, otherwise is exclusive. Ignored if !giving.
 		Giving,		// If true, affects outgoing damage. Otherwise, affects incoming
 		Children,	// Applies to all classes inheriting from Thing.
-		Replacers,	// Applies to all classes replacing Thing.
+		Replacers;	// Applies to all classes replacing Thing.
 	double Factor;	// How much to multiply the damage by.
 	int Damage;		// if > -2, straight up replaces it.
 	
@@ -50,7 +50,7 @@ Class GFDamageData
 	static GFDamageData Deserialize(GFJsonElement elem)
 	{
 		if (!elem)	ThrowAbortException("GFDamageData: Expected GFJsonElement, got null");
-		let obj = GFJsonObject(elem)
+		let obj = GFJsonObject(elem);
 		if (!obj)	ThrowAbortException("GFDamageData: Expected GFJsonElement, got "..elem.GetClassName());
 		return new('GFDamageData').ProcessObject(obj);
 	}

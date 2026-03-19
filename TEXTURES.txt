@@ -1,3 +1,4 @@
+/*
 sprite SAMBQ0, 301, 268
 {
 	patch SAMBN0, 147, 266
@@ -13,16 +14,19 @@ sprite SAMBP0, 296, 336
 		Translation "Inverse"
 	}
 }
+*/
+NoTrim G002Z1
+NoTrim G002Z2
+NoTrim G002Z3
+NoTrim G002Z4
+NoTrim G002Z5
+NoTrim G002Z6
+NoTrim G002Z7
+NoTrim G002Z8
 
-NoTrim JSKEA1
-NoTrim JSKEA2
-NoTrim JSKEA3
-NoTrim JSKEA4
-NoTrim JSKEA5
-NoTrim JSKEA6
-NoTrim JSKEA7
-NoTrim JSKEA8
-NoTrim JSKLA0
-NoTrim JSKLB0
-NoTrim JSKLC0
-NoTrim JSKLD0
+NoTrim G002A0
+NoTrim G002B0
+NoTrim G002C0
+NoTrim G002D0
+NoTrim G002E0
+NoTrim G002F0

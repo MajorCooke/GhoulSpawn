@@ -1,5 +1,6 @@
 Class GFUpgradeData
 {
+	Name ID;
 	Map<Name, Int> Cost;		// Needs these items to purchase.
 	Map<Name, Int> Required;	// Like Cost but doesn't take items away.
 	Map<Name, Int> Restrictors; // Prevents certain selections under certain conditions.

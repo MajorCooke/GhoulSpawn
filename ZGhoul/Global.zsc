@@ -55,6 +55,20 @@ Class GFGlobal play
 		}
 	}
 	
+	static Vector3 LerpV3 (Vector3 start, Vector3 end, double time) 
+	{	return start * (1.0 - time) + end * time;	}
+	
+	static double, double GetVectorAngles(Vector3 v1, Vector3 v2)
+	{
+		Vector3 d;
+		if (level)	d = level.Vec3Diff(v1, v2);
+		else		d = v2 - v1;
+		
+		double ang = VectorAngle(d.X, d.Y);
+		double pit = -VectorAngle(d.XY.Length(), d.Z);
+		return ang, pit;
+	}
+	
 	int invMod2(int dividend, int divisor, int min)
 	{
 		int m = min/divisor * divisor; // must be in this order
@@ -66,6 +80,7 @@ Class GFGlobal play
 	
 	static bool IsTouching(Actor a1, Actor a2, bool threed = true)
 	{
+		if (!a1 || !a2)	return false;
 		if (threeD)
 		{
 			if (a1.pos.z > a2.pos.z + a2.height)	return false;

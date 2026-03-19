@@ -68,7 +68,6 @@ Specifically everything with a : AFTER it. Values stored after it are insensitiv
 	[
 		{
 			"actor":		"GFSjas", 	// Actor name
-			"tag":			"Sjas", 	// Nice name. If not specified, internal tag is used.
 		},
 		{
 			"actor": 		"GFJitterskull",
@@ -123,8 +122,8 @@ Specifically everything with a : AFTER it. Values stored after it are insensitiv
 		Alternatively can supply a number between [0,3] respectively.
 		
 	* levelreq - An array of 1 or 2 numbers, which defines the level range the
-		ghoul must be within to have a chance at receiving this trait. Zero for
-		either of these means no min and/or max cap.
+		ghoul must be within to have a chance at receiving this trait. Default is
+		[0].
 		Accepted syntax:
 		[min] or [min,max]
 		
@@ -168,7 +167,7 @@ Specifically everything with a : AFTER it. Values stored after it are insensitiv
 			"desc": "",
 			"long": "",
 			"rank": "Normal",
-			"levelreq": [0,0],
+			"levelreq": [0],
 			"maxpower": 1, 	
 			"items":
 			[

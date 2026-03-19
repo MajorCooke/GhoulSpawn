@@ -44,8 +44,9 @@ Class GFCreeper : GFGhoulBase
 		Tag "Creeper";
 		Species "GFCreeper";
 		DamageType "CreeperBoo";
-		DamageFactor "Sjas", 0.2;
+		DamageFactor "Sjas", 0.6;
 		DamageFactor "Jitter", 0.2;
+		DamageFactor "CreeperBoo", 0.0;
 		SeeSound "GCreeper/Taunt";
 	//	ActiveSound "GCreeper/Chase";
 		PainSound "GCreeper/Pain";
@@ -128,7 +129,7 @@ Class GFCreeper : GFGhoulBase
 		bFRIGHTENED = on;
 	}
 	
-	private void Peekaboo(Actor mo)
+	private void Peekaboo(Actor mo, bool heal = false)
 	{
 		if (!mo || mo == self || bKILLED)
 			return;
@@ -139,7 +140,7 @@ Class GFCreeper : GFGhoulBase
 			pop.target = self;
 			pop.tracer = mo;
 			pop.primary = (mo == target);
-			
+			pop.heal = heal;
 		}
 	}
 	
@@ -148,7 +149,8 @@ Class GFCreeper : GFGhoulBase
 		if (mel)
 		{
 			if (target)
-			{
+			{	
+				/*
 				if (target is 'PlayerPawn' || target.bNODAMAGE)
 				{
 					if (target.bINVULNERABLE || target.bNODAMAGE ||
@@ -159,15 +161,18 @@ Class GFCreeper : GFGhoulBase
 						return;
 					}
 				}
+				*/
 				Peekaboo(target);
 				let it = GFGlobal.MakeBTIPos(pos, (128, 256));
 				Actor mo;
+				int count = 0;
 				while (it.Next())
 				{
 					mo = it.thing;
 					if (!mo || !mo.bSHOOTABLE || mo.bKILLED || (mo is 'GFGhoulBase') || (master && master == mo) || (mo is 'PlayerPawn'))
 						continue;
-					Peekaboo(mo);
+					Peekaboo(mo, true);
+					count++;
 				}
 			}
 		}
@@ -240,23 +245,86 @@ Class GFCreeper : GFGhoulBase
 		else
 			A_Wander();
 	}
-	
+
+	private bool CheckTargetAim(bool defret = false)
+	{
+		if (Target is 'PlayerPawn')
+		{
+			let tr = new('GFCreeperTrace');
+			tr.to = self;
+			tr.from = target;
+			Vector3 dir;
+			{
+				double cpit = cos(Target.pitch);
+				double ang = Target.angle;
+				dir = (cos(ang) * cpit, sin(ang) * cpit, -sin(target.pitch));
+			}
+			Vector3 start = Target.Vec3Offset(0,0,Target.Height * 0.75);
+			if (target.Player)	
+			{
+				start.Z = target.Player.viewZ;
+				let vp = target.ViewPos;
+				if (vp)
+				{
+					Vector3 ofs = vp.Offset;
+					int flags = vp.Flags;
+					if (flags & VPSF_ABSOLUTEPOS)
+						start = ofs;
+					else if (flags & VPSF_ABSOLUTEOFFSET)
+						start = level.Vec3Offset(start, ofs);
+					else
+					{
+						Quat rel = Quat.FromAngles(Target.Angle, Target.Pitch, Target.Roll);
+						Vector3 next = rel * ofs;
+						start = level.Vec3Offset(start, next);
+					}
+				}
+				else start = Target.Vec2OffsetZ(0,0, target.player.ViewZ);
+			}
+			
+			tr.Trace(start, Target.CurSector, dir, 2048, 0, ignore: Target);
+			let res = tr.Results;
+			return (res.HitType == TRACE_HitActor && res.HitActor == self);
+		}
+		else if (Target.bISMONSTER)
+		{
+		//	bool sn = (target is 'PlayerPawn' || target.target == self);
+		//	return (sn && AbsAngle(Target.angle, Target.AngleTo(self)) < 10);
+			return true;
+		}
+		return defret;
+	}
 	private int BallDelay;
+	private bool Seen;
+	private Actor OldTarget;
 	private void CreeperChase(bool mel = true, bool misl = true)
 	{
 		if (bKILLED)	return;
-		A_StartSoundIfNotSame("GCreeper/Chase","GCreeper/Chase", 399, CHANF_LOOP);
-		if (BallDelay < 1)
-		{
-			BallDelay = random[rng](15,25);
-			if (misl && CheckSight(target, SF_IGNOREVISIBILITY|SF_IGNOREWATERBOUNDARY))
-				Attack(false);
-		}
+		A_StartSoundIfNotSame("GCreeper/Chase","GCreeper/Chase", 398, CHANF_LOOP);
 		if (Target && !Target.bKILLED)
 		{
+			if (misl)
+			{
+				if (Target != OldTarget)
+				{
+					Seen = false;
+					OldTarget = Target;
+				}
+				
+				if (!Seen)
+					Seen = CheckTargetAim();
+				
+				if (Seen && BallDelay < 1)
+				{
+					BallDelay = random[rng](15,25);
+					if (misl && CheckSight(target, SF_IGNOREVISIBILITY|SF_IGNOREWATERBOUNDARY))
+						Attack(false);
+				}
+			}
 			A_FaceTarget(0);
 			Vector2 v = Vec2Angle(speed, (bFRIGHTENED ? angle + 180 : angle));
-			TryMove(v, (bDROPOFF || bNOCLIP));
+			if (pos.z <= floorz && vel.z ~== 0.0)
+				TryMove(v, (bDROPOFF || bNOCLIP));
 			if (mel && CheckMeleeRange())
 			{
 				SetState(ResolveState("Melee"));
@@ -265,36 +333,46 @@ Class GFCreeper : GFGhoulBase
 		}
 		else
 		{
+			OldTarget = Target;
 			if (mel)	A_Chase(flags: CHF_DONTMOVE|CHF_DONTTURN|CHF_NODIRECTIONTURN);
 			else		A_Chase(null, flags: CHF_DONTMOVE|CHF_DONTTURN|CHF_NODIRECTIONTURN);
-		}	
+		}
+		
 	}
 	
 	States
 	{
 	Spawn:
-		CREE A 15 A_Look();
+		G001 A 15 A_Look();
 		Loop;
 	See:
-		CREE A 0 { SetFear(false); PlaySeeSound(); }
+		G001 A 0 { SetFear(false); PlaySeeSound(); }
 		
 	Chasing:
-		CREE AAAABBBB 2 CreeperChase();
+		---- A 0 A_StartSound("GCreeper/Chase", 398, CHANF_LOOP);
+	ChaseLoop:
+		G001 AAAABBBB 2 CreeperChase();
 		Loop;
 	Melee:
-		TNT1 A 0 Attack(true);
-		Goto Pain;
+		G001 A 0 
+		{
+			Attack(true);
+			CreeperPain();
+		}
+		G001 ABABABABABABABABAB 1 bright CreeperChase(false);
+		Goto PainCont;
 	Pain:
-		CREE A 0 CreeperPain();
-		CREE AB 1 bright CreeperChase(false);
-		CREE ABABABABABABABAB 1 bright CreeperChase();
-		CREE E 0 { bNOPAIN = false; }
-		CREE ABABABABABAB 2 CreeperChase();
-		CREE ABABABABABAB 3 CreeperChase();
-		CREE A 0 SetFear(false);
+		G001 A 0 CreeperPain();
+		G001 ABABAB 1 bright CreeperChase(false);
+		G001 ABABABABABAB 1 bright CreeperChase();
+	PainCont:
+		G001 E 0 { bNOPAIN = false; }
+		G001 ABABABABABAB 2 CreeperChase();
+		G001 ABABABABABAB 3 CreeperChase();
+		G001 A 0 SetFear(false);
 		Goto Chasing;
 	Death:
-		CREE D 0 
+		G001 D 0 
 		{
 			bNOCLIP = false;
 			bTHRUACTORS = true;
@@ -309,12 +387,48 @@ Class GFCreeper : GFGhoulBase
 	}
 }
 
+//------------------------------------------------------------------------------	
+Class GFCreeperTrace : LineTracer
+{
+	Actor from, to;
+	override ETraceStatus TraceCallback()
+	{
+		Switch (Results.HitType)
+		{
+			Case TRACE_HitActor:
+			{
+				let mo = Results.HitActor;
+				return (mo == to) ? TRACE_Stop : TRACE_Skip;
+			}
+			Case TRACE_HitFloor:
+			Case TRACE_HitCeiling:
+			Case TRACE_HitNone:
+				return TRACE_Stop;
+			
+			Case TRACE_HitWall:
+			{
+				if (Results.Tier == TIER_Upper || Results.Tier == TIER_Lower) 
+					return TRACE_Stop;
+			
+				let hf = Results.HitLine.Flags;
+				if (hf & (Line.ML_BLOCKEVERYTHING | Line.ML_BLOCKSIGHT))
+					return TRACE_Stop;
+				
+				if ((hf & Line.ML_BLOCKING) && !(hf & Line.ML_TWOSIDED))
+					return TRACE_Stop;
+			}
+		}
+		return TRACE_Skip;
+	}
+}
+//------------------------------------------------------------------------------	
+
 Class GFCreeperPopup : Actor
 {
 	const maxdiv = 4;
 	const _height = 56;
 	const hdiv = _height / maxdiv;
-	bool primary;
+	bool primary, heal;
 	Default
 	{
 		Projectile;
@@ -335,9 +449,10 @@ Class GFCreeperPopup : Actor
 	
 	private void BOO()
 	{
+		if (!Tracer)	return;
 		isalive = (primary && !Tracer.bKILLED);
 		int dmg = Tracer.DamageMobj(self, target, 100, DamageType, DMG_THRUSTLESS);
-		if (dmg > 0 && Target && !Target.bKILLED)	Target.GiveBody(dmg);
+		if (heal && dmg > 0 && Target && !Target.bKILLED)	Target.GiveBody(10);
 		killcheck = (isalive && Tracer.bKILLED);
 	}
 	
@@ -360,12 +475,14 @@ Class GFCreeperPopup : Actor
 			{
 				if (!(Tracer is 'PlayerPawn'))
 					BOO();
-				A_StartSound("GCreeper/Attack", 5);	break;
+				A_StartSound("GCreeper/Attack", 5);	
+				break;
 			}
 			Case 6:
 			{
 				if (Tracer is 'PlayerPawn')
 					BOO();
+				Tracer.A_GiveInventory("GFCreeperImmunity",1);
 				break;
 			}
 			Case 12:
@@ -388,7 +505,7 @@ Class GFCreeperPopup : Actor
 	States
 	{
 	Spawn:
-		CREE CCCCCCCCC 1 Popup();
+		G001 CCCCCCCCC 1 Popup();
 	Fading:
 		---- A 1 
 		{	
@@ -396,6 +513,15 @@ Class GFCreeperPopup : Actor
 			A_FadeOut();
 		}
 		Wait;
+	}
+}
+
+Class GFCreeperImmunity : PowerProtection
+{
+	Default
+	{
+		Powerup.Duration 15;
+		DamageFactor "CreeperBoo", 0.0;
 	}
 }
 
@@ -431,6 +557,13 @@ Class GFCreeperSlow : PowerSpeed
 	{
 		if (!Owner)	
 		{	Destroy(); return; }
+		
+		if (Owner.bINVULNERABLE)
+		{
+			EffectTics = 1;
+			Super.DoEffect();
+			return;
+		}
 		
 		if (Owner.Speed != CurSpeed)
 			RealSpeed = Owner.Speed; // The owner performed a speed change
@@ -496,10 +629,12 @@ Class GFCreeperBall : Actor
 		}
 		if ((mo is 'PlayerPawn' || mo.bISMONSTER) && !mo.bKILLED)
 		{
-			let inv = 	GFCreeperSlow(mo.FindInventory("GFCreeperSlow"));
-			if (inv)	inv.EffectTics += CreeperSlowDuration;
-			else		mo.A_GiveInventory("GFCreeperSlow",1);
-			
+			if ((!mo.bREFLECTIVE || bDONTREFLECT) && !mo.bINVULNERABLE)
+			{
+				let inv = 	GFCreeperSlow(mo.FindInventory("GFCreeperSlow"));
+				if (inv)	inv.EffectTics += CreeperSlowDuration;
+				else		mo.A_GiveInventory("GFCreeperSlow",1);
+			}
 			if (mo.bFLOAT)
 				mo.DamageMobj(self, target, random[rng](DmgMin,DmgMax), Damagetype);
 			else
@@ -543,3 +678,4 @@ Class GFCreeperBall : Actor
 		Stop;
 	}
 }
+

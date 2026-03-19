@@ -1,18 +1,34 @@
 /*==============================================================================
 	Eyesore
 	
-An escaped experiment from a lab, this mutant spider demon is the definition of
-arachnophobia. The mindless organism only has one desire: feed. Due to its augments
-it can rapidly generate little babies to swarm its foes, and its bite is the 
-most dangerous, capable of chomping a human in half.
+Hell is polluted with uncountable types of demons, all of them scoring in the 
+billions per each type - even the heaviest have an armada per each type. But
+once the hordes fell into disgrace after Flynn obliterated the Icon of Sin,
+many demons evaporated, fell apart, became lethargic or exploded. Aimless and
+directionless, it was their turn to become prey. 
 
-Hit it with rapid weaponry to slow it down, also good for quickly splattering
-its offspring. It may withdraw and scuttle away in order to try attacking again
-later. Do not relent. Pursue it to death. It can crawl on ceilings too, so keep
-an eye out. Thankfully, it's not very well developed and can go down with several
-super shotgun blasts.
+The Yurei found the remains of a specialized imp that was about to make its
+grand debut, but the Icon's destruction left it exceptionally vulnerable, and
+they didn't stand a chance. Yet this freakish fiend's horrific visage would
+serve perfectly, taking its head up and mutating it into fleshy abomination
+resembling a head with tentacle legs, and set loose upon the forest where it
+crawls on walls and ceilings to take its prey by surprise from above and 
+feast upon the flesh of fools.
 
-Recommended Weapon: Chaingun (Pistol for Baby Sores)
+Eyesore prefers to drop upon his foes, mouth open to secure a quick chomp and 
+sever the heads of his enemies with his extremely powerful jaws. Alternatively,
+it lowers a slowly descending web upon a hapless victim, and once snared, yanks
+it up at insane speeds to devour them with great haste. Whenever he eats a corpse,
+he regurgitates as mini-sores after a short time to serve as ankle biters.
+
+If there is no ceiling, he'll rapidly spring his way towards his victim in an
+effort to chomp on them, but his nature makes him vulnerable to mutation/melting
+since his limbs are rather frail. He's also quite bulky, and won't ever spawn
+in tight areas.
+
+
+
+Recommended Weapon: Chaingun
 ==============================================================================*/
 
 Class GFEyesore : GFGhoulBase abstract

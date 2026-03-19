@@ -31,21 +31,21 @@ Class GFData
 	private GFData ProcessObject(GFJsonObject obj)
 	{
 		// First make sure there is a ModID present.
-		GFJsonElement elemModID = obj.Get("mod_id");
-		if (!elemModID)	ThrowAbortException("mod_id is missing. Add it with a unique name to fix.");
+		GFJsonElement elem = obj.Get("mod_id");
+		if (!elem)	ThrowAbortException("mod_id is missing. Add it with a unique name to fix.");
 		else
 		{
-			let miid = GFJsonString(elemModID);
-			if (!miid)	ThrowAbortException("mod_id: Expected a GFJsonString, got "..elemModID.getClassName());
+			let miid = GFJsonString(elem);
+			if (!miid)	ThrowAbortException("mod_id: Expected a GFJsonString, got "..elem.getClassName());
 			ModID = miid.s;
 		}
 		
 		// "Upgrades" array
-		GFJsonElement elem = obj.Get("upgrades");
+		elem = obj.Get("upgrades");
 		if (elem)
 		{
 			let arr = GFJsonArray(elem);
-			if (!arr)	ThrowAbortException(ModID.." upgrades: Expected GFJsonArray, got "..elemGhouls.getClassName());
+			if (!arr)	ThrowAbortException(ModID.." upgrades: Expected GFJsonArray, got "..elem.getClassName());
 			
 			// Now iterating through each object defined.
 			for (uint i = 0; i < arr.Size(); i++)
@@ -56,11 +56,11 @@ Class GFData
 		}
 		
 		// "Ghouls" array
-		GFJsonElement elemGhouls = obj.Get("ghouls");
-		if (elemGhouls)
+		elem = obj.Get("ghouls");
+		if (elem)
 		{
-			let arr = GFJsonArray(elemGhouls);
-			if (!arr)	ThrowAbortException(ModID.." ghouls: Expected GFJsonArray, got "..elemGhouls.getClassName());
+			let arr = GFJsonArray(elem);
+			if (!arr)	ThrowAbortException(ModID.." ghouls: Expected GFJsonArray, got "..elem.getClassName());
 			
 			// Now iterating through each object defined.
 			for (uint i = 0; i < arr.Size(); i++)
@@ -71,11 +71,11 @@ Class GFData
 		}
 		
 		// 'Traits' array
-		GFJsonElement elemTraits = obj.Get("traits");
-		if (elemTraits)
+		elem = obj.Get("traits");
+		if (elem)
 		{
-			GFJsonArray arr = GFJsonArray(elemTraits);
-			if (!arr)	ThrowAbortException(ModID.." traits: expected array of strings, got "..elemTraits.GetClassName());
+			GFJsonArray arr = GFJsonArray(elem);
+			if (!arr)	ThrowAbortException(ModID.." traits: expected array of strings, got "..elem.GetClassName());
 			
 			// see GFTraitData 
 			for (uint i = 0; i < arr.Size(); i++)

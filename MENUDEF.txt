@@ -6,10 +6,9 @@ AddOptionMenu "OptionsMenu"
 Optionmenu "GhoulSpawnOptions"
 {
 	Title "Ghoul Spawn Options"
-	Submenu "Keybinds",					"GhoulSpawnKeybinds"
+	Submenu "Ghoul Spawn Keybinds",		"GhoulSpawnKeybinds"
 	Option "Ghoul Spawner", 			GS_GhoulSpawn,		"OnOff"
 	Option "Ghouls Despawn",			GS_Despawn,			"YesNo"
-	Slider "Repeat Limit",				GS_RepeatLimit,		0, 10, 1, 0
 	option "Spawn Alert",				GS_AlertNoiseType,	"GSAlertType"
 	StaticText ""
 	Option "Target Behavior",			GS_Targeting,		"GSTarget"

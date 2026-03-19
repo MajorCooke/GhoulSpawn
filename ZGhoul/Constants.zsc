@@ -5,3 +5,9 @@ enum EGFTraitRank
 	GFTR_RARE,
 	GFTR_LEGENDARY
 };
+
+enum EGSConstants
+{
+	GS_SPAWN_WEIGHT = 1,	// Whenever a ghoul is selected, their chance is reduced to this.
+	GS_SPAWN_ADD = 1		// Weight to add to each counter, boosting spawn chances 
+};

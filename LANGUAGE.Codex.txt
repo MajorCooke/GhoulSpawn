@@ -1,0 +1,125 @@
+[en default]
+
+/*------------------------------------------------------------------------------
+	Tips
+------------------------------------------------------------------------------*/
+GSC_CODEX_TIP_RADSUIT =
+"Many Ghoul debuffs can be countered by wearing a Radiation Suit. They won't "
+"cancel out any current active effects, but they will prevent further application.";
+
+GSC_CODEX_TIP_INVUL =
+"Any form of invulnerability will cancel out and prevent debuff application.";
+
+GSC_CODEX_TIP_INFIGHT_1 =
+"Ghouls can infight with anything other than the Yurei, even themselves. They're "
+"perfect for taking out Arch-viles.";
+
+GSC_CODEX_TIP_INFIGHT_2 =
+"Ghouls may share an amicable hatred of humanity with the demons, but by no means"
+"are they friends, and won't hesitate to retaliate swiftly. They also remember "
+"*everyone* who attacked them, pursuing them in order of who attacked first.";
+
+GSC_CODEX_TIP_INFIGHT_3 =
+"Watch out for ghoul traits! They will make the ghoul stronger and/or heal upon "
+"killing an enemy.";
+
+/*------------------------------------------------------------------------------
+	Codex Intro
+------------------------------------------------------------------------------*/
+
+GSC_CODEX_1 =
+"At last. The spell worked. Due to you amassing spiritual residuals known as "
+"Auroric Essence, we are finally able to conjure forth our Tome of Horizons. "
+"We have been monitoring your efforts for some time, looking for someone who "
+"has the strength and will to stand against the tides of evil being unleashed "
+"on our world."
+"\n\n"
+"We are the Council of Illumination - an army of warlocks, mages, priests, druids, "
+"witch doctors, demonologists, and many more - and we offer this book to you now "
+"to help turn the tide against the Yurei. "
+"\n\n"
+"Unfortunately, the essences are tuned only to that of the spiritual. Most of "
+"the power within only affects the Ghouls. Yet we will work tirelessly to find "
+"an attunement, and you shall be the first to know when we discover the means. "
+"Fear not; The knowledge and power found within is considerably strong against "
+"the Yurei and her misguided desire for revenge will be denied, if used wisely.";
+
+GSC_CODEX_2 =
+"Even now, we continue to watch you, so we may aid you. We shall provide updates "
+"whenever we have made discoveries about your enemies. Knowledge is power, and "
+"knowing your enemy along with their traits will save your skin. Our goal is "
+"two-fold."
+"\n\n"
+"First, we aim to ease your plight by identifying weaknesses in your enemy, or"
+"warning you about certain strengths, otherwise referred to as Traits, when their"
+"presence is known."
+"\n\n"
+"The last ghoul your eyes perceive upon will have their traits highlighted within "
+"the Ghoul chapter of this codex. No doubt the Yurei will likely strengthen her "
+"minions each time by learning from their defeat...";
+
+GSC_CODEX_3 =
+"Second, we practice the arcane rituals of Anima - the power source behind all "
+"things supernatural. This book was filled to the brim with anima, but it was "
+"consumed in order to send this to you. Thankfully, the first Voidstone was not. "
+"\n\n"
+"Within the Anima chapter are several schools of power for you to choose from. "
+"It'd be wise to look at each tree before dedicating your Voidstone to one - "
+"Once you lock in a Voidstone, it cannot be removed. You may yet be able to find "
+"more Voidstones from the ghouls, which  prevent the elements from clashing, or"
+"causing unintended side effects such as explosions."
+"\n\n"
+"Unlike the Voidstones, Anima can be re-allocated if you have enough, but doing so "
+"will have a small toll on your supply, as Anima is very easy to seep through even "
+"the most powerfully enchanted seals."
+"\n\n"
+"You will have to gather more Aurora spirits in order to empower the book, but all "
+"the knowledge needed to utilize it will be learned instantly upon empowerment.";
+
+GSC_CODEX_4 =
+"Finally, ";
+
+//------------------------------------------------------------------------------
+// Light
+//------------------------------------------------------------------------------
+
+GSC_LIGHT_DESC =
+"'Let there be Light', our Lord said, and there was Light. The Savior has graced "
+"us with the might of Heaven, and through me, the power to burn away the impurities "
+"of our universe can be found here. Fear no evil, for the Light shall destroy your "
+"enemies in a spectacle of blazing divine flame and strike terror into the hearts "
+"of all evil."
+"\n\n"
+"- Pope Nifalex III";
+
+GSC_DARK_DESC =
+"'Let there be Darkness', The One said. Often forsook, forgotten, and condemned. "
+"Not all darkness is evil, and not all Light is good. A lesson to learn is, anyone "
+"powerful enough can twist it to their will. The Darkness I offer you now, warrior, "
+"is pure. Unfettered. Incorruptible and venerable, as The One had intended. Through "
+"enlightenment, the Darkness, when wielded with the backing of The One, shall protect "
+"you, for it is only maddening and destructive to those who abuse it. Your shield "
+"shall shrug off blows as if cast by a mere flea, ensuring you survive the most "
+"gruelling battles and emerge stronger than ever."
+"\n\n"
+"- Mardon, Master Warlock";
+
+GSC_LIFE_DESC =
+"Strength through Unity. United, we stand. Never to falter. That is what the Wonder "
+"taught the Druids. Through ritual attunement, we have communed with the souls of "
+"the past. As this new enemy is spiritual in nature, they are capable of aiding you "
+"in battle. Undoubtedly you've ill need of more foes trying to kill you. With the "
+"power of Life on your side, you can call forth the spirits of the dead back to "
+"the living to exact vengeance against those slain by evil. Together, we shall "
+"drive back the damned back to Hell for good."
+"\n\n"
+"- Otemis Grandmaster of Spirits";
+
+GSC_DEATH_DESC =
+"Death is only feared by evil. Those who fight to uphold the virtues of life embrace "
+"it when their time comes. They shall join the righteous above, while the wicked "
+"fall. Death's favor is not easy to earn, but when it does, your enemies are "
+"denied what they crave. Your destruction is instead theirs. Punish the wicked by"
+"summoning forth powerful blows of retaliation for daring to strike you down."
+"\n\n"
+"- Mortia, Balance Keeper";

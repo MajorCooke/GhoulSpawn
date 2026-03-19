@@ -28,6 +28,6 @@ Class GFSoulHarvester : GFGhoulBase abstract
 {
 	Default
 	{
-		Tag "Reaper";
+		Tag "Soul Harvester";
 	}
 }

@@ -179,7 +179,7 @@ Class GFTargeting : Behavior
 		
 		Owner.bQUICKTORETALIATE = quick;
 		Owner.bNOTARGETSWITCH = nosw;
-		return ret;
+		
 		
 		return ret;
 	}

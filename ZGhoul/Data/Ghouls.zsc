@@ -4,9 +4,10 @@ Class GFGhoulData
 	Name ID;						// Name of the ghoul
 	String Tag;						// For mods like TargetSpy
 	Map<Name, GFDropData> Drops;	// item drops
-	Map<Name, GFDamageData> Damages;// Special damage interactions
-	Map<Name, double> DamageFactors;// 
+	Map<Name, GFDamageData> Damages;// Special damage interactions via ZJSON
+	Map<Name, double> DamageFactors;// Customized damage factors via ZJSON
 	int Weight;						// Spawn Chance (RandomSpawner styled)
+	int CurLevel;					// Current level of the ghoul.
 	
 	void Init()
 	{

@@ -26,6 +26,7 @@ Recommended Weapon: Chaingun
 ==============================================================================*/
 
 // Fightable boss
+// G015
 Class GFYurei : GFGhoulBase abstract
 {
 	Default

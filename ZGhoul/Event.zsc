@@ -1,10 +1,6 @@
 
-
 Class GFEventStatic : StaticEventHandler
 {
-	private Array<Class<GFGhoulBase> > Order;
-	private int Count, LastNum;
-	
 	static clearscope GFEventStatic Fetch()
 	{	return GFEventStatic(Find('GFEventStatic'));	}
 	
@@ -15,6 +11,8 @@ Class GFEventStatic : StaticEventHandler
 		else MsgNetworkProcess(e);
 	}
 	
+	// see Libraries/ZHudMsg/hudmsg.zsc
+	/*
 	override void InterfaceProcess(ConsoleEvent e)
 	{
 		MsgInterfaceProcess(e);
@@ -25,48 +23,58 @@ Class GFEventStatic : StaticEventHandler
 		MsgRenderOverlay(e);
 	}
 	
-	override void WorldLoaded(WorldEvent e)
-	{
-		LastNum = -1;
-		RefreshGhoulList();
-	}
-	
 	override void WorldTick()
 	{
 		TickMessages();
 	}
-	
-	Class<GFGhoulBase> PickGhoul()
+	*/
+	override void WorldLoaded(WorldEvent e)
 	{
-		if (Order.Size() < 1)
-		{
-			RefreshGhoulList();
-			if (Order.Size() < 1)
-			{
-				Console.Printf("No ghouls applicable!");
-				return null;
-			}
-		}
-		int which = max(0,random[rng](0, Order.Size()-1));
-		if (LastNum > -1 && Which == LastNum && Order.Size() > 1)
-		{
-			if (Count < GS_RepeatLimit)
-				Count++;
-			else while (Which == LastNum)
-				which = max(0,random[rng](0, Order.Size()-1));
-			
-		}
-		else Count = 0;
-		LastNum = which;
-		return Order[which];
+		RefreshGhoulList();
 	}
 	
-	private void RefreshGhoulList()
+	private Array<Class<GFGhoulBase> > Ghouls;
+	private Array<Int> Weights;
+	Class<GFGhoulBase> PickGhoul()
 	{
-		Order.Clear();
-		
+		// Get the total counters and add them together.
+		int total = 0;
+		for (int i = 0; i < Weights.Size(); i++)
+		{
+			if (!Ghouls[i])
+			{
+				Ghouls.Delete(i);
+				Weights.Delete(i--);
+				continue;
+			}
+			Weights[i] = max(GS_SPAWN_WEIGHT, Weights[i]);
+			total += Weights[i];
+		}
+		int i = 0;
+		int n = random[rs](0, total - 1);
+		while (n > -1)
+		{
+			if (!Ghouls[i] || n > Weights[i])
+			{
+				n -= Weights[i++];
+			}
+			else
+			{
+				Weights[i] = GS_SPAWN_WEIGHT; 
+				for (int j = 0; j < Weights.Size(); j++)
+					if (j != i)
+						Weights[j] += GS_SPAWN_ADD;
+				return Ghouls[i];
+			}
+		}
+		return null;
+	}
+	
+	void RefreshGhoulList()
+	{
+		Ghouls.Clear();
+		Weights.Clear();
 		// Get a list of all classes inheriting from GFGhoulBase.
-		// TO DO: Expand with ZJSON so people can register any class.
 		int i = 0;
 		for (i = 0; i < AllActorClasses.Size(); i++)
 		{
@@ -74,39 +82,23 @@ Class GFEventStatic : StaticEventHandler
 			if (gh)	
 			{
 				gh = (class<GFGhoulBase>)(Actor.GetReplacement(gh));
-				if (gh && gh.isAbstract())	
+				if (!gh || gh.isAbstract())
 					continue;
 				let defs = GetDefaultByType(gh);
 				if (defs.NormalSpawn)
-					Order.Push(gh);
+				{
+					Ghouls.Push(gh.GetClassName());
+					Weights.Push(GS_SPAWN_WEIGHT);
+				}
 			}
 		}
-		
-		if (Order.Size() < 1)
-		{
-			Console.Printf("No ghouls gotten!");
-			return;
-		}
-		// List assembled, now randomize the order.
-		int size = Order.Size();
-		for (int z = 0; z < size; z++) // Do it multiple times for maximum random.
-			for (i = 0; i < size; i++)
-			{
-				if (random[rng](0,1) == 0)
-					continue;
-				int j = i; 
-				while (j == i)
-					j = random[rng](0,size-1);
-				
-				let temp = Order[i];
-				Order[i] = Order[j];
-				Order[j] = temp;
-			}
 	}
 }
 
 Class GFEvent : EventHandler
 {
+	
+	private bool NoSpawn; // ultimate killswitch.
 	private GFEventStatic SEvent;
 	private Array<Class<GFGhoulBase> > Order;
 	private Array<GFGhoulBase> Ghouls;
@@ -127,8 +119,9 @@ Class GFEvent : EventHandler
 		RefreshGhoulList();
 		if (e.IsReopen || e.IsSaveGame) return;
 		Timer = 35 * 60;
+		NoSpawn = CheckBlacklistedMap();
 	}
-	
+	/*
 	override void WorldThingSpawned(WorldEvent e)
 	{
 		let mo = e.Thing;
@@ -137,7 +130,7 @@ Class GFEvent : EventHandler
 			mo.AddBehavior('JitterMislCrasher');
 		}
 	}
-	
+	*/
 	override void NetworkProcess(ConsoleEvent e)
 	{
 		if (e.Name == 'GS_ToggleSpawning')
@@ -149,49 +142,13 @@ Class GFEvent : EventHandler
 			if (!res)	Console.Printf("Ghoul Spawn On");
 			else		Console.Printf("Ghoul Spawn Off");
 		}
+		else if (e.Name == 'GS_Enable')
+			NoSpawn = false;
 	}
 	
 	private void RefreshGhoulList()
 	{
-		Order.Clear();
-		
-		// Get a list of all classes inheriting from GFGhoulBase.
-		// TO DO: Expand with ZJSON so people can register any class.
-		int i = 0;
-		for (i = 0; i < AllActorClasses.Size(); i++)
-		{
-			let gh = (class<GFGhoulBase>)(AllActorClasses[i]);
-			if (gh)	
-			{
-				gh = (class<GFGhoulBase>)(Actor.GetReplacement(gh));
-				if (gh && gh.isAbstract())	
-					continue;
-				let defs = GetDefaultByType(gh);
-				if (defs.NormalSpawn)
-					Order.Push(gh);
-			}
-		}
-		
-		if (Order.Size() < 1)
-		{
-			Console.Printf("No ghouls gotten!");
-			return;
-		}
-		// List assembled, now randomize the order.
-		int size = Order.Size();
-		for (int z = 0; z < size; z++) // Do it multiple times for maximum random.
-			for (i = 0; i < size; i++)
-			{
-				if (random[rng](0,1) == 0)
-					continue;
-				int j = i; 
-				while (j == i)
-					j = random[rng](0,size-1);
-				
-				let temp = Order[i];
-				Order[i] = Order[j];
-				Order[j] = temp;
-			}
+		if (SEvent) SEvent.RefreshGhoulList();
 	}
 	
 	private GFGhoulBase Ghoul;
@@ -216,11 +173,11 @@ Class GFEvent : EventHandler
 			Ghoul.bSOLID = false;
 		}
 	}
-	
 	private Actor plr;
 	override void WorldTick()
 	{
-		if (gamestate != GS_LEVEL || !level ||
+		if (NoSpawn ||
+			gamestate != GS_LEVEL || !level ||
 			level.LevelName == 'TitleMap' || // in case someone goes "map titlemap" in console
 			level.MapName == 'TitleMap' || 
 			level.IsFrozen())
@@ -299,6 +256,24 @@ Class GFEvent : EventHandler
 		let mo = GFGhoulBase(e.Thing);
 		if (mo)	
 			Ghouls.Delete(Ghouls.Find(mo));
+	}
+	
+	private bool CheckBlacklistedMap()
+	{
+		static const Name cs[] =
+		{
+			'78E69EEB7369D73F0431F5FCDBD78E3B', // RAMP2025.pk3 INTERMAP
+			'D59F75A8B44A90F23CBA7B2F480683FF', // RAMP2025.pk3 HUBMAP
+			'B2954FBC46DA2294CD9AF585338A7535' // RAMP2024.pk3 HUBMAP
+		};
+		
+		Name s = level.GetChecksum();
+		for (int i = 0; i < cs.Size(); i++)
+		{
+			if (s == cs[i])
+				return true;
+		}
+		return false;
 	}
 }
 

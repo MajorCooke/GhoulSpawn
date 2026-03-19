@@ -32,7 +32,7 @@ GST_CALMJAW_BASE = "CalmJaw";
 GST_CALMJAW_NAME = "Calm Jaw";
 GST_CALMJAW_ICON = "";
 GST_CALMJAW_DESC =
-"Jiggle Meddle additionally is silent.";
+"Jiggle Jaws additionally is silent.";
 
 GST_MESSYEATER_BASE = "MessyEater";
 GST_MESSYEATER_NAME = "Messy Eater";
@@ -49,7 +49,7 @@ GST_CALCIUMJAW_DESC =
 GST_CALCIFIER_BASE = "Calcifier";
 GST_CALCIFIER_ICON = "";
 GST_CALCIFIER_DESC =
-"Healing multiplies per corpse Jitterskull is eating.";
+"Healing increased per corpse Jitterskull is eating.";
 
 GST_BONESTORM_BASE = "BoneStorm";
 GST_BONESTORM_NAME = "Bone Storm";
@@ -217,7 +217,7 @@ GST_SNAKEEYES_BASE = "SnakeEyes";
 GST_SNAKEEYES_NAME = "Snake Eyes";
 GST_SNAKEEYES_ICON = "";
 GST_SNAKEEYES_RANK = "Legendary";
-GST_SNAKEEYES_DESC = "Boo bypasses all damage protection and instakills non-vulnerable enemies.";
+GST_SNAKEEYES_DESC = "Boo bypasses all damage protection and instakills non-invulnerable enemies.";
 
 
 /*------------------------------------------------------------------------------
@@ -237,23 +237,36 @@ GST_GORGER_BASE = "Gorger";
 GST_GORGER_ICON = "";
 GST_GORGER_DESC = "Gore balls deal explosive damage.";
 
-GST_PHANTOM_BASE = "PhantomMunchace";
-GST_PHANTOM_NAME = "The Phantom Munchace";
-GST_PHANTOM_DESC = "Choke's bites gradually make him more invisible briefly."
-GST_PHANTOM_LONG =
-"Each successful bite on his foes grants him slight invisibility. The more invisible "
-"he becomes, the more likely projectiles pass through him (up to 50%). Upon reaching "
-"75% invisible, enemies will start guessing their shots. When fully invisible, he moves "
-"faster and can catch up to his prey, no matter where they go.";
+GST_BUBONISM_BASE = "Bubonism";
+GST_BUBONISM_DESC = "Choke emits a vile damaging gas as he deals damage."
+GST_BUBONISM_ICON = "";
+
+GST_BLOODWALL_BASE = "BloodWall";
+GST_BLOODWALL_NAME = "Blood Wall";
+GST_BLOODWALL_DESC = "Choke conjures up a blood wall occasionally in the direction of his target.";
+
+GST_PLAGUEBEARER_BASE = "PlagueBearer";
+GST_PLAGUEBEARER_NAME = "Plague Bearer";
+GST_PLAGUEBEARER_DESC = "Choke's vomit carries disease that damages all who stay in the area for a short time.";
+GST_PLAGUEBEARER_ICON = "";
+
+GST_FAMISHMENT_BASE = "Famishment";
+GST_FAMISHMENT_DESC = "Choke moves faster the less health he has.";
+GST_FAMISHMENT_ICON = "";
+
+// Rare
+GST_SIMULACRUM_BASE = "Simulacrum";
+GST_SIMULACRUM_DESC = "Choke occasionally duplicates himself with weak clones.";
 
 // Legendary
 GST_CHONK_BASE = "Chonk";
 GST_CHONK_ICON = "";
-GST_CHONK_DESC = "Moves slower, higher health, pain tolerance, and gains Spread Rune effects.";
+GST_CHONK_DESC = "Moves slower, higher health, pain tolerance, and pukes many more projectiles.";
 
 
 GST_CARRIONCANNON_BASE = "CarrionCannon";
 GST_CARRIONCANNON_NAME = "Carrion Cannon";
+GST_CARRIONCANNON_ICON = "";
 GST_CARRIONCANNON_DESC = "Choke uses up all his corpses to fire a much stronger blood ball all at once.";
 GST_CARRIONCANNON_LONG =
 "When Choke has at least 3 corpses in his gullet, he can charge up a super powerful "
@@ -261,3 +274,116 @@ GST_CARRIONCANNON_LONG =
 "is also vulnerable, allowing for a window of opportunity to kill him before he finishes."
 "This ball is affected by traits, and deals enough damage to almost always be lethal "
 "on contact.";
+
+/*------------------------------------------------------------------------------
+	Frostbite
+------------------------------------------------------------------------------*/
+GST_HAILSTORM_BASE = "Hailstorm";
+GST_HAILSTORM_ICON = "";
+GST_HAILSTORM_DESC = "Icicles rain down around Frostbite's presence.";
+
+GST_CHILLINGSPINE_BASE = "ChillingSpine";
+GST_CHILLINGSPINE_NAME = "Chilling Spines";
+GST_CHILLINGSPINE_DESC = "Frostbite occasionally drops large exploding chunks when damaged.";
+GST_CHILLINGSPINE_TIER = "+10% chance";
+
+GST_FROSTNOVA_BASE = "FrostNova";
+GST_FROSTNOVA_NAME = "Frost Nova";
+GST_FROSTNOVA_DESC = "Frostbite spits out exploding ice bombs that deal damage as they pass.";
+GST_FROSTNOVA_TIER = "+Damage per tier";
+GST_FROSTNOVA_TIER_05 = "Explodes again after delay";
+GST_FROSTNOVA_TIER_10 = "+1 Explosion Count";
+GST_FROSTNOVA_LONG = 
+"Frost Novas are balls of ice that constantly emit tiny ice shards. They pass "
+"through and damage anything in their path, with a predetermined stopping point "
+"to just behind the victim where they explode.";
+
+GST_COLDSNAP_BASE = "ColdSnap";
+GST_COLDSNAP_NAME = "Cold Snap";
+GST_COLDSNAP_DESC = "Ice Breath chills enemies, slowing all movement";
+GST_COLDSNAP_TIER = "Increased slow amount";
+
+GST_HELLFROST_BASE = "Hellfrost";
+GST_HELLFROST_DESC = "Frostbite's attacks inflict Hellfrost, dealing damage over time";
+GST_HELLFROST_TIER = "+Max Duration";
+GST_HELLFROST_LONG = 
+"Any damage inflicted by Frostbite will apply/extend Hellfrost that damages enemies "
+"every 0.5 seconds. Taking damage from enemies reduces the duration. "
+"The reduction effect is greatly amplified from non-monster damage.";
+
+GST_COLDPEAK_BASE = "ColdPeak";
+GST_COLDPEAK_NAME = "Cold Peaks";
+GST_COLDPEAK_DESC = "Occasionally leaves damaging and slowing snow piles when moving";
+GST_COLDPEAK_TIER = "+Duration";
+
+GST_TUNDRA_BASE = "Tundra";
+GST_TUNDRA_NAME = "Tundra's Defense";
+GST_TUNDRA_DESC = "Frostbite's armor regenerates and takes more damage";
+GST_TUNDRA_TIER = "+% Damage Absorption, -Delay";
+
+GST_SOULFROST_BASE = "SoulFrost";
+GST_SOULFROST_NAME = "Soul Frost";
+GST_SOULFROST_DESC = "Gains health/armor upon killing enemies";
+GST_SOULFROST_TIER = "+% Health/Armor per kill/assist";
+GST_SOULFROST_LONG = 
+"Killing an enemy instantly restores % of health, armor, and increases armor "
+"damage absorption for a short time. This is based on how much damage Frostbite "
+"has done to the enemy - the more it deals, the greater the restoration. Bosses "
+"greatly increase this effect as well.";
+
+GST_HEXICE_BASE = "HexIce";
+GST_HEXICE_NAME = "Hex Ice";
+GST_HEXICE_DESC = "Frost Breath can form a bomb on damage/kill.";
+GST_HEXICE_LONG =
+"Frost Breath has a chance to form Hex Ice, an ice proximity bomb that detonates "
+"when the living touch it. Kills by Frost Breath or Hex Ice is guaranteed to form "
+"Hex Ice on the victim's corpse. Can be destroyed, or waited out until it melts. "
+"Hex Ice also always detonates whenever Frostbite's target touches it, regardless "
+"of conditions.";
+
+GST_BITTERRETURN_BASE = "BitterReturn";
+GST_BITTERRETURN_NAME = "Bitter Return";
+GST_BITTERRETURN_DESC = "Moves faster while regenerating armor";
+GST_BITTERRETURN_ICON = "";
+
+// Rare
+GST_COLDDEMISE_BASE = "ColdDemise";
+GST_COLDDEMISE_NAME = "Cold Demise";
+GST_COLDDEMISE_DESC = "Frostbite slams the ground, flinging enemies into the air.";
+GST_COLDDEMISE_LONG = 
+"Frostbite performs a powerful slam into the ground and dealing light damage. "
+"Monsters below 200 health and players below 25 are killed instantly.";
+
+GST_ICECLOAK_BASE = "IceCloak";
+GST_ICECLOAK_NAME = "Ice Cloak";
+GST_ICECLOAK_DESC = "Invisibility based on armor (up to 95%)";
+GST_ICECLOAK_ICON = "";
+
+GST_FROZENHEART_BASE = "FrozenHeart";
+GST_FROZENHEART_NAME = "Frozen Heart";
+GST_FROZENHEART_ICON = "";
+GST_FROZENHEART_DESC = "Gains damage resistance based on damage/kills.";
+GST_FROZENHEART_LONG = 
+"Frostbite gains resilience based on different factors: "
+"Damage-granted resistance gradually fades over time. "
+"Kill-granted resistance can be worn down by damage.";
+
+GST_FRIGIDVEIL_BASE = "FrigidVeil";
+GST_FRIGIDVEIL_NAME = "Frigid Veil";
+GST_FRIGIDVEIL_ICON = "";
+GST_FRIGIDVEIL_DESC = "Ice Armor explodes when shattered, damaging and knocking back all.";
+
+// Legendary
+GST_CHILLINGDEMISE_BASE = "ChillingDemise";
+GST_CHILLINGDEMISE_NAME = "Chilling Demise";
+GST_CHILLINGDEMISE_DESC = "Periodically releases massive, powerful ice explosions";
+GST_CHILLINGDEMISE_TIER = "+Charge Rate";
+GST_CHILLINGDEMISE_LONG = 
+"Frostbite constantly generates a concentrated orb of pure cold that circles "
+"around it. The bigger the orb, the more damage it does to those who touch it. "
+"Upon reaching critical mass, Frostbite stops moving and erupts three times. "
+"Anything caught within the frost particulates will be dealt a small % of their "
+"health + armor combined as damage, and briefly frozen solid.\n\n"
+""
+"Frostbite cannot move or attack while casting. Taking volatile ground damage"
+"will melt the ice block much faster instead.";
