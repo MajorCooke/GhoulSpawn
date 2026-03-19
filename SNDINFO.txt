@@ -2,26 +2,26 @@ weapons/dnrocketexplo	dexplo
 
 // GHOUL SOUNDS
 
-Ghoul/Damaged	"Sounds/GhoulDamaged"
-Ghoul/Explode1	"Sounds/GhoulExplode1"
-Ghoul/Explode2	"Sounds/GhoulExplode2"
+Ghoul/Damaged	"Sounds/GhoulDamaged.ogg"
+Ghoul/Explode1	"Sounds/GhoulExplode1.wav"
+Ghoul/Explode2	"Sounds/GhoulExplode2.flac"
 
 $limit Ghoul/Damaged 0
 $limit Ghoul/Explode1 0
 $limit Ghoul/Explode2 0
 
-Jitterskull/Chase1	"Sounds/Jitterskull/Chase1"
-Jitterskull/Chase2	"Sounds/Jitterskull/Chase2"
-Jitterskull/Chase3	"Sounds/Jitterskull/Chase3"
-Jitterskull/Chase4	"Sounds/Jitterskull/Chase4"
-Jitterskull/Chew	"Sounds/Jitterskull/Chew"
-Jitterskull/Attack	"Sounds/Jitterskull/Attack"
-Jitterskull/Taunt	"Sounds/Jitterskull/Taunt"
-Jitterskull/Pain1	"Sounds/Jitterskull/Pain1"
-Jitterskull/Pain2	"Sounds/Jitterskull/Pain2"
-Jitterskull/Pain3	"Sounds/Jitterskull/Pain3"
-Jitterskull/Pain4	"Sounds/Jitterskull/Pain4"
-Jitterskull/Death	"Sounds/Jitterskull/Death"
+Jitterskull/Chase1	"Sounds/Jitterskull/Chase1.wav"
+Jitterskull/Chase2	"Sounds/Jitterskull/Chase2.wav"
+Jitterskull/Chase3	"Sounds/Jitterskull/Chase3.wav"
+Jitterskull/Chase4	"Sounds/Jitterskull/Chase4.wav"
+Jitterskull/Chew	"Sounds/Jitterskull/Chew.flac"
+Jitterskull/Attack	"Sounds/Jitterskull/Attack.wav"
+Jitterskull/Taunt	"Sounds/Jitterskull/Taunt.flac"
+Jitterskull/Pain1	"Sounds/Jitterskull/Pain1.wav"
+Jitterskull/Pain2	"Sounds/Jitterskull/Pain2.wav"
+Jitterskull/Pain3	"Sounds/Jitterskull/Pain3.wav"
+Jitterskull/Pain4	"Sounds/Jitterskull/Pain4.wav"
+Jitterskull/Death	"Sounds/Jitterskull/Death.wav"
 
 $limit Jitterskull/Chew 0
 $pitchset Jitterskull/Chew 1.0
@@ -31,17 +31,17 @@ $random Jitterskull/Chase
 $random Jitterskull/Pain
 {	Jitterskull/Pain1 Jitterskull/Pain2 Jitterskull/Pain3 Jitterskull/Pain4 }
 
-GCreeper/Chase		"Sounds/Creeper/Chase"
-GCreeper/Attack		"Sounds/Creeper/Attack"
-GCreeper/Gotcha		"Sounds/Creeper/Gotcha"
-GCreeper/Taunt		"Sounds/Creeper/Taunt"
-GCreeper/TickS		"Sounds/Creeper/Ticking"
-GCreeper/TickF		"Sounds/Creeper/Ticking"
-GCreeper/Ding		"Sounds/Creeper/Ding"
-GCreeper/Pain		"Sounds/Creeper/Pain"
-GCreeper/Death		"Sounds/Creeper/Death"
-GCreeper/Curse		"Sounds/Creeper/Curse"
-GCreeper/Cursed		"Sounds/Creeper/Cursed"
+GCreeper/Chase		"Sounds/Creeper/Chase.wav"
+GCreeper/Attack		"Sounds/Creeper/Attack.wav"
+GCreeper/Gotcha		"Sounds/Creeper/Gotcha.flac"
+GCreeper/Taunt		"Sounds/Creeper/Taunt.flac"
+GCreeper/TickS		"Sounds/Creeper/Ticking.wav"
+GCreeper/TickF		"Sounds/Creeper/Ticking.wav"
+GCreeper/Ding		"Sounds/Creeper/Ding.wav"
+GCreeper/Pain		"Sounds/Creeper/Pain.wav"
+GCreeper/Death		"Sounds/Creeper/Death.wav"
+GCreeper/Curse		"Sounds/Creeper/Curse.flac"
+GCreeper/Cursed		"Sounds/Creeper/Cursed.flac"
 
 //TickF is only there for the sped up version.
 $rolloff GCreeper/TickS 1500 6000
@@ -53,13 +53,13 @@ $limit GCreeper/Attack 0
 $limit GCreeper/Curse 0
 $limit GCreeper/Cursed 0
 
-Sjas/See	"Sounds/Sjas/See"
-Sjas/Chase	"Sounds/Sjas/Chase"
-Sjas/Attack	"Sounds/Sjas/Attack"
-Sjas/Charge	"Sounds/Sjas/Charge"
-Sjas/Taunt	"Sounds/Sjas/Taunt"
-Sjas/Pain	"Sounds/Sjas/Pain"
-Sjas/Death	"Sounds/Sjas/Death"
+Sjas/See	"Sounds/Sjas/See.wav"
+Sjas/Chase	"Sounds/Sjas/Chase.wav"
+Sjas/Attack	"Sounds/Sjas/Attack.wav"
+Sjas/Charge	"Sounds/Sjas/Charge.wav"
+Sjas/Taunt	"Sounds/Sjas/Taunt.wav"
+Sjas/Pain	"Sounds/Sjas/Pain.wav"
+Sjas/Death	"Sounds/Sjas/Death.wav"
 
 $limit Sjas/Attack 0
 $limit Sjas/Pain 0
@@ -68,21 +68,21 @@ $limit Sjas/See 0
 $limit Sjas/Death 0
 $limit Sjas/Chase 0
 
-Yurei/Hit			"Sounds/Yurei/Hit"
-Yurei/Pain			"Sounds/Yurei/Pain"
-Yurei/Death			"Sounds/Yurei/Death"
-Yurei/Attack		"Sounds/Yurei/Attack"
-Yurei/Spawn			"Sounds/Yurei/Spawn"
-Yurei/Heartbeat		"Sounds/Yurei/Heartbeat"
-Yurei/Hellgate		"Sounds/Yurei/Hellgate"
-Yurei/Giggle1		"Sounds/Yurei/Giggle1"
-Yurei/Giggle2		"Sounds/Yurei/Giggle2"
-Yurei/Giggle3		"Sounds/Yurei/Giggle3"
-Yurei/Giggle4		"Sounds/Yurei/Giggle4"
-Yurei/Warning		"Sounds/Yurei/Warning"
-Yurei/Woosh			"Sounds/Yurei/Woosh"
-Yurei/Scream1		"Sounds/Yurei/YureiScream1"
-Yurei/Scream2		"Sounds/Yurei/YureiScream2"
+Yurei/Hit			"Sounds/Yurei/Hit.wav"
+Yurei/Pain			"Sounds/Yurei/Pain.flac"
+Yurei/Death			"Sounds/Yurei/Death.wav"
+Yurei/Attack		"Sounds/Yurei/Attack.flac"
+Yurei/Spawn			"Sounds/Yurei/Spawn.flac"
+Yurei/Heartbeat		"Sounds/Yurei/Heartbeat.flac"
+Yurei/Hellgate		"Sounds/Yurei/Hellgate.flac"
+Yurei/Giggle1		"Sounds/Yurei/Giggle1.flac"
+Yurei/Giggle2		"Sounds/Yurei/Giggle2.flac"
+Yurei/Giggle3		"Sounds/Yurei/Giggle3.flac"
+Yurei/Giggle4		"Sounds/Yurei/Giggle4.flac"
+Yurei/Warning		"Sounds/Yurei/Warning.flac"
+Yurei/Woosh			"Sounds/Yurei/Woosh.wav"
+Yurei/Scream1		"Sounds/Yurei/YureiScream1.ogg"
+Yurei/Scream2		"Sounds/Yurei/YureiScream2.ogg"
 
 Choke/Chase			"Sounds/Choke/Chase.flac"
 Choke/Melee			"Sounds/Choke/Melee.flac"
