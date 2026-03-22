@@ -1,0 +1,25 @@
+Class GS_Trait : Behavior
+{
+	int Amount;
+}
+
+extend class GS_GhoulBase
+{
+	void AddTrait(Name tr, int amt = 1)
+	{
+		let trait = GS_Trait(AddBehavior(tr));
+		if (trait)	trait.Amount = Max(1,amt);
+	}
+	
+	int CheckTrait(Name tr, int amt = -1)
+	{
+		let trait = GS_Trait(FindBehavior(tr));
+		if (!trait) return 0;
+		return trait.Amount;
+	}
+	
+	void RemoveTrait(Class<GS_Trait> tr)
+	{
+		if (tr) RemoveBehavior(tr);
+	}
+}

@@ -1,5 +1,4 @@
 
-
 class GS_CarryToken : Inventory
 {
 	Default
@@ -10,10 +9,6 @@ class GS_CarryToken : Inventory
 	}
 }
 
-class GS_TraitInfo
-{
-	
-}
 class GS_Missile : Actor abstract {	Default	{ Projectile; }}
 class GS_GhoulBase : Actor abstract
 {
@@ -60,7 +55,6 @@ class GS_GhoulBase : Actor abstract
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
-		if (TargetList)	AddBehavior('GS_Targeting');
 		flashtimer = -1;
 	}
 	
@@ -103,23 +97,47 @@ class GS_GhoulBase : Actor abstract
 	}
 	
 	protected int CurDmg;
+	protected Array<Actor> Targets;
 	override int DamageMobj(Actor i, Actor s, int damage, Name mod, int flags, double angle)
 	{
 		if (bKILLED)	return -1;
 		
 		if ((s && s is 'GS_GhoulBase' && !GS_GhoulsInfight))
 			return 0;
+		
+		Actor tar = Target;
 		int dmg = Super.DamageMobj(i, s, damage, mod, flags|DMG_NO_PAIN, angle);
 		
 		if (bKILLED || dmg < 1)	return dmg;
+
+		// Remember this target and attack them in order of most recent.
+		if (tar != Target)
+		{
+			/*
+			Actor who = null;
+			if (s && s == target)
+				who = s;
+			else if (i)
+			{
+				if (i == target)
+					who = i;
+				else if (i.target && i.target == target)
+					who = i.target;
+			}
+			if (who)
+				HandleDamager(who);
+			*/
+			HandleDamager(Target);
+		}
 		
+		// Pain handling
 		if (!bNOPAIN && !(flags & DMG_NO_PAIN) && (!i || !i.bPAINLESS))
 		{
 			if ((i && i.bFORCEPAIN) || (s && s.bFORCEPAIN) || (DmgThreshold > 0 && CurDmg + dmg >= DmgThreshold))
 			{
 				CurDmg = 0;
 				let st = ResolveState("Pain");
-				if (st) SetState(st);				
+				if (st) SetState(st);
 			}
 			else 
 			{
@@ -178,7 +196,6 @@ class GS_GhoulBase : Actor abstract
 	
 	override void Die(Actor s, Actor i, int flags, Name mod)
 	{
-		RemoveBehavior('GS_Targeting');
 		A_SetTranslation('');
 		bNOICEDEATH = true; // Do not allow ice deaths!
 		Super.Die(s, i, flags, mod);
@@ -212,6 +229,8 @@ class GS_GhoulBase : Actor abstract
 		
 		bACTIVATEMCROSS = !bNOCLIP;
 		bNOTRIGGER = bNOCLIP;
+		
+		HandleTargets();
 		
 		if (PainTimer > 0)	PainTimer--;
 		
@@ -256,20 +275,7 @@ class GS_GhoulBase : Actor abstract
 	
 	//--------------------------------------------------------------------------
 	// Custom functions
-	//--------------------------------------------------------------------------
-	private Map<Name, Int> Traits;
-	private GS_EventStatic SEvent;
-	void SetTrait(Name ID, int level)
-	{
-		if (!SEvent)	SEvent = GS_EventStatic.Fetch();
-		
-	}
-	
-	clearscope int CheckTrait(Name ID) const
-	{
-		return 0;
-	}
-	
+	//--------------------------------------------------------------------------	
 	void PlaySeeSound(bool normal = false)
 	{
 		if (GS_AlertNoiseType < 1)	return;
@@ -520,57 +526,4 @@ Class GhoulDeathExplo : GS_GhoulFX
 	*/
 	}
 }
-/*
-Class tf : Actor
-{
-	Default
-	{
-		+NOINTERACTION
-		+NOBLOCKMAP
-		+NOSECTOR
-	}
-	
-	void DoFountain()
-	{
-		let vt = level.SpawnVisualThinker('vtt');
-		if (vt)	vt.pos = pos;
-	}
-	
-	States
-	{
-	Spawn:
-		TNT1 A 1 DoFountain();
-		Wait;
-	}
-}
 
-Class vtt : VisualThinker
-{
-	private double RollAdd;
-	override void PostBeginPlay()
-	{
-		Super.PostBeginPlay();
-		prev = pos;
-		RollAdd = frandom(5, 25) * frandompick(-1,1);
-		Scale.X = frandom(20, 100);
-		vel = (frandom(-10,10), frandom(-10, 10), frandom(5, 20));
-		flags |= SPF_FULLBRIGHT|SPF_ROLL;
-		scolor = Color(0, 255, 0);
-		SetParticleType(random(0,2));
-	}
-	
-	override void Tick()
-	{
-		if (IsFrozen())
-			return;
-		Super.Tick();
-		
-		roll += RollAdd;
-		vel.z -= 0.5;
-		alpha -= 0.05;
-		
-		if (alpha <= 0.0)
-			Destroy();
-	}
-}
-*/

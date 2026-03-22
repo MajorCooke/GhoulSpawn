@@ -222,7 +222,7 @@ class GS_JitterSkull : GS_GhoulBase
 						"Jitterskull somehow managed to chew up and eat a ghost that is %o",
 						"Jitterskull enjoyed %o's sweet screams while dining on his face."
 					};
-					pick = ob[random(0, ob.Size()-1)];
+					return ob[random(0, ob.Size()-1)];
 				}
 				else if (victim is 'GS_Creeper')
 				{
@@ -234,7 +234,7 @@ class GS_JitterSkull : GS_GhoulBase
 						"Creeper played around in a field of giants and paid the price.",
 						"Jitter tolerates disrespect from no one - not even a baby Creeper."
 					};
-					pick = ob[random(0, ob.Size()-1)];
+					return ob[random(0, ob.Size()-1)];
 				}
 				else if (victim is 'GS_Frostbite')
 				{
@@ -246,7 +246,7 @@ class GS_JitterSkull : GS_GhoulBase
 						"Frostbite now copes with the fact that Jitterskull's bite is stronger.",
 						"Jitterskull proved to be too dense to be frozen by Frostbite."
 					};
-					pick = ob[random(0, ob.Size()-1)];
+					return ob[random(0, ob.Size()-1)];
 				}
 				else if (victim is 'GS_Choke')
 				{
@@ -258,7 +258,7 @@ class GS_JitterSkull : GS_GhoulBase
 						"Jitterskull overpowered and ate his own brother Choke for lunch.",
 						"Munching up Choke filled Jitterskull with newfound unlife."
 					};
-					pick = ob[random(0, ob.Size()-1)];
+					return ob[random(0, ob.Size()-1)];
 				}
 				else
 				{
@@ -270,9 +270,8 @@ class GS_JitterSkull : GS_GhoulBase
 						"Jitterskull purged %o's heresy by devouring them",
 						"%o's betrayal was short-lived thanks to Jitterskull's all-consuming maw"
 					};
-					pick = ob[random(0, ob.Size()-1)];
+					return ob[random(0, ob.Size()-1)];
 				}
-				return pick;
 			}
 			else
 			{
@@ -290,9 +289,8 @@ class GS_JitterSkull : GS_GhoulBase
 					"For Jitterskull's next trick, %o became chewing gum! Magical!",
 					"Jitterskull filled the Yurei's belly with %o's yummy essence."
 				};
-				pick = ob[random(0, ob.Size()-1)];
+				return ob[random(0, ob.Size()-1)];
 			}
-			return pick;
 		}
 		return Super.GetObituary(victim, i, mod, pa);
 	}
