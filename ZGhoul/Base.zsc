@@ -321,8 +321,6 @@ class GS_Materializer : Actor
 			bYFLIP = master.bYFLIP;
 			A_FadeOut(1.0, FTF_CLAMP);
 			A_SetSize(master.radius, master.height);
-			if (GS_AlertNoiseType > 1)
-				A_StartSound("Yurei/Warning", 5, 0, 1, ATTN_NONE, 1.0);
 		}
 		else Destroy();
 	}

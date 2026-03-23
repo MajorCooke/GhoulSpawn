@@ -174,8 +174,11 @@ class GS_Event : EventHandler
 		}
 	}
 	private Actor plr;
+	private int EscCount;
+	private bool EscNoise;
 	override void WorldTick()
 	{
+		if (!GS_GhoulSpawn)		{	NG = false; Timer = 35;	return;		}
 		if (NoSpawn ||
 			gamestate != GS_LEVEL || !level ||
 			level.LevelName == 'TitleMap' || // in case someone goes "map titlemap" in console
@@ -183,16 +186,16 @@ class GS_Event : EventHandler
 			level.IsFrozen())
 			return;
 			
-		if (!GS_GhoulSpawn)		{	Timer = 35;	return;		}
 		if (Timer > 0)			{	Timer--;	return;		}
 		
 		if (NG)	
 		{
-			Timer += 35 * 60 * 2;
+			Timer = 35 * 60 * 4;
 			NG = false;
+			return;
 		}
 		
-		if (!Ghoul || !plr)
+		if (!plr)
 		{
 			int pnum = random[rng](0,MAXPLAYERS-1);
 			bool good = false;
@@ -209,38 +212,73 @@ class GS_Event : EventHandler
 			
 			plr = players[pnum].mo;
 		}
-		PickGhoul();
-		if (!Ghoul)	return;
-		if (Ghoul.bNOCLIP)
+		
+		bool good = false;
+		
+		EscCount = 1;
+		if (random[esc](1, 100) <= GS_EscChance)
+			EscCount = random[esc](GS_EscGhoulsMin, GS_EscGhoulsMax);
+		
+		for (int i = 0; i < EscCount; i++)
 		{
-			Vector3 next = plr.Vec3Angle(random[rng](1000,3000), random[rng](0,359));
-			Ghoul.SetOrigin(next, false);
+			PickGhoul();
+			if (!Ghoul)	return;
+			if (Ghoul.bNOCLIP)
+			{
+				Vector3 next = plr.Vec3Angle(random[rng](1000,3000), random[rng](0,359));
+				Ghoul.SetOrigin(next, false);
+			}
+			else
+			{
+				Ghoul.SetOrigin(plr.pos, false);
+				if (!Level.IsPointInLevel(Ghoul.pos))
+				{	Timer = 35; return;		}
+				for (int i = 0; i < 40; i++)
+				{
+					Ghoul.bNOTRIGGER = true;
+					Ghoul.Speed = Max(30, Ghoul.Speed);
+					Ghoul.A_Wander();
+				}
+				Ghoul.Speed = Ghoul.Default.Speed;
+				Ghoul.bNOTRIGGER = Ghoul.Default.bNOTRIGGER;
+				Ghoul.SetZ(Ghoul.FloorZ);
+				Ghoul.BlockingLine = null;
+				Ghoul.Blocking3DFloor = null;
+				Ghoul.BlockingFloor = null;
+				Ghoul.BlockingCeiling = null;
+				Ghoul.BlockingMobj = null;
+				Ghoul.bTHRUACTORS = true;
+				bool check = Ghoul.CheckPosition(Ghoul.Pos.XY);
+				Ghoul.bTHRUACTORS = false;
+				
+				if (!check)
+				{	Timer = 35; return;		}
+			}
+			Ghoul.Target = plr;
+			Ghoul.LastHeard = plr;
+			Ghoul.Materialize();
+			Ghouls.Push(Ghoul);
+			if (i < 1 && GS_AlertNoiseType > 1)
+				Ghoul.A_StartSound("Yurei/Warning", 1234, 0, 1, ATTN_NONE, 1.0);
+			Ghoul = null;
+			good = true;
+		}
+		plr = null;
+		/*
+		if (EscCount > 0)
+		{
+			EscCount 
+			Timer = 35;
+			EscNoise = false;
 		}
 		else
+		*/
 		{
-			Ghoul.SetOrigin(plr.pos, false);
-			if (!Level.IsPointInLevel(Ghoul.pos))
-			{	Timer = 35; return;		}
-			Ghoul.SetZ(Ghoul.FloorZ);
-			Ghoul.BlockingLine = null;
-			Ghoul.Blocking3DFloor = null;
-			Ghoul.BlockingFloor = null;
-			Ghoul.BlockingCeiling = null;
-			Ghoul.BlockingMobj = null;
-			Ghoul.bTHRUACTORS = true;
-			bool check = Ghoul.CheckPosition(Ghoul.Pos.XY);
-			Ghoul.bTHRUACTORS = false;
-			
-			if (!check)
-			{	Timer = 35; return;		}
+			int tmin = GS_TimerMinMin * 60 + GS_TimerSecMin;
+			int tmax = GS_TimerMinMax * 60 + GS_TimerSecMax;
+			Timer = 35 * random[rs](tmin, tmax);
+			EscNoise = true;
 		}
-		Ghoul.Target = plr;
-		Ghoul.LastHeard = plr;
-		Ghoul.Materialize();
-		Ghouls.Push(Ghoul);
-		Ghoul = null;
-		plr = null;
-		Timer = 35 * (30 * random(1,5));
 	}
 	
 	override void WorldThingDied(WorldEvent e)

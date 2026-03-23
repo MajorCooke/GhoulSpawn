@@ -1,16 +1,41 @@
 /*==============================================================================
 	Frostbite
 	
-Within the frozen tundras of the world, a series of spirits haunts these areas.
-They remain dormant until they feel the loss of life, and hear the cries of
-agony brought upon by their murderer. These spirits rise up to answer their plea,
-forming into the frosty bulwark skull that delivers their murderer a chilling
-demise.
-
-When the Yurei reached out to the dead, Frostbite understood her desire for 
-revenge, and joined ranks in an effort to wipe out the so-called scourge that is
-humanity, once and for all...
+A semi-tanky ghoul who can partially "fly", and has a shield that regenerates.
+Can spew frost breath to chill his enemies, likely causing a lot of infighting. 
 ==============================================================================*/
+
+Class GS_FrostPart : Actor abstract
+{
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+	}
+}
+
+Class GS_FrostDome : GS_FrostPart
+{
+	States
+	{
+	Spawn:
+		G005 A -1;
+		Stop;
+	}
+}
+
+Class GS_FrostJaw : GS_FrostPart
+{
+	States
+	{
+	Spawn:
+		G005 B -1 A_SpriteOffset(0,0);
+		Stop;
+	Melee:
+		G005 C -1; 
+		Stop;
+	}
+}
 
 // G005
 class GS_Frostbite : GS_GhoulBase abstract
@@ -18,18 +43,37 @@ class GS_Frostbite : GS_GhoulBase abstract
 	Default
 	{
 		Tag "Frostbite";
+		+EXTREMEDEATH
+		+ICESHATTER
+		DamageType "Ice";
 	}
 	
 	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
 	{
+		if (mod == 'Melee')
+		{
+			static const string ob[] =
+			{
+				"Frostbite loves the taste of frozen %o skewered between his teeth.",
+				"%o's bones slid down Frostbite's gullet as tasty frosted trreats.",
+				"Frostbite is sympathetic enough to release %o from pain. Violently.",
+				"Frostbite made %o into goofy gorey frozen foody fun for his tummy.",
+				"%o crackled and crunched deliciously between Frostbite's fangs.",
+				"Frostbite think's %o's kind tastes better frozen over.",
+				"Frostbite finished off %o as a frosty desert. Yum!"
+			};
+			return ob[random(0, ob.Size()-1)];
+		}
 		static const string ob[] =
 		{
 			"Frostbite made %o shiver to a standstill.",
-			"%o was made into an icy popsicle by Frostbite.",
+			"%o was made into a delicious icy popsicle by Frostbite.",
 			"%o felt the cold snap from Frostbite.",
-			"%o drank Frostbite's cool-aid. OH NAH!"
+			"%o drank Frostbite's cool-aid. OH NAH!",
+			"Frostbite, much like natural phenomenon, made %o lose their limbs.",
+			"%o witnessed Hell freezing over thanks to Frostbite.",
+			"%o's brain froze from eating too much of Frostbite's ice cream breath."
 		};
-		return ob[random(0, ob.Size())];
-		
+		return ob[random(0, ob.Size()-1)];
 	}
 }

@@ -16,6 +16,27 @@ Optionmenu "GhoulSpawnOptions"
 	option "$GS_ALERT_NAME",				GS_AlertNoiseType,	"GSAlertType"
 	Tooltip "$GS_ALERT_INFO"
 	StaticText ""
+	StaticText "Spawning", GOLD
+	Slider "$GS_TIMERMINMIN_NAME", GS_TimerMinMin, 0, 10, 1
+	Tooltip "$GS_TIMER_INFO"
+	Slider "$GS_TIMERSECMIN_NAME", GS_TimerSecMin, 1, 60, 1
+	Tooltip "$GS_TIMER_INFO"
+	Slider "$GS_TIMERMINMAX_NAME", GS_TimerMinMax, 0, 10, 1
+	Tooltip "$GS_TIMER_INFO"
+	Slider "$GS_TIMERSECMAX_NAME", GS_TimerSecMax, 1, 60, 1
+	Tooltip "$GS_TIMER_INFO"
+	
+	StaticText ""
+	StaticText "Escalations", GOLD
+	Slider "$GS_ESCCHANCE_NAME", GS_EscChance, 0, 100, 1
+	ToolTip "$GS_ESCCHANCE_INFO"
+	Slider "$GS_ESCGHOULSMIN_NAME", GS_EscGhoulsMin, 2, 10, 1
+	ToolTip "$GS_ESCGHOULSMIN_INFO"
+	Slider "$GS_ESCGHOULSMAX_NAME", GS_EscGhoulsMax, 2, 10, 1
+	ToolTip "$GS_ESCGHOULSMAX_INFO"
+	
+	StaticText ""
+	StaticText "Behaviors", GOLD
 	Option "$GS_TARGETING_NAME",			GS_Targeting,		"GSTarget"
 	Tooltip "$GS_TARGETING_INFO"
 	Option "$GS_GHOULSINFIGHT_NAME",		GS_GhoulsInfight,	"YesNo"

@@ -1,20 +1,3 @@
-/*
-sprite SAMBQ0, 301, 268
-{
-	patch SAMBN0, 147, 266
-	{
-		Translation "Inverse"
-	}
-}
-
-sprite SAMBP0, 296, 336
-{
-	patch SAMBO0, 145, 325
-	{
-		Translation "Inverse"
-	}
-}
-*/
 NoTrim G002Z1
 NoTrim G002Z2
 NoTrim G002Z3
@@ -30,3 +13,7 @@ NoTrim G002C0
 NoTrim G002D0
 NoTrim G002E0
 NoTrim G002F0
+
+NoTrim G005A0
+NoTrim G005B0
+NoTrim G005C0

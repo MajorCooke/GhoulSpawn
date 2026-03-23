@@ -1,26 +1,7 @@
 /*==============================================================================
 	Yurei
 
-Born to two cruel parents, she was often mistreated and eventually murdered by
-them. Saddened and enraged by their betrayal, she somehow gained unholy and
-supernatural powers from the grave, as she was consumed by hate for humanity.
-She slaughtered them, and started watching humanity from within her forest.
 
-Any who entered were killed by her, as all she wanted to do was be left alone.
-However it's clear to her that humanity is too sinful, and began raising an army
-to destroy the world in order to exact her revenge...
-
-She appears at a random location and attempts to summon in a random ghoul every
-few minutes. Upon killing a random amount of ghouls successfully, she may engage
-in the hunt by blinking in and out of the dimension with loud heartbeats.
-Unless they're invulnerable, they will die if they don't attack. She materializes
-closer each time, making her easier to find but also serving as a warning.
-
-She can be harmed during her phasing, which will drive her back and cause her to
-spawn more minions. If she takes enough damage, she will explode in a wave of 
-unholy flames and go away for the next 10-20 minutes before materializing again.
-
-If Endless mode is on, she'll never attack directly and just summon ghouls.
 
 Recommended Weapon: Chaingun
 ==============================================================================*/
@@ -35,19 +16,84 @@ class GS_Yurei : GS_GhoulBase abstract
 		+BOSS
 		+BOSSDEATH
 		Tag "Yurei";
+		Obituary "%o's soul was swallowed by the Yurei.";
 	}
 	
 	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
 	{
-		static const string ob[] =
+		if (mod == "Melee")
 		{
-			"%o couldn't outdance the Ghoul Devil known as the Yurei",
-			"The Yurei treated %o's soul like a slurpie and sucked them down",
-			"%o's soul now rests agonizingly in the Yurei's tummy",
-			"%o couldn't remain situationally aware of where the Yurei was at",
-			"%o felt the Yurei's walls closing in until they were crushed by her"
-		};
-		return ob[random(0, ob.Size())];
+			static const string ob[] =
+			{
+				"%o couldn't outdance the Ghoul Devil known as the Yurei",
+				"The Yurei treated %o's soul like a slurpie and sucked them down",
+				"The Yurei's vengeance extended out to %o and stole his soul.",
+				"%o now understands why the Yurei is angry.",
+				"The Yurei swooped down and delivered the soul-sucking kiss of death to %o"
+			};
+			return ob[random(0, ob.Size())];
+		}
+		else if (mod == "Fire")
+		{
+			static const string ob[] =
+			{
+				"%o went up in flames from the Yurei's infernal vortex.",
+				"%o's soul now fuels the eternal furnace that is the Yurei's hate.",
+				"%o's brain dopefished when they wanted to find out how hot the Yurei's vortex is.",
+				"The Yurei finds %o's cartoony death by infernal vortexplosion to be quite humorous.",
+				""
+			};
+			return ob[random(0, ob.Size())];
+		}
+		else if (mod == "Ice")
+		{
+			static const string ob[] =
+			{
+				"",
+				"",
+				"",
+				"",
+				""
+			};
+			return ob[random(0, ob.Size())];
+		}
+		else if (mod == "Curse")
+		{
+			static const string ob[] =
+			{
+				"",
+				"",
+				"",
+				"",
+				""
+			};
+			return ob[random(0, ob.Size())];
+		}
+		else if (mod == "Earth")
+		{
+			static const string ob[] =
+			{
+				"",
+				"",
+				"",
+				"",
+				""
+			};
+			return ob[random(0, ob.Size())];
+		}
+		else if (mod == "Electric")
+		{
+			static const string ob[] =
+			{
+				"",
+				"",
+				"",
+				"",
+				""
+			};
+			return ob[random(0, ob.Size())];
+		}
+		return Super.GetObituary(victim, i, mod, pa);
 	}
 }
 

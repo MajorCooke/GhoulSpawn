@@ -8,44 +8,29 @@ server bool GS_GhoulSpawn = true;
 // Ghouls despawn if the spawner is disabled.
 server bool GS_Despawn = false;
 
-// Yurei will only spawn ghouls, never attack.
-server bool GS_Endless = true;
-
-// Spawn ghouls a few minutes after all current ghouls are dead, otherwise
-// after a few minutes
-server bool GS_SpawnWait = true;
-
-// Spawn countdown happens regardless of ghouls present, otherwise waits until
-// all are dead. Only effective if GS_SpawnWait is on.
-server bool GS_SpawnCountdown = false;
-
-// Number of ghoul spawns increase gradually over time based on existing class #s
-// 0: Use GS_SpawnAmount
-// 1: Randomized number of ghouls between [1, GS_SpawnAmount]
-// 2: Gradually increase number of ghouls spawned, returning back to 1
-// 3: Same as 2 but stays at max
-// 4: No cap (will reset if changed or map changed)
-server int GS_QuantityType = 1;
-
-// Ghouls cycle through a full roster before they can spawn again.
-// Order determined at map start.
-server bool GS_Cycle = true;
-
 // 0: No alerts, easier jumpscares
 // 1: Normal attenuation for see sounds
 // 2: Global, including a piano slam before spawning
 server int GS_AlertNoiseType = 2;
 
+// How long to wait in minutes and seconds before spawning another ghoul.
+// Default is 30 seconds to 2 minutes. At the start of a new game, the timer is 
+// always set to maximum.
+server int GS_TimerMinMin = 0;
+server int GS_TimerSecMin = 30;
+server int GS_TimerMinMax = 2;
+server int GS_TimerSecMax = 0;
+
+// Chance of escalation encounters where more than one ghoul can spawn.
+server int GS_EscChance = 10;
+server int GS_EscGhoulsMin = 2;
+server int GS_EscGhoulsMax = 5; // 0 = max number of ghoul classes registered (doesn't mean some won't be duplicates)
+
+// 
+
 /*------------------------------------------------------------------------------
 	Difficulty CVARS
 ------------------------------------------------------------------------------*/
-
-// Ghouls can instantly kill in one hit unless invulnerable
-// 0: Disabled
-// 1: Monsters
-// 2: Players
-// 4: All
-server int GS_InstaKill = 0;
 
 // Targeting
 //-1: Only attack the target given at spawn, ignores pain from others
