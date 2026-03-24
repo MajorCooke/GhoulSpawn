@@ -4,7 +4,7 @@
 A semi-tanky ghoul who can partially "fly", and has a shield that regenerates.
 Can spew frost breath to chill his enemies, likely causing a lot of infighting. 
 ==============================================================================*/
-
+/*
 Class GS_FrostPart : Actor abstract
 {
 	Default
@@ -36,7 +36,7 @@ Class GS_FrostJaw : GS_FrostPart
 		Stop;
 	}
 }
-
+*/
 // G005
 class GS_Frostbite : GS_GhoulBase abstract
 {
