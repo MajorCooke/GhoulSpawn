@@ -12,6 +12,12 @@ class GS_CarryToken : Inventory
 class GS_Missile : Actor abstract {	Default	{ Projectile; }}
 class GS_GhoulBase : Actor abstract
 {
+	protected GS_EventStatic SEvent;
+
+	// JSON imports
+	private Map<Name, Double> Factors;
+
+	// Properties
 	meta bool TargetList;
 	Property TargetList: TargetList;
 	
@@ -25,6 +31,9 @@ class GS_GhoulBase : Actor abstract
 	
 	double PainVolume;
 	Property PainVolume: PainVolume;
+	
+	
+	
 	Default
 	{
 		GS_GhoulBase.DmgThreshold 10;
@@ -43,19 +52,33 @@ class GS_GhoulBase : Actor abstract
 		+DONTGIB
 		+NOICEDEATH
 		+NOTELESTOMP
+		+DONTMORPH
 		MaxSlopeSteepness 0;
 		DamageFactor "Crushing", 20.0; // An easy way to kill them.
 		DamageFactor "Drowning", 0.0;
-		DropItem "Megasphere";
-		DropItem "Backpack";
-		DropItem "Backpack";
-		DropItem "Backpack";
 	}
 	
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
 		flashtimer = -1;
+		SEvent = GS_EventStatic.Fetch();
+		if (SEvent)
+		{
+			let data = SEvent.GetGhoulData(GetClassName());
+			if (data)
+			{
+				Factors.Copy(data.Factors);
+				/*
+				Console.Printf(GetClassName().." Factor data:");
+				foreach (k, v : Factors)
+				{
+					Console.Printf("%s: %.2f", k, v);
+				}
+				*/
+			}
+		//	else	Console.Printf("No data found for "..GetClassName());
+		}
 	}
 	
 	override bool Morph(Actor a, class<PlayerPawn> b, class<Actor> c, int d, EMorphFlags e, class<Actor> f, class<Actor> g)
@@ -76,24 +99,36 @@ class GS_GhoulBase : Actor abstract
 		return false;
 	}
 	
-	protected int flashtimer;
-	void SetFlashTimer(int amt)	{ flashtimer = amt;	}
-	
-	protected bool invert;
-	protected virtual void DamageFlash(bool on = true)
+	override int TakeSpecialDamage(Actor i, Actor s, int dmg, Name type, int flags, double angle)
 	{
-		if (on)
+		if (dmg < 1 || (flags & (DMG_NO_FACTOR|DMG_FORCED)))
+			return dmg;
+				
+		// 
+		if (type != 'None' && !Factors.CheckKey(type))
 		{
-			if (!invert)	A_SetTranslation('GDamage1');
-			else			A_SetTranslation('GDamage2');
-			invert = !invert;
-		}
-		else
+		//	Console.Printf(GetClassName()..": Type "..type.." not found, switching to None");
+			type = 'None';
+		}	
+		double fac = 1.0;
+		bool good = false;
+		
+		[fac, good] = Factors.CheckValue(type);
+		if (good)
 		{
-			A_SetTranslation('');
-			invert = false;
+			int odmg = dmg;
+			dmg = int(round(double(dmg) * fac));
+			
+		//	if (fac > 0.0)
+		//		dmg = max(1, dmg);
+			
+		//	if (type != 'None')
+		//		Console.Printf(GetClassName().." ("..type.." %.2f): %d --> %d", fac, odmg, dmg);
+				
+				
+			
 		}
-		bBRIGHT = on;
+		return dmg;
 	}
 	
 	protected int CurDmg;
@@ -102,8 +137,17 @@ class GS_GhoulBase : Actor abstract
 	{
 		if (bKILLED)	return -1;
 		
-		if ((s && s is 'GS_GhoulBase' && !GS_GhoulsInfight))
-			return 0;
+		if (s && damage < TELEFRAG_DAMAGE) 
+		{
+			if (!GS_GhoulsInfight && s is 'GS_GhoulBase')
+				return 0;
+			if (infighting < 1)
+			{
+				if ((!i || !i.bISPUFF) &&
+					(s != self && s.GetClass() == GetClass() && !s.bDOHARMSPECIES))
+					return 0;
+			}
+		}
 		
 		Actor tar = Target;
 		int dmg = Super.DamageMobj(i, s, damage, mod, flags|DMG_NO_PAIN, angle);
@@ -157,7 +201,13 @@ class GS_GhoulBase : Actor abstract
 		String sn = "\cg"..GetTag();
 		String ob = sn.." died.";
 		Actor who; 
-		Actor arr[2] = {i, s};
+		Actor arr[2] = {s, i};
+		if (s is 'PlayerPawn')
+		{
+			arr[0] = i;
+			arr[1] = s;
+		}
+		
 		
 		for (int j = 0; j < arr.Size(); j++)
 		{
@@ -173,11 +223,13 @@ class GS_GhoulBase : Actor abstract
 				{
 					String ch2 = StringTable.Localize(check);
 					ob = ch2;
-				
 				}
 				break;
 			}
 		}
+		
+		
+		
 		if (ob.Length() < 1)	return;
 		if (who)
 		{	
@@ -273,9 +325,32 @@ class GS_GhoulBase : Actor abstract
 		}
 	}
 	
+	
+	
+	
 	//--------------------------------------------------------------------------
 	// Custom functions
-	//--------------------------------------------------------------------------	
+	//--------------------------------------------------------------------------
+	protected int flashtimer;
+	void SetFlashTimer(int amt)	{ flashtimer = amt;	}
+	
+	protected bool invert;
+	protected virtual void DamageFlash(bool on = true)
+	{
+		if (on)
+		{
+			if (!invert)	A_SetTranslation('GDamage1');
+			else			A_SetTranslation('GDamage2');
+			invert = !invert;
+		}
+		else
+		{
+			A_SetTranslation('');
+			invert = false;
+		}
+		bBRIGHT = on;
+	}
+	
 	void PlaySeeSound(bool normal = false)
 	{
 		if (GS_AlertNoiseType < 1)	return;
@@ -294,6 +369,34 @@ class GS_GhoulBase : Actor abstract
 			mo.instant = instant;
 			mo.target = target;
 			mo.master = self;
+		}
+	}
+	
+	protected void Fall()
+	{
+		A_NoBlocking(false);
+		if (!SEvent)	
+		{
+			SEvent = GS_EventStatic.Fetch();
+			if (!SEvent)	return;
+		}
+		
+		Array<GS_DropItem> Items;
+		if (SEvent.GetItems(self, Items))
+		{
+			foreach (it : Items)
+			{
+				if (!it || it.Count < 1) continue;
+				
+				if (random[drop](0,255) > it.Chance)
+					continue;
+					
+				Class<Actor> cls = it.ID;
+				if (!cls)	continue;
+				
+				for (int i = 0; i < it.Count; i++)
+					A_DropItem(cls);
+			}
 		}
 	}
 }
@@ -525,3 +628,36 @@ Class GhoulDeathExplo : GS_GhoulFX
 	}
 }
 
+Class GS_Megasphere : Megasphere
+{
+	Default
+	{
+		Translation "0:255=%[0,0,0]:[1,1,1]";
+	}
+	States
+	{
+	Spawn:
+		SOUL ABCDCB 6;
+		Loop;
+	}
+}
+
+Class GS_DefaultItems : Actor
+{
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+INVISIBLE
+		DropItem "Megasphere";
+		DropItem "Backpack";
+		DropItem "Backpack";
+		DropItem "Backpack";
+	}
+	States
+	{
+	Spawn:
+		TNT1 A 1 NoDelay A_Fall();
+		Stop;
+	}
+}

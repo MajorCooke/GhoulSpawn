@@ -44,6 +44,8 @@ class GS_Choke : GS_GhoulBase
 		DeathSound "Choke/Death";
 		Species "GS_Choke";
 		Tag "Choke";
+	//	DamageFactor "Sjas", 0.4;
+	//	DamageFactor "Jitter", 0.3;
 	}
 	
 	
@@ -249,7 +251,7 @@ class GS_Choke : GS_GhoulBase
 	{
 		Jiggle(0);
 		A_Scream();
-		A_Fall();
+		Fall();
 	}
 	private void ChokeBoom(bool big = false)
 	{

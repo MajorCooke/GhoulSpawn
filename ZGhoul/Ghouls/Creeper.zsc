@@ -50,9 +50,10 @@ class GS_Creeper : GS_GhoulBase
 		
 		
 		DamageType "CreeperBoo";
+		/*
 		DamageFactor "Sjas", 0.6;
 		DamageFactor "Jitter", 0.2;
-		DamageFactor "CreeperBoo", 0.0;
+		*/
 	}
 	
 	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
@@ -206,7 +207,7 @@ class GS_Creeper : GS_GhoulBase
 		SetFear(true);
 	//	SetFlashTimer(18);
 	//	DamageFlash(true);
-		S_StartSoundAt(pos, "Ghoul/Damaged", 5);
+	//	S_StartSoundAt(pos, "Ghoul/Damaged", 5);
 	}
 	
 	private void CreeperBoom()
@@ -381,7 +382,7 @@ class GS_Creeper : GS_GhoulBase
 			bTHRUACTORS = true;
 			Speed = Default.Speed * 0.25;
 			A_Scream();
-			A_Fall();
+			Fall();
 			A_FadeIn(1.0, FTF_CLAMP);
 			A_SetScale(0.06);
 		}

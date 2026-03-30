@@ -7,7 +7,10 @@ class GS_EventStatic : StaticEventHandler
 	override void NetworkProcess(ConsoleEvent e)
 	{
 		if (e.Name == 'GS_Refresh')
+		{
 			RefreshGhoulList();
+			ParseGhouls();
+		}
 		else MsgNetworkProcess(e);
 	}
 	
@@ -28,6 +31,7 @@ class GS_EventStatic : StaticEventHandler
 		TickMessages();
 	}
 	*/
+	
 	override void WorldLoaded(WorldEvent e)
 	{
 		RefreshGhoulList();
@@ -37,6 +41,9 @@ class GS_EventStatic : StaticEventHandler
 	private Array<Int> Weights;
 	Class<GS_GhoulBase> PickGhoul()
 	{
+		if (Ghouls.Size() < 1)
+			return null;
+	
 		// Get the total counters and add them together.
 		int total = 0;
 		for (int i = 0; i < Weights.Size(); i++)

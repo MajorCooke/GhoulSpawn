@@ -1,16 +1,23 @@
 # Ghoul Spawn
-(**Note:** Until the mod is ready, not all data is included intentionally to prevent running while it may be buggy.)
-
-## About
-Ghoul Spawn is a mod that takes ghouls from various Ghoul's Forest versions and Ghoul's vs. Humans: Multiverse. Ever wanted a more challenging experience to your various DooM WADS where Ghouls can spawn and attack you to spice things up? This is the mod for you! It takes the ghouls out of the forest and into the Hellscape you venture through to spice things up a bit.
-
-Included is a **codex** that will detail everything this mod adds. Through it, you can also access the **Talents** system which you can use to make dealing with ghouls easier.
+The Ghouls from the Forbidden Forest are out for blood and souls. As you blast through demonkind, the Yurei will occasionally bring her minions to bear against you through unholy portals to attack you, and the demons. Are you ready for an additional challenge? 
 
 More info coming soon!
 
+**Note:** The mod is currently in alpha, meaning development is still ongoing. Any bugs encountered should be reported to the [Issues](https://github.com/MajorCooke/GhoulSpawn/issues) section.
+
+## Setup
+You can either download a stable [release](https://github.com/MajorCooke/GhoulSpawn/releases) or a potentially unstable cutting edge version via the green "Code" button above (click Download as Zip). 
+
+[UZDoom Nightly](https://github.com/UZDoom/UZDoom/releases/tag/nightly) is required to run.
+
+[Doom Runner](https://github.com/Youda008/DoomRunner/releases) is an excellent launcher to use for launching multiple mods.
+
 ## Permissions
-Permissions have been obtained to use the resources within for this mod. 
-These resources are not limited to Ghoul Spawn and can be used elsewhere.
-**Make sure to give credit if you use them.** 
-See the **Credits.txt** file for thorough documentation on where they come from and copy that! 
-Also be sure to specify you got it from this mod in particular if you do.
+Permissions have been obtained to use the resources within for this mod.
+
+Reuse of code pieces/resources in your own mods **IS** allowed, however authors may **NOT** use GhoulSpawn as a base for modification.
+
+(Translation: please don't re-release GhoulSpawn whole with personal tweaks or include in modpacks if *modified*. Create an addon for it instead. If there are features required that are missing, you can make a feature suggestion in the Issues section for consideration.)
+
+**Make sure to give credit if you borrow from the mod.**
+See the [Credits](https://github.com/MajorCooke/GhoulSpawn/blob/main/1Docs/Credits.txt) file and copy where they're from.

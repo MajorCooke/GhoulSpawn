@@ -2,18 +2,30 @@
 Primary container for all data.
 The file structure is as such:
 
-* UpgradeData
+* TalentData
 * GhoulData
 * --> DamageData (specific to a ghoul)
 * --> DropData
 * --> TraitData
 */
+
+extend Class GS_EventStatic
+{
+	GS_GhoulData GetGhoulData(Name ID)
+	{
+		if (!JData)
+			return null;
+		
+		return JData.Ghouls.GetIfExists(ID);
+	}
+}
+
 Class GS_Data
 {
 	internal readonly Name ModID;
-	internal readonly Map<Name, GS_UpgradeData> Upgrades;
+	internal readonly Map<Name, GS_TalentData> Talents;
 	internal readonly Map<Name, GS_GhoulData> Ghouls;
-	internal readonly Map<Name, GS_TraitData> Traits;
+//	internal readonly Map<Name, GS_TraitData> Traits;
 	
 	//--------------------------------------------------------------------------
 	// Serialization functions
@@ -40,21 +52,6 @@ Class GS_Data
 			ModID = miid.s;
 		}
 		
-		// "Upgrades" array
-		elem = obj.Get("upgrades");
-		if (elem)
-		{
-			let arr = GS_JsonArray(elem);
-			if (!arr)	ThrowAbortException(ModID.." upgrades: Expected GS_JsonArray, got "..elem.getClassName());
-			
-			// Now iterating through each object defined.
-			for (uint i = 0; i < arr.Size(); i++)
-			{	// GS_GhoulData will handle the rest of the processing.
-				GS_UpgradeData ud = GS_UpgradeData.Deserialize(arr.Get(i));
-				if (ud)		Upgrades.Insert(ud.ID, ud);
-			}
-		}
-		
 		// "Ghouls" array
 		elem = obj.Get("ghouls");
 		if (elem)
@@ -69,7 +66,7 @@ Class GS_Data
 				if (gd)		Ghouls.Insert(gd.ID, gd);
 			}
 		}
-		
+		/*
 		// 'Traits' array
 		elem = obj.Get("traits");
 		if (elem)
@@ -84,6 +81,7 @@ Class GS_Data
 				if (td)		Traits.Insert(td.ID, td);
 			}
 		}
+		*/
 		return self;
 	}
 }

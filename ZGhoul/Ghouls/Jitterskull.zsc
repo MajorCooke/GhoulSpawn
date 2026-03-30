@@ -187,8 +187,8 @@ class GS_JitterSkull : GS_GhoulBase
 		SeeSound "Jitterskull/Taunt";
 		PainSound "Jitterskull/Pain";
 		DeathSound "Jitterskull/Death";
+		/*
 		// Internal Damagetypes
-		DamageFactor "Jitter", 0.0;
 		DamageFactor "Sjas", 1;
 		DamageFactor "CreeperBoo", 0.25;
 		// Undead (AEoD)
@@ -199,7 +199,7 @@ class GS_JitterSkull : GS_GhoulBase
 		DamageFactor "Holy", 2.0;
 		DamageFactor "Disintegrate", 1.5;
 		DamageFactor "AEMagic", 1.5;
-		
+		*/
 		DamageType "Jitter";
 		Obituary "%o was devoured by Jitterskull.";
 		Tag "Jitterskull";
@@ -716,7 +716,7 @@ class GS_JitterSkull : GS_GhoulBase
 	{
 		if (ChewTimer > 0)
 			dmg *= 2;
-		return dmg;
+		return Super.TakeSpecialDamage(i, s, dmg, dtype);
 	}
 	
 	private void JitterBoom(int count = 1, bool big = false)
@@ -822,7 +822,7 @@ class GS_JitterSkull : GS_GhoulBase
 			A_Stop();
 			A_StopAllSounds();
 			A_Scream();
-			A_Fall();
+			Fall();
 		}
 		---- A 1
 		{

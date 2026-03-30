@@ -29,7 +29,7 @@ Class GS_TraitData
 	internal readonly String Icon;			// graphic file name
 	internal readonly TextureID tex;			// texture used by VisualThinkers if enabled
 	internal readonly double Chance[2];		// [0] / [1] chance - defaults to 20 / 100 or 20% chance to apply on spawn
-	internal readonly EGS_TraitRank Rank;		// see ZGhoul/Constants.zsc
+	internal readonly EGSTraitRank Rank;		// see ZGhoul/Constants.zsc
 	internal readonly Array<Name> Items;		// Name of items to give, if any.
 	internal readonly Array<Name> Behaviors;	// Name of behaviors to apply
 	

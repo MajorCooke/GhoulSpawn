@@ -2,28 +2,31 @@
 
 Notes for addon makers:
 
-- JSON is case sensitive with the variable names, make sure they're all lower case.
-Specifically everything with a : AFTER it. Values stored after it are insensitive.
+- JSON is case sensitive with the variable NAMES, make sure they're all LOWER CASE.
+Values stored after it are insensitive. I.e.
 
+	"<variableName>":	<value>
+
+variableNames must be in lower case!
 ------------------------------------------------------------------------------*/
 
 {
 	// IMPORTANT: Make sure to give your mod_id the same name as your package!
 	// This will make it easier to debug if the JSON parser detects problems!
 	// Do NOT set it as the same as GhoulSpawn!
-	"mod_id": "GhoulSpawn", 
+	"mod_id": "GhoulSpawn",
 	
 	//--------------------------------------------------------------------------
-	// Upgrades
+	// Talents
 	//--------------------------------------------------------------------------
 	/*
 	"categories":
 	[
 		{
 			"category": "light",
-		//	"desc": "$GSC_LIGHT_DESC", //generally assumes it's "$GSC_<descName>_DESC", only needed if it's not matching.
-			"icon":	"LightCategory.png", // Tries searching in Graphics/Upgrades/Icons first, and if not, uses the whole string.
-			"pos": [ 0, 0 ]			// position of button on menu
+		//	"desc": "$GSC_LIGHT_DESC", 		// generally assumes it's "$GSC_<descName>_DESC", only needed if it's not matching.
+			"icon":	"LightCategory.png",	// Tries searching in Graphics/Upgrades/Icons first, and if not, uses the whole string.
+			"pos": [ 0, 0 ]					// position of button on menu
 		},
 		{
 			"category": "dark",
@@ -54,78 +57,115 @@ Specifically everything with a : AFTER it. Values stored after it are insensitiv
 			"cost": 1000,		// cost of aurora essence
 			"reqs":				// required purchases to have first, can be with 
 			[
-				"nameOfUpgrade",	// defined this way, they are assumed to be needing just 1
+				{ "upgrade": <string>, "amount": 1 }
+				"nameOfUpgrade":	// defined this way, they are assumed to be needing just 1
 				[	"nameOfUpgrade", 1	] // for specific level requirements
 			]
 		},
 	],
 	*/
 	
-	/*--------------------------------------------------------------------------
-	Item Pack Definition
-	
-	Used to define packs of items for easy re-use in the Ghoul definitions.
-	--------------------------------------------------------------------------*/
-	"itempacks":
-	[
-		"default":
-		[
-			"Megasphere",
-			"Backpack:3"
-		]
-	],
-	
 	
 	/*--------------------------------------------------------------------------
 	Ghoul Definitions
+	
+	* actor - Name of the internal ghoul class inheriting from GS_GhoulBase.
+	
+	NOTE: By default, the following values will replace any other definitions
+	found. If you append a + to the following variable names, they will add
+	onto them instead. The one exception is with factors, those will always
+	be replaced if duplicates are found. I.e. "factors+"
+	
+	Also supported is -, which will remove the indicated values.
+	
+	* factors: an OBJECT (NOT array!) whose variables are all doubles. 
+	
+		I.e.
+		"creeperboo": 0.2,
+		"jitter": 0.2
+		would effectively be doing this in ZScript:
+		DamageFactor "creeperboo", 0.2;
+		DamageFactor "jitter", 0.2;
+		
+	* drops: String, object, or array of strings/objects of items to drop.
+		The object properties are:
+		
+		* actor - Actor name to drop
+		
+		* count (1) - (Array of) int(s) (max 2 ints if array)
+			How many of these to drop. 
+		
+		* chance (256)
+			A chance in range of [0,256] to drop the item. Default: 256 (always)
+			This does NOT influence the count amount, it affects the chance for
+			the ENTIRE drop to happen at all. If more control is needed on chance,
+			make multiple objects.
+		
+	Note that "drops-" will eliminate ALL of the items specified, i.e. if three
+	megaspheres are set to drop originally, all will be removed.
+	
+	Alternatively, supplying "" or [] will remove all items.
 	--------------------------------------------------------------------------*/
 
 	"ghouls":
 	[
 		{
 			"actor":		"GS_Sjas", 	// Actor name
-			"drops":
-			[
-				"Megasphere",
-				"Backpack:3"
-			]
+			"factors":
+			{
+				"creeperboo":	0.2,
+				"jitter":		0.2
+			},
+			"drops":		"GS_DefaultItems"
 		},
 		{
 			"actor": 		"GS_Jitterskull",
+			"factors":
+			{
+				"creeperboo":	0.25
+			},
+			"drops":		"GS_DefaultItems"
 		},
 		{
-			
 			"actor": 		"GS_Creeper",
+			"factors":
+			{
+				"sjas":			0.6,
+				"jitter":		0.25
+			},
+			"drops":		"GS_DefaultItems"
 		},
 		{
 			"actor": 		"GS_Choke",
+			"factors":
+			{
+				"sjas":			0.4,
+				"jitter":		0.3,
+				"creeperboo":	0.25
+			},
+			"drops":		"GS_DefaultItems"
 		},
 		{
 			"actor": 		"GS_Frostbite",
+			"drops":		"GS_DefaultItems"
 		},
 		{
 			"actor":		"GS_Misty",
+			"drops":		"GS_DefaultItems"
 		},
 		{
 			"actor":		"GS_Clowny",
+			"drops":		"GS_DefaultItems"
 		},
 		{
 			"actor":		"GS_SoulHarvester",
+			"drops":		"GS_DefaultItems"
 		},
 		{
-			"actor":		"GS_Jugulum",
-		},
-		{
-			"actor":		"GS_YureiAvatar",
+			"actor":		"GS_Yurei",
+			"drops":		"GS_DefaultItems"
 		},
 	],
-	
-	/*--------------------------------------------------------------------------
-	Drop Data
-	
-	
-	--------------------------------------------------------------------------*/
-	"drops"
 	
 	/*--------------------------------------------------------------------------
 	Trait Data
@@ -180,7 +220,6 @@ Specifically everything with a : AFTER it. Values stored after it are insensitiv
 		* name - Base name of the trait (not the nice name)
 		* power - Int variable/array similar to 'levelreq'. If set to 0, means
 			the trait is cannot apply if the listed one is present. Defaults to 1.
-		
 	--------------------------------------------------------------------------*/
 	
 	"traits":
@@ -188,7 +227,7 @@ Specifically everything with a : AFTER it. Values stored after it are insensitiv
 		// All default values are seen with each definition.
 		{
 			
-			"langstr": "", 
+			"langstr": "",
 			"base": "",
 			"name": "",
 			"icon": "",
@@ -196,7 +235,7 @@ Specifically everything with a : AFTER it. Values stored after it are insensitiv
 			"long": "",
 			"rank": "Normal",
 			"levelreq": [0],
-			"maxpower": 1, 	
+			"maxpower": 1,
 			"items":
 			[
 				
@@ -209,5 +248,6 @@ Specifically everything with a : AFTER it. Values stored after it are insensitiv
 			]
 			
 		},
-	]
+	],
+	
 }

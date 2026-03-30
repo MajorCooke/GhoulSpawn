@@ -58,15 +58,17 @@ class GS_Sjas : GS_GhoulBase
 		Species "Sjas";
 		//Undead
 		DamageType "Sjas";
+		/*
 		DamageFactor "AEPoison", 0.5;
 		DamageFactor "AEBullet", 0.75;
 		DamageFactor "Unholy", 0.5;
 		DamageFactor "UnholyDisint", 0.5;
 		DamageFactor "Holy", 2;
-		DamageFactor "Disintegrate", 1.5;
 		DamageFactor "AEMagic", 1.5;
+		
 		DamageFactor "Jitter", 0.2;
-		DamageFactor "Sjas", 0.0;
+		DamageFactor "CreeperBoo", 0.2;
+		*/
 		Obituary "%o lost a shouting match with Sjas.";
 		Tag "Sjas";
 	}
@@ -210,7 +212,7 @@ class GS_Sjas : GS_GhoulBase
 		LightLevel = 255;
 		A_FadeIn(1.0, FTF_CLAMP);
 		A_Pain();
-		A_Fall();
+		Fall();
 		bNOCLIP = false;
 	}
 	const PainFadeTimer = 1.0 / 7.0;

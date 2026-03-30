@@ -5,9 +5,13 @@
 
 extend Class GS_EventStatic
 {
-//	ExampleOptions example_data;
-	private GS_Data JData;
-	override void OnRegister() //ParseJSON()
+	internal readonly GS_Data JData;
+	override void OnEngineInitialize() //ParseJSON()
+	{
+		ParseGhouls();
+	}
+	
+	private void ParseGhouls()
 	{
 		if (JData)	JData.Destroy();
 		JData = null;
@@ -36,8 +40,8 @@ extend Class GS_EventStatic
 				{
 					if (dat.ModID == 'GhoulSpawn')
 					{
+						Console.Printf("\cdFound GhoulSpawn mod_id, processing...");
 						JData = dat;
-						datas.Insert(0, dat);
 					}
 					else datas.Push(dat);
 				}
@@ -47,8 +51,10 @@ extend Class GS_EventStatic
 		
 		// 
 		if (datas.Size() < 1)
-		{	Console.Printf("Nothing added. Using internal values."); return;	}
+		{	Console.Printf("No addons detected."); return;	}
 		
+		
+		Console.Printf("\cdGHOUSPWN.json files parsed. Handling addons...");
 		Array<Name> IDs;
 		foreach (data : datas)
 		{
@@ -59,9 +65,10 @@ extend Class GS_EventStatic
 			
 			if (JData && JData == data)
 				continue;
-				
+			
 			HandleAddon(data);
 		}
+		Console.Printf("\cdAddon data handling complete.");
 	}
 	
 	private void HandleAddon(GS_Data data)

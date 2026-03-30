@@ -1,22 +1,24 @@
 // Main Ghoul Information
 Class GS_GhoulData
 {
-	Name ID;						// Name of the ghoul
-	String Tag;						// For mods like TargetSpy
-	Map<Name, GS_DropData> Drops;	// item drops
-	Map<Name, GS_DamageData> Damages;// Special damage interactions via ZJSON
-	Map<Name, double> DamageFactors;// Customized damage factors via ZJSON
-	int Weight;						// Spawn Chance (RandomSpawner styled)
-	int CurLevel;					// Current level of the ghoul.
-	
+	internal readonly Name ID;							// Name of the ghoul
+	internal readonly String Tag;						// For mods like TargetSpy
+	internal readonly GS_DropData Drops;				// item drops
+	internal readonly Map<Name, GS_DamageData> Damages;	// Special damage interactions via ZJSON
+	internal readonly Map<Name, double> Factors;		// Customized damage factors via ZJSON
+	internal readonly int Health;						// Health override
+	internal readonly int CurLevel;						// Current level of the ghoul.
+	internal readonly double Factor;					// Effectively `DamageFactor <#>` without the name.
+		
 	void Init()
 	{
 		ID = '';
 		Tag = "";
-		Traits.Clear();
-		Drops.Clear();
+		Health = CurLevel = 0;
+		Factor = -1; // means dont apply.
+		Drops = null;
 		Damages.Clear();
-		Weight = 50;
+		Factors.Clear();
 	}
 
 	//--------------------------------------------------------------------------
@@ -33,64 +35,243 @@ Class GS_GhoulData
 	
 	private GS_GhoulData ProcessObject(GS_JsonObject obj)
 	{
-		// "class" variable
-		/*
-		let gp = GS_GlobalParser.Make("GS_GhoulData");
-		
-		let typeCls = gp.GetJsonObjString(obj, "class", GS_Err_Abort);
-		Class<Actor> check = typeCls.s;
-		if (!check)
-		{
-			Console.Printf("\cf"..typeCls.s.."doesn't exist, skipping.")
-			return null;
-		}
-		ID = typeCls.s;
-		
-		
-		bool prop = false;
-		// "chances" 
-		GS_JsonArray tChances = gp.GetJsonObjArray(obj, "chances", GS_Err_AbortWrongType);
-		if (tChances)
-		{
-			prop = true;
-		}
-		*/
+		// "actor" variable
 		String vid = "actor";
-		GS_JsonElement elemCls = obj.Get(vid);
-		if (!elemCls)	ThrowAbortException("GS_GhoulData: Expected '"..vid.."' definition, is missing.");
-		let typeCls = GS_JsonString(elemCls);
-		if (!typeCls)	ThrowAbortException ("GS_GhoulData: expected '"..vid.."' as string, got "..elemCls.GetClassName());
+		GS_JsonElement elem = obj.Get(vid);
+		if (!elem)	ThrowAbortException("GS_GhoulData: Expected '"..vid.."' definition, is missing.");
+		let st = GS_JsonString(elem);
+		if (!st)	ThrowAbortException("GS_GhoulData: expected '"..vid.."' as string, got "..elem.GetClassName());
+		bool prop = false;
+		// TO DO: Demote to warning later.
+		Class<Actor> check = st.s;
+		if (!check)
+			ThrowAbortException("GS_GhoulData: "..st.s.." doesn't exist");
+		else if (!(check is 'GS_GhoulBase'))
+			ThrowAbortException("GS_GhoulData: Expected "..st.s.." to inherit from GS_GhoulBase");
 		
-		vid = "weight";
-		let eW = obj.Get(vid);
-		if (eW)
-		{
-			let dw = GS_JsonInt(eW);
-			if (!dw)	ThrowAbortException("GS_GhoulData: Expected '"..vid.."' as int, got "..eW.GetClassName());
-			Weight = dw.AsInt();
-		}
-		else Weight = 50;
-		/*
-		GS_JsonElement elemChances = obj.Get("chances");
-		if (elemChances)
-		{
-			GS_JsonArray typeChances = GS_JsonArray(elemChances);
-			if (!typeChances)	ThrowAbortException("GS_GhoulData: expected 'chances' as an array, got "..elemChances.GetClassName());
-			prop = true;
-		}
-		*/
+		Init();
+		ID = st.s;
 		
 		// "tag" override
-		GS_JsonElement elemTag = obj.Get("tag");
-		if (elemTag)
+		elem = obj.Get("tag");
+		if (elem)
 		{
-			GS_JsonString typeTag = GS_JsonString(elemTag);
-			if (!typeTag)	ThrowAbortException("GS_GhoulData: expected 'tag' as a string, got "..elemTag.GetClassName());
-			Tag = typeTag.s;
+			let str = GS_JsonString(elem);
+			if (!st)	ThrowAbortException("GS_GhoulData: expected "..st.s.." 'tag' as string, got "..elem.GetClassName());
+			Tag = str.s;
 			prop = true;
 		}
 		
+		// "health" override
+		elem = obj.Get("health");
+		if (elem)
+		{
+			let num = GS_JsonInt(elem);
+			if (!num)	ThrowAbortException("GS_GhoulData: expected "..st.s.." 'health' as int, got "..elem.GetClassName());
+			Health = num.AsInt();
+			prop = true;
+		}
+		
+		// "factor" override - DamageFactor 1.0 for example (without name)
+		elem = obj.Get("factor"); 
+		if (elem)
+		{
+			let dbl = GS_JsonDouble(elem);
+			let num = GS_JsonInt(elem);
+			if (!dbl && !num)	ThrowAbortException("GS_GhoulData: expected "..st.s.." 'factor' as int or double, got "..elem.GetClassName());
+			if (dbl)		Factor = dbl.AsDouble();
+			else if (num)	Factor = num.AsDouble();
+			prop = true;
+		}
+		// Now comes the harder stuff...
+		// Damagefactors for every name. Object, NOT array!
+		elem = obj.Get("factors");
+		if (elem)
+		{
+			let ob = GS_JsonObject(elem);
+			if (!ob)	ThrowAbortException("GS_GhoulData: expected "..st.s.." 'factors' as object, got "..elem.GetClassName());
+			int count = 0;
+			foreach (k, v : ob.data)
+			{
+				let dbl = GS_JsonDouble(v);
+				let num = GS_JsonInt(v);
+				if (!dbl && !num)
+					ThrowAbortException("GS_GhoulData: expected "..st.s.." 'factors' as object of doubles, got "..elem.GetClassName());
+				double d = (dbl ? dbl.AsDouble() : num.AsDouble());
+				if (k ~== "normal")	k = "none";
+				Factors.Insert(k, d);
+				count++;
+			}
+			
+			prop = (prop || count > 0);
+		}
+		/*
+		elem = obj.Get("damages");
+		if (elem)
+		{
+			
+			prop = true;
+		}
+		*/
+		
+		elem = obj.Get("drops");
+		if (elem)
+		{
+			// This one is easily the most complex.
+			let obj = GS_JsonObject(elem);
+			let st = GS_JsonString(elem);
+			let arr = GS_JsonArray(elem);
+			if (!obj && !st && !arr)
+				ThrowAbortException("GS_DropData: Expected 'drops' of type (array of) object(s) or string(s), got "..elem.GetClassName());
+				
+			HandleDropInfo(ID, obj, st, arr);
+			prop = true;
+		}
+		
+		/*
+		elem = obj.Get("traits");
+		if (elem)
+		{
+			
+			prop = true;
+		}
+		*/
 		// Don't return anything if no properties are defined for it.
 		return (prop) ? self : null;
+	}
+	
+	private void RemoveDropData()
+	{
+		if (Drops)
+			Drops.Destroy();
+	}
+	
+	private void HandleDropInfo(Name GID, GS_JsonObject obj = null, GS_JsonString st = null, GS_JsonArray arr = null)
+	{
+		Name DID;
+		if (!Drops)	Drops = GS_DropData.MakeDropData(GID);
+		// process a single string
+		if (st) // "drops": "<actorName>"
+		{
+			// "drops": "" means remove all items
+			if (st.s == "" || st.s == " ")
+			{
+				Console.Printf("Removing all drops from ghoul "..GID);
+				RemoveDropData();
+				return;
+			}
+			else
+			{
+				ProcessDropString(st);
+			}
+		}
+		// process an object like this:
+		// "drops": { "name": "<actorName>", "count": 1, "chance": 256 }
+		else if (obj)
+		{
+			if (obj.IsEmpty()) // "drops": {} means remove all items
+			{
+				RemoveDropData();
+				return;
+			}
+			else
+			{
+				ProcessDropObject(obj);
+			}
+		}
+		// array of drops for either strings or objects. Note that if 
+		/*
+			"drops":
+			[
+				"actorName",
+				{ "actor": "<actorName>", "count": 1, "chance": 256 },
+				{ "actor": "<actorName>", "count": 4, "chance": 256 }
+			]
+		*/
+		else if (arr)
+		{
+			if (arr.Size() < 1) // "drops": [] means remove all items
+			{
+				RemoveDropData();
+				return;
+			}
+			else
+			{
+				for (uint i = 0; i < arr.Size(); i++)
+				{
+					let elem = arr.Get(i);
+					if (!elem)	ThrowAbortException("GS_GhoulData: Expected 'drops' array to have strings or objects or empty, got null");
+					st = GS_JsonString(elem);
+					obj = GS_JsonObject(elem);
+					if (st)			ProcessDropString(st);
+					else if (obj)	ProcessDropObject(obj);
+					else		ThrowAbortException("GS_GhoulData: Expected 'drops' array to have strings or objects or empty, got "..elem.GetClassName());
+					
+					
+				}
+			}
+		}
+	}
+	
+	private void ProcessDropString(GS_JsonString st)
+	{
+		Class<Actor> cls = st.s;
+		if (!cls)	
+		{
+			Console.Printf("WARNING: "..st.s.." isn't a valid class! Skipping.");
+			return;
+		}
+		Console.Printf("Adding "..st.s.." to "..ID);
+		
+		let it = GS_DropItem.MakeDropItem(st.s);
+		it.ID = st.s;
+		Drops.Push(it);
+	}
+	
+	private void ProcessDropObject(GS_JsonObject obj)
+	{
+		GS_JsonElement elem = obj.Get("actor");
+		if (!elem)	ThrowAbortException("GS_GhoulData: Expected 'drops' object to have 'actor' string, is missing");
+		let st = GS_JsonString(elem);
+		if (!st)	ThrowAbortException("GS_GhoulData: Expected 'drops' object to have 'actor' string, got "..elem.GetClassName());
+		
+		let it = GS_DropItem.MakeDropItem(st.s);
+		
+		elem = obj.Get("count");
+		if (elem)
+		{
+			let num = GS_JsonInt(elem);
+		//	let arr = GS_JsonArray(elem);
+			if (num)
+				it.Count = num.AsInt();
+			/*
+			else if (arr)
+			{
+				if (arr.Size() < 1)
+					it.Count[0] = it.Count[1] = 256;
+				else if (arr.Size() < 3)
+				{
+					for (uint i = 0; i < arr.Size(); i++)
+					{
+						num = GS_JsonInt(arr.Get(i));
+						if (!num) ThrowAbortException("GS_GhoulData: 'drops' object member in "..st.s.." 'count' array must be ints only");
+						it.Count[i] = num.AsInt();
+					}
+				}
+				else
+					ThrowAbortException("GS_GhoulData: Expected 'drops' object member in "..st.s.." 'count' array size <= 2, is %d", arr.Size());
+			}
+			*/
+			else	ThrowAbortException("GS_GhoulData: 'drops' object member in "..st.s.." 'count' expected as int, got "..elem.GetClassName());
+		}
+		
+		elem = obj.Get("chance");
+		if (elem)
+		{
+			let num = GS_JsonInt(elem);
+			if (!num)	ThrowAbortException("GS_GhoulData: Expected 'drops' object member in "..st.s.." 'chance' as int, got "..elem.GetClassName());
+			it.Chance = Clamp(num.AsInt(), 0, 256);
+		}
+		Drops.Push(it);
 	}
 }

@@ -1,33 +1,112 @@
+// Stores drop data for ghouls.
+extend Class GS_EventStatic
+{
+	bool GetItems(Actor mo, out Array<GS_DropItem> items)
+	{
+		if (!mo || !JData)	return false;
+		
+		Name cn = mo.GetClassName();
+		GS_GhoulData gdata = GetGhoulData(cn);
+		if (!gdata)	return false;
+		
+		let drop = gdata.Drops;
+		if (!drop)	return false;
+		items.Copy(drop.items);
+		return true;
+	}
+}
 
 Class GS_DropData
 {
-	internal readonly Name 	ID,			// Name of thing to spawn
-							Type;		// <Damage/Death>type needed to drop this thing
-	internal readonly int	Count[2], 	// drop quantity min/max
-							Amount[2]; 	// amount min/max of item (if applicable, i.e. ammo)
+	internal readonly Name ID; // Actor it belongs to
+	internal readonly Array<GS_DropItem> Items;
+	
+	static GS_DropData MakeDropData(Name _id)
+	{
+		let dd = new('GS_DropData');
+		dd.ID = _id;
+		return dd;
+	}
+	
+	clearscope uint Size() const
+	{	return Items.Size();	}
+	
+	clearscope GS_DropItem Get(Name item) const
+	{
+		foreach (it : Items)
+		{
+			if (it && it.ID == item)
+				return it;
+		}
+		return null;
+	}
+	
+	void Push(GS_DropItem item)
+	{
+		if (item && Items.Find(item) >= Items.Size())
+			Items.Push(item);
+	}
+	
+	void Delete(GS_DropItem item)
+	{
+		if (item)
+		{
+			int i = Items.Find(item);
+			if (i < Items.Size())
+				Items.Delete(i);
+		}
+	}
+	
+	void Remove(Name id)
+	{
+		for (int i = 0; i < Items.Size(); i++)
+		{
+			let it = Items[i];
+			if (it && it.ID == id)
+			{
+				Items.Delete(i);
+				i--;
+			}
+		}
+	}
+	
+	void Clear(bool destruct = true)
+	{	
+		if (destruct)
+			for (int i = 0; i < Items.Size(); i++)
+				if (Items[i])	Items[i].Destroy();
+				
+		Items.Clear();	
+	}
+}
+
+Class GS_DropItem
+{
+	internal readonly bool copied;
+	internal readonly Name ID;		// Name of thing to spawn
+	internal readonly int Count; 		// # drops to spawn
+	internal readonly int Chance;
 		
+	static GS_DropItem MakeDropItem(Name _id)
+	{
+		let it = new();
+		it.Init();
+		return it;
+	}
 	void Init()
 	{
-		ID = Type = '';
-		for (int i = 0; i < 2; i++)
-		{	Count[i] = Amount[i] = 0;	}
+		ID = '';
+		Count = 1;
+		Chance = 256;
 	}
 	
-	
-	//--------------------------------------------------------------------------
-	// Serialization functions
-	//--------------------------------------------------------------------------
-	static GS_DropData Deserialize(GS_JsonElement elem)
+	GS_DropItem CloneDropItem(GS_DropItem it)
 	{
-		if (!elem)	ThrowAbortException("GS_DropData: element is null");
-		let obj = GS_JsonObject(elem);
-		if (!obj)	ThrowAbortException("GS_DropData: expected object, got "..elem.GetClassName());
-		return new('GS_DropData').ProcessObject(obj);
-	}
-	
-	private GS_DropData ProcessObject(GS_JsonObject obj)
-	{
-		Init();
-		return self;
+		let copy = MakeDropItem(ID);
+		if (!it) return null;
+		copy.copied = true;
+		copy.Count = Count;
+		copy.Chance = Chance;
+		return copy;
 	}
 }
