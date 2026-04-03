@@ -2,7 +2,7 @@ extend class GS_GhoulBase
 {
 	private void HandleDamager(Actor who)
 	{
-		uint pos = Targets.Find(who);
+		int pos = Targets.Find(who);
 		if (pos >= Targets.Size())
 			Targets.Push(who);
 		else if (pos != Targets.Size() - 1) 
@@ -47,6 +47,12 @@ extend class GS_GhoulBase
 	
 	private bool Targetable(Actor mo)
 	{
+		if (mo is "PlayerPawn")
+		{
+			if (!mo.player || (mo.player.cheats & CF_TOTALLYFROZEN))	
+				return false;
+		}
+	
 		// Primarily want to see if the target is actually targetable, so remove
 		// the restraints briefly.
 		bool quick = bQUICKTORETALIATE;
@@ -60,6 +66,15 @@ extend class GS_GhoulBase
 		bNOTARGETSWITCH = nosw;
 		
 		return ret;
+	}
+	
+	protected void GhoulLook()
+	{
+		A_LookEx(LOF_DONTCHASEGOAL|LOF_NOJUMP|LOF_NOSEESOUND);
+		if (!Targetable(Target))
+			A_ClearTarget();
+		else
+			SetStateLabel("See");
 	}
 }
 

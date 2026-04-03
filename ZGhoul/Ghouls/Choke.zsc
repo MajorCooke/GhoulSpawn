@@ -64,7 +64,7 @@ class GS_Choke : GS_GhoulBase
 	States
 	{
 	Spawn:
-		G004 C 8 A_Look();
+		G004 C 8 GhoulLook();
 		Loop;
 	See:
 		---- A 0 PlaySeeSound();

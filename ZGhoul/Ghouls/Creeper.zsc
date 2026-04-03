@@ -56,8 +56,56 @@ class GS_Creeper : GS_GhoulBase
 		*/
 	}
 	
-	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
+	override String GetObituary(Actor v, Actor i, Name mod, bool pa)
 	{
+		if (v is 'GS_Jitterskull')
+		{
+			static const string ob[] =
+			{
+				"%o's physical might couldn't save him from Creeper's power of slurp",
+				"%o should've known better than to try eating haunted kids.",
+				"%o diarrhea'd his flesh lunches out when scared crapless by a Creeper.",
+				"%o now hates creepy kids. Damn whipper snappers are always trouble!",
+				"%o's now filing a complaint with the Yurei about Creeper's OP bullshit."
+			};
+			return ob[random(0, ob.Size() - 1)];
+		}
+		else if (v is 'GS_Sjas')
+		{
+			static const string ob[] =
+			{
+				"Creeper clowned on %o with his far more frightening visage.",
+				"The Creeper Scream Police arrived and forced %o to shut the Hell up.",
+				"Creeper somehow managed to out-scream %o to death. Again.",
+				"%o would've become King Screamer if it weren't for that meddlesome Creeper!",
+				"Creeper turned %o into a joke by posting his screaming corpse on Ghoulstagram."
+			};
+			return ob[random(0, ob.Size() - 1)];
+		}
+		else if (v is 'GS_Choke')
+		{
+			static const string ob[] =
+			{
+				"%o's only good eye shot out of his skull when spooked by a Creeper",
+				"%o's body and meals reacted comically and explosively when a Creeper punked him.",
+				"Creeper grew tired of cleaning up %o's chonky messes.",
+				"Creeper bitch slap't %o back to the Yurei for a therapy session.",
+				"%o mistakenly let Creeper get under his skin with many creepy crawly feelings. Ick."
+			};
+			return ob[random(0, ob.Size() - 1)];
+		}
+		else if (v is 'GS_Frostbite')
+		{
+			static const string ob[] =
+			{
+				"Creeper proved %o's element of frost can't match that of spirit",
+				"%o became Creeper's frosted blueberry icy malt.",
+				"Creeper turned %o into the sweet treat that can beat hot sunny days",
+				"Creeper was fed up with %o trying to recreate Freezeezy Peak via frost breath",
+				"Creeper fed %o a ghost mint to fix his smelly frost breath. Results were head-shattering!"
+			};
+			return ob[random(0, ob.Size() - 1)];
+		}
 		static const string ob[] =
 		{
 			"%o WAAAAHAHAHAHARG'd from the Creeper's jumpscare",
@@ -347,7 +395,7 @@ class GS_Creeper : GS_GhoulBase
 	States
 	{
 	Spawn:
-		G001 A 15 A_Look();
+		G001 A 15 GhoulLook();
 		Loop;
 	See:
 		G001 A 0 { SetFear(false); PlaySeeSound(); }
@@ -500,12 +548,12 @@ class GS_CreeperPopup : Actor
 			}
 		}
 	}
-	
+	/*
 	override int DoSpecialDamage(Actor trg, int damage, Name damagetype)
 	{
 		return (target) ? target.DoSpecialDamage(trg, damage, damagetype) : damage;
 	}
-	
+	*/
 	States
 	{
 	Spawn:

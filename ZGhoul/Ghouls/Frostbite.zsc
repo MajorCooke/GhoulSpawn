@@ -4,7 +4,7 @@
 A semi-tanky ghoul who can partially "fly", and has a shield that regenerates.
 Can spew frost breath to chill his enemies, likely causing a lot of infighting. 
 ==============================================================================*/
-/*
+
 Class GS_FrostPart : Actor abstract
 {
 	Default
@@ -36,20 +36,98 @@ Class GS_FrostJaw : GS_FrostPart
 		Stop;
 	}
 }
-*/
+
 // G005
+
+
+
 class GS_Frostbite : GS_GhoulBase abstract
 {
 	Default
 	{
 		Tag "Frostbite";
 		+EXTREMEDEATH
-		+ICESHATTER
+		Scale 0.24;
 		DamageType "Ice";
 	}
 	
+	States
+	{
+	Spawn:
+		G005 Z 0;
+	Idle:
+		---- A 8 GhoulLook();
+		Loop;
+	
+	
+	}
+	
+	
+	
 	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
 	{
+		if (victim is "GS_Sjas")
+		{
+			static const string ob[] =
+			{
+				"Frostbite didn't want to risk his frozen dome cracking from %o's screams",
+				"Frostbite was all too happy to silence the ear sore %o via frozen vocals",
+				"%o couldn't keep Frostbite's freezing breath out of his mouth and lost his voice",
+				"%o was given too strong of a brain freeze from eating all of Frostbite's ice.",
+				"Frostbite's now laughing while chewing on %o's ghostly flesh and soul for lunch",
+				"Frostbite bullied %o with frozen swirly face dunks to shut him up."
+			};
+			return ob[random(0, ob.Size()-1)];
+		}
+		else if (victim is "GS_Jitterskull")
+		{
+			if (mod == 'Melee')
+			{
+				static const string ob[] =
+				{
+					"Frostbite's needle teeth proved sharper than %o's blunt mollars.",
+					"Frostbite fixed %o's noisy jaw problem by giving him frozen lockjaw",
+					"Frostbite gave %o a head-breaking toothache from all the ice",
+					"%o was bottomed of the food chain when Frostbite froze and chomped him up",
+					"Frostbite took a frozen dump in %o's busted jaw after bullying him"
+				};
+				return ob[random(0, ob.Size()-1)];
+			}
+			static const string ob[] =
+			{
+				"%o lost all his teeth due to the powerful Frostbite afflicting him",
+				"Frostbite fixed %o's noisy jaw problem by giving him frozen lockjaw",
+				"Frostbite gave %o a traumatic toothache from eating all the ice cream",
+				"%o's frozen gums couldn't keep hold teeth anymore due to Frostbite",
+				"%o lost his champion molar crowns to Frostbite's deadly element"
+			};
+			return ob[random(0, ob.Size()-1)];
+		}
+		else if (victim is "GS_Creeper")
+		{
+			static const string ob[] =
+			{
+				"Frostbite is done playing babysitter and left %o out in the cold.",
+				"Frostbite inhaled %o's soul whole as payback for his childish games",
+				"Frostbite's villain streak grows from committing child abuse against %o",
+				"Frostbite put %o on ice after triggering him with his A.C.A.B. stance",
+				"Frostbite finds frozen Creeper to be tasty. Screaming really bring out the fear!"
+			};
+			return ob[random(0, ob.Size()-1)];
+		}
+		else if (victim is "GS_Choke")
+		{
+			static const string ob[] =
+			{
+				"Frostbite stripped %o of his advantage by bringing him to a dead cold stop",
+				"Frostbite forced %o to chill the Hell out with a flash freeze",
+				"%o's hyperactive speed was nullified by sub-zero Frostbiting temperatures",
+				"%o thought he could outspeed the chilly touch of Frostbite wrongly",
+				"Frostbite outsmarted %o with widespread cold. No speed racer title for him!"
+			};
+			return ob[random(0, ob.Size()-1)];
+		}
+		
 		if (mod == 'Melee')
 		{
 			static const string ob[] =

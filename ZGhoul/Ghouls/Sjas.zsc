@@ -75,6 +75,54 @@ class GS_Sjas : GS_GhoulBase
 	
 	override String GetObituary(Actor victim, Actor i, Name mod, bool pa)
 	{
+		if (victim is "GS_Creeper")
+		{
+			static const string ob[] =
+			{
+				"Sjas is now wanted for felony charges of child abuse against %o",
+				"Sjas sent %o crying home to mommy Yurei - dead as a doornail",
+				"Sjas is laughing at how easy it was to bully %o into a flailing fit",
+				"%o lost an ear and his hearing from Sjas going full COD mode",
+				"Sjas sent %o flying in terror from his overwhelming vocal power"
+			};
+			return ob[random(0, ob.Size()-1)];
+		}
+		else if (victim is "GS_Choke")
+		{
+			static const string ob[] =
+			{
+				"Sjas took %o out behind the dumpster and beat the lunch money out of him",
+				"Sjas made a comedy special out of %o's deformities, available now for 9 souls!",
+				"Sjas' power screech turned Choke inside out mouth first, painfully",
+				"Sjas' voice opened %o's scabs first, and ended with him as a carrion pile",
+				"%o was imploded into a lunch box shape via Sjas's hyper screams"
+			};
+			return ob[random(0, ob.Size()-1)];
+		}
+		else if (victim is "GS_Jitterskull")
+		{
+			static const string ob[] =
+			{
+				"Sjas screamed so loud that %o's dome was shattered open",
+				"%o's eyes shot out of his skull comically from Sjas's scream pressure",
+				"%o was more vulnerable from lack of flesh to protect his skull from Sjas",
+				"Sjas' screaming vibrated %o so hard, he splintered into many pieces",
+				""
+			};
+			return ob[random(0, ob.Size()-1)];
+		}
+		else if (victim is "GS_Frostbite")
+		{
+			static const string ob[] =
+			{
+				"",
+				"",
+				"",
+				"",
+				""
+			};
+			return ob[random(0, ob.Size()-1)];
+		}
 		static const string ob[] =
 		{
 			"%o lost a screaming match with Sjas.",
@@ -220,7 +268,7 @@ class GS_Sjas : GS_GhoulBase
 	{
 	Spawn:
 	Idle:
-		G003 A 15 A_Look();
+		G003 A 15 GhoulLook();
 		Wait;
 	See:
 		G003 B 0 PlaySeeSound();

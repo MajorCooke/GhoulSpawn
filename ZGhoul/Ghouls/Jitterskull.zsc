@@ -777,7 +777,7 @@ class GS_JitterSkull : GS_GhoulBase
 		G002 C 0; // Only needed for the materialization effect
 	Idle:
 		TNT1 AAAAAAAA 1 JitterJaw();
-		---- A 8 A_Look();
+		---- A 8 GhoulLook();
 		Loop;
 	See:
 		TNT1 A 0 PlaySeeSound();

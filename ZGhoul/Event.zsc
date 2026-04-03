@@ -239,14 +239,17 @@ class GS_Event : EventHandler
 			bool good = false;
 			for (int i = 0; i < MAXPLAYERS; i++)
 			{
-				if (!playeringame[pnum] || !players[pnum].mo || players[pnum].mo.bKILLED)
-				{
-					pnum = (pnum + 1) % MAXPLAYERS;		
-				}
+				if (!playeringame[pnum] || !players[pnum].mo || players[pnum].mo.bKILLED || 
+					players[pnum].cheats & CF_TOTALLYFROZEN)
+					pnum = (pnum + 1) % MAXPLAYERS;
 				else { good = true; break; }
 			}
 			
-			if (!good)	{	timer = 35;	return;	}
+			if (!good)	
+			{
+				if (timer < 35)	timer = 35;
+				return;	
+			}
 			
 			plr = players[pnum].mo;
 		}
