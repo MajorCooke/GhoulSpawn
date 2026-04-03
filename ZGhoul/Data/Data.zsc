@@ -11,12 +11,32 @@ The file structure is as such:
 
 extend Class GS_EventStatic
 {
-	GS_GhoulData GetGhoulData(Name ID)
+	clearscope GS_GhoulData GetGhoulData(Name ID) const
 	{
 		if (!JData)
 			return null;
 		
 		return JData.Ghouls.GetIfExists(ID);
+	}
+	
+	clearscope int, int GetBaseWeight(Name ID) const
+	{
+		let gs = GetGhoulData(ID);
+		if (gs)
+		{
+			int wmin, wmax;
+			[wmin, wmax] = gs.GetBaseWeight();
+			return wmin, wmax;
+		}
+		int def = GS_SPAWN_WEIGHT;
+		return def, def;
+	}
+	
+	private int GetResetWeight(Name ID) const
+	{
+		int wmin, wmax;
+		[wmin, wmax] = GetBaseWeight(ID);
+		return random[bw](wmin, wmax);
 	}
 }
 

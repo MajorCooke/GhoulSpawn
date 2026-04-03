@@ -46,6 +46,7 @@ class GS_EventStatic : StaticEventHandler
 	
 		// Get the total counters and add them together.
 		int total = 0;
+		bool boost = true;
 		for (int i = 0; i < Weights.Size(); i++)
 		{
 			if (!Ghouls[i])
@@ -54,20 +55,50 @@ class GS_EventStatic : StaticEventHandler
 				Weights.Delete(i--);
 				continue;
 			}
-			Weights[i] = max(GS_SPAWN_WEIGHT, Weights[i]);
-			total += Weights[i];
+		//	Weights[i] = max(GS_SPAWN_WEIGHT, Weights[i]);
+			if (Weights[i] > 0)
+			{
+				total += Weights[i];
+				boost = false;
+			}
 		}
+		
+		if (Ghouls.Size() < 1)
+			return null;
+		
+		// Safety check. If all weights are < 1, add enough to all weights to get
+		// the closest over the threshold.
+		if (boost)
+		{
+			int hnum = int.min;
+			uint i = 0;
+			for (i = 0; i < Weights.Size(); i++)
+				hnum = max(hnum, Weights[i]);
+					
+			int diff = 1 + abs(hnum);
+				
+			for (i = 0; i < Weights.Size(); i++)
+				Weights[i] += diff;
+		}
+		
+		// Now perform RandomSpawner-esque selection. The ghoul picked has their
+		// weight reset, while everyone else is bumped up.
 		int i = 0;
 		int n = random[rs](0, total - 1);
-		while (n > -1)
+		int timeout = 100;
+		while (n > -1 && timeout-- > 0)
 		{
+			// Factor out ghouls that don't exist or RNG went over.
 			if (!Ghouls[i] || n > Weights[i])
 			{
-				n -= Weights[i++];
+				if (Weights[i] > 0)
+					n -= Weights[i];
+				i++;
 			}
 			else
 			{
-				Weights[i] = GS_SPAWN_WEIGHT; 
+				Weights[i] = GetResetWeight(Ghouls[i].GetClassName());
+				
 				for (int j = 0; j < Weights.Size(); j++)
 					if (j != i)
 						Weights[j] += GS_SPAWN_ADD;

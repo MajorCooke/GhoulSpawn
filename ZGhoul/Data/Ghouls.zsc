@@ -9,6 +9,8 @@ Class GS_GhoulData
 	internal readonly int Health;						// Health override
 	internal readonly int CurLevel;						// Current level of the ghoul.
 	internal readonly double Factor;					// Effectively `DamageFactor <#>` without the name.
+	protected int BaseWeight[2];				// Base weight to return to once spawned
+	// 'internal readonly' currently doesn't work with fixed arrays.
 		
 	void Init()
 	{
@@ -19,7 +21,11 @@ Class GS_GhoulData
 		Drops = null;
 		Damages.Clear();
 		Factors.Clear();
+		BaseWeight[0] = BaseWeight[1] = 1;
 	}
+	
+	clearscope int, int GetBaseWeight() const
+	{	return BaseWeight[0], BaseWeight[1];	}
 
 	//--------------------------------------------------------------------------
 	// Serialization functions
@@ -83,6 +89,37 @@ Class GS_GhoulData
 			else if (num)	Factor = num.AsDouble();
 			prop = true;
 		}
+		
+		elem = obj.Get("weight");
+		if (elem)
+		{
+			let num = GS_JsonInt(elem);
+			let arr = GS_JsonArray(elem);
+			if (arr)
+			{	
+				if (arr.Size() > 2)
+					ThrowAbortException("GS_GhoulData: "..st.s.." 'weight' array must be <= 2, is %d", arr.Size());
+				else
+				{
+					for (uint i = 0; i < arr.Size(); i++)
+					{
+						num = GS_JsonInt(arr.Get(i));
+						if (!num) ThrowAbortException("GS_GhoulData: "..st.s.." 'weight' array must be ints only");
+						BaseWeight[i] = num.AsInt();
+					}
+					BaseWeight[1] = Max(BaseWeight[1], BaseWeight[0]);
+				}
+				
+			}
+			else if (num)
+			{
+				BaseWeight[0] = BaseWeight[1] = num.AsInt();
+			}
+			else	ThrowAbortException("GS_GhoulData: expected "..st.s.." 'weight' as int, got "..elem.GetClassName());
+			
+			prop = true;
+		}
+		
 		// Now comes the harder stuff...
 		// Damagefactors for every name. Object, NOT array!
 		elem = obj.Get("factors");
