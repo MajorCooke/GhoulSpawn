@@ -69,7 +69,10 @@ variableNames must be in lower case!
 	/*--------------------------------------------------------------------------
 	Ghoul Definitions
 	
-	* actor - Name of the internal ghoul class inheriting from GS_GhoulBase.
+	"():" denotes default value(s), i.e. "chance (256):"  means 256 is the default
+	value if not specified.
+	
+	* actor: Name of the internal ghoul class inheriting from GS_GhoulBase.
 	
 	NOTE: By default, the following values will replace any other definitions
 	found. If you append a + to the following variable names, they will add
@@ -101,10 +104,20 @@ variableNames must be in lower case!
 			the ENTIRE drop to happen at all. If more control is needed on chance,
 			make multiple objects.
 		
-	Note that "drops-" will eliminate ALL of the items specified, i.e. if three
-	megaspheres are set to drop originally, all will be removed.
-	
-	Alternatively, supplying "" or [] will remove all items.
+		Note that "drops-" will eliminate ALL of the items specified, i.e. if three
+		megaspheres are set to drop originally, all will be removed.
+		
+		Alternatively, supplying "" or [] will remove all items.
+		
+	* weight (1): integer/int array (max of 2).
+		Defines the spawn weight whenever the  ghoul is chosen to spawn.
+		
+		The weight system is effectively akin to RandomSpawner with dynamic chances.
+		Each time a ghoul is selected, their weight is reset to this number, while
+		all others gain weight to improve their odds for selection. Only ghouls with
+		a weight > 0 are considered for selection, others must wait for theirs to
+		increase above that threshold. This means the system operates on an (n + 1)
+		notation; "weight": -5 means 6 turns will be skipped, effectively.
 	--------------------------------------------------------------------------*/
 
 	"ghouls":
@@ -133,7 +146,9 @@ variableNames must be in lower case!
 				"sjas":			0.6,
 				"jitter":		0.25
 			},
+			"weight":		-5, // n + 1 notation, requiring six different ghouls to spawn
 			"drops":		"GS_DefaultItems"
+			
 		},
 		{
 			"actor": 		"GS_Choke",
