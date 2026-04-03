@@ -648,7 +648,7 @@ class GS_CreeperSlow : PowerSpeed
 	
 }
 
-class GS_CreeperBall : Actor
+class GS_CreeperBall : GS_Missile
 {
 	int DmgMin, DmgMax;
 	Property Dmg: DmgMin, DmgMax;

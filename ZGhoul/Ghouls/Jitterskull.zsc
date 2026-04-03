@@ -855,7 +855,7 @@ class GS_JitterSkull : GS_GhoulBase
 }
 
 // AOE bite that only damages non-players.
-class GS_JitterskullAttack : Actor
+class GS_JitterskullAttack : GS_Missile
 {
 	Default
 	{

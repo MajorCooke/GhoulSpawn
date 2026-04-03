@@ -1,14 +1,4 @@
 
-class GS_CarryToken : Inventory
-{
-	Default
-	{
-		+INVENTORY.UNDROPPABLE
-		+INVENTORY.UNTOSSABLE
-		Inventory.InterhubAmount 1;
-	}
-}
-
 class GS_Missile : Actor abstract {	Default	{ Projectile; }}
 class GS_GhoulBase : Actor abstract
 {
@@ -626,6 +616,42 @@ Class GhoulDeathExplo : GS_GhoulFX
 		Stop;
 	*/
 	}
+}
+
+// Handles special player damage with ghouls. Prevents damage during cutscenes.
+class GS_PlayerPower : Powerup
+{
+	const INVUL_TIME = 70;
+	private uint InvulTimer;
+	Default
+	{
+		+INVENTORY.UNDROPPABLE
+		+INVENTORY.UNTOSSABLE
+		+INVENTORY.UNCLEARABLE
+		+INVENTORY.PERSISTENTPOWER
+	}
+	
+	override void DoEffect()
+	{
+		if (!Owner || !Owner.player)	return;
+		
+		Super.DoEffect();
+		if (bDESTROYED)	return;
+		
+		EffectTics = 1000;
+		if (Owner.player.cheats & CF_TOTALLYFROZEN)
+			InvulTimer = INVUL_TIME;
+		else if (InvulTimer > 0)
+			InvulTimer--;
+	}
+	
+	override void ModifyDamage(int damage, Name type, out int newdamage, bool passive, Actor i, Actor s, int flags, double angle)
+	{
+		if (passive && InvulTimer && (s is 'GS_GhoulBase' || i is 'GS_Missile'))
+			newdamage = -1;
+	}
+	
+	
 }
 
 Class GS_Megasphere : Megasphere

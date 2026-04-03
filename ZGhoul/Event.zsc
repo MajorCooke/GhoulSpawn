@@ -236,13 +236,21 @@ class GS_Event : EventHandler
 		if (!plr)
 		{
 			int pnum = random[rng](0,MAXPLAYERS-1);
+			int picked = -1;
 			bool good = false;
 			for (int i = 0; i < MAXPLAYERS; i++)
 			{
 				if (!playeringame[pnum] || !players[pnum].mo || players[pnum].mo.bKILLED || 
 					players[pnum].cheats & CF_TOTALLYFROZEN)
+				{
 					pnum = (pnum + 1) % MAXPLAYERS;
-				else { good = true; break; }
+				}
+				else 
+				{
+					good = true; 
+					players[pnum].mo.A_GiveInventory("GS_PlayerPower",1);
+					if (picked < 0)	picked = pnum;
+				}
 			}
 			
 			if (!good)	
@@ -250,7 +258,7 @@ class GS_Event : EventHandler
 				if (timer < 35)	timer = 35;
 				return;	
 			}
-			
+			pnum = picked;
 			plr = players[pnum].mo;
 		}
 		
