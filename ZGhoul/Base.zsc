@@ -376,16 +376,22 @@ class GS_GhoulBase : Actor abstract
 		{
 			foreach (it : Items)
 			{
-				if (!it || it.Count < 1) continue;
-				
-				if (random[drop](0,255) > it.Chance)
+				if (!it || (it.Count < 1 && it.CMax < 1))
 					continue;
 					
 				Class<Actor> cls = it.ID;
 				if (!cls)	continue;
 				
-				for (int i = 0; i < it.Count; i++)
-					A_DropItem(cls);
+				int Count = random[drop](it.Count, it.CMax);
+				for (int i = 0; i < Count; i++)
+				{
+					let item = A_DropItem(cls, it.Amount, it.Chance);
+					if (item)
+					{
+						item.DamageTypeReceived = DamageTypeReceived;
+						item.tracer = self;
+					}
+				}
 			}
 		}
 	}
@@ -650,9 +656,10 @@ class GS_PlayerPower : Powerup
 		if (passive && InvulTimer && (s is 'GS_GhoulBase' || i is 'GS_Missile'))
 			newdamage = -1;
 	}
-	
-	
 }
+
+// Dummy class for demonstration of GHOUSPWN.json
+Class GS_ExampleGhoul : GS_GhoulBase abstract {}
 
 Class GS_Megasphere : Megasphere
 {
@@ -687,3 +694,14 @@ Class GS_DefaultItems : Actor
 		Stop;
 	}
 }
+
+Class GS_SoulItem : Inventory
+{
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+INVISIBLE
+	}
+}
+

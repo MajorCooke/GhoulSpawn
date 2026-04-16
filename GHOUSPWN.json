@@ -7,71 +7,21 @@ Values stored after it are insensitive. I.e.
 
 	"<variableName>":	<value>
 
-variableNames must be in lower case!
+variableNames MUST be in lower case! Values however are insensitive.
 ------------------------------------------------------------------------------*/
 
 {
 	// IMPORTANT: Make sure to give your mod_id the same name as your package!
 	// This will make it easier to debug if the JSON parser detects problems!
 	// Do NOT set it as the same as GhoulSpawn!
-	"mod_id": "GhoulSpawn",
-	
-	//--------------------------------------------------------------------------
-	// Talents
-	//--------------------------------------------------------------------------
-	/*
-	"categories":
-	[
-		{
-			"category": "light",
-		//	"desc": "$GSC_LIGHT_DESC", 		// generally assumes it's "$GSC_<descName>_DESC", only needed if it's not matching.
-			"icon":	"LightCategory.png",	// Tries searching in Graphics/Upgrades/Icons first, and if not, uses the whole string.
-			"pos": [ 0, 0 ]					// position of button on menu
-		},
-		{
-			"category": "dark",
-			"icon": "DarkCategory.png",
-			"pos": [ 0, 0 ]
-		},
-		{
-			"category": "chaos",
-			"icon": "ChaosCategory.png",
-			"pos": [ 0, 0 ]
-		},
-		{
-			"category": "death",
-			"icon": "DeathCategory.png",
-			"pos": [ 0, 0 ]
-		}
-	],
-	
-	"upgrades":
-	[
-		{
-			"name":	"",			// Name of upgrade
-			"cate":	"",			// Category as defined above
-			"desc":	"",			// Description
-			"pos":	[0,0],		// Menu position in category
-			"item":	"",			// item or behavior to give, if any (behaviors need a <Set/Get>Power() function)
-			"levels": 5,		// max levels
-			"cost": 1000,		// cost of aurora essence
-			"reqs":				// required purchases to have first, can be with 
-			[
-				{ "upgrade": <string>, "amount": 1 }
-				"nameOfUpgrade":	// defined this way, they are assumed to be needing just 1
-				[	"nameOfUpgrade", 1	] // for specific level requirements
-			]
-		},
-	],
-	*/
-	
+	"mod_id": "GhoulSpawn",	
 	
 	/*--------------------------------------------------------------------------
 	Ghoul Definitions
 	
 	"():" denotes default value(s), i.e. "chance (256):"  means 256 is the default
 	value if not specified.
-	
+	-----
 	* actor: Name of the internal ghoul class inheriting from GS_GhoulBase.
 	
 	NOTE: By default, the following values will replace any other definitions
@@ -80,110 +30,219 @@ variableNames must be in lower case!
 	be replaced if duplicates are found. I.e. "factors+"
 	
 	Also supported is -, which will remove the indicated values.
-	
+	-----
 	* factors: an OBJECT (NOT array!) whose variables are all doubles. 
 	
 		I.e.
 		"creeperboo": 0.2,
 		"jitter": 0.2
+		
 		would effectively be doing this in ZScript:
 		DamageFactor "creeperboo", 0.2;
 		DamageFactor "jitter", 0.2;
-		
-	* drops: String, object, or array of strings/objects of items to drop.
+	-----
+	* drops: String, object, or array of strings/objects of items to drop. 
+		Overrides all previous drop definitions.
+		When an item drops, the ghoul passes its DamageTypeReceived and sets the
+		"tracer" pointer to the ghoul, allowing for creation of filters based
+		on damage types.
+	
 		The object properties are:
 		
 		* actor - Actor name to drop
 		
-		* count (1) - (Array of) int(s) (max 2 ints if array)
-			How many of these to drop. 
+		* count (1) - Int or int array (max size of 2)
+			How many times to attempt dropping this item.
 		
-		* chance (256)
-			A chance in range of [0,256] to drop the item. Default: 256 (always)
-			This does NOT influence the count amount, it affects the chance for
-			the ENTIRE drop to happen at all. If more control is needed on chance,
-			make multiple objects.
+		* chance (256) - Int
+		* amount (-1) - Int
+			Chance and Amount follow A_DropItem's rules.
+			https://zdoom.org/w/index.php?title=A_DropItem
+	
+		Alternatively, supplying "" will remove all items.
+	
+	* drops-: String or object of strings. Removes ALL specified items. Useful
+		for simply taking out one or two items instead of having to rebuild the
+		whole list. Processed *before* "drops+".
+	
+	* drops+: Similar to "drops" but adds onto the existing list instead of 
+		overriding it. Processed after "drops-".
 		
-		Note that "drops-" will eliminate ALL of the items specified, i.e. if three
-		megaspheres are set to drop originally, all will be removed.
 		
-		Alternatively, supplying "" or [] will remove all items.
-		
+	-----
 	* weight (1): integer/int array (max of 2).
-		Defines the spawn weight whenever the  ghoul is chosen to spawn.
+		Defines the spawn weight reset whenever the ghoul is chosen to spawn. 
+		Negative values will force the ghoul to wait by that value(s) before it
+		can be chosen again.
+	-----
+	* lore (GSL_<actorname>_LORE):
+	* desc (GSL_<actorname>_DESC):
+	* tips (GSL_<actorname>_TIPS):
+		Defines the lore/description/tips strings. Only needed if the actor name,
+		after stripping off the GS_ affix, doesn't match <actorname> parts of the 
+		strings. To set this up automatically:
 		
-		The weight system is effectively akin to RandomSpawner with dynamic chances.
-		Each time a ghoul is selected, their weight is reset to this number, while
-		all others gain weight to improve their odds for selection. Only ghouls with
-		a weight > 0 are considered for selection, others must wait for theirs to
-		increase above that threshold. This means the system operates on an (n + 1)
-		notation; "weight": -5 means 6 turns will be skipped, effectively.
+		In ZScript,	`Class GS_MyGhoul : GS_GhoulBase`
+		In LANGUAGE, `GSL_MYGHOUL_LORE = ""; // same with desc and tips`
+		
+		Simply replace "myghoul" parts with the name, and it's done!
+		
 	--------------------------------------------------------------------------*/
 
 	"ghouls":
 	[
 		{
-			"actor":		"GS_Sjas", 	// Actor name
-			"factors":
+			// Name of the actor class
+			"actor":		"GS_ExampleGhoul", // actor name
+			
+			// Can be a string, object or array. Applies to drops- and drops+, so
+			// they are used to demonstrate the properties in full. This example
+			// also has the drops properties arranged with how the game processes
+			// them in order, so keep that in mind! Defining them in a different
+			// order doesn't matter.
+			
+			// "drops" replaces drops entirely. "" clears it all out.
+			"drops":		"GS_DefaultItems", // as a simple String
+			
+			// "drops-" strips an item from spawning. Unique to drops-, it only 
+			// cares about the actor name to remove and ignores everything else.
+			// It also removes ALL of that item's name, meaning multiple definitions
+			// of it will be eliminated.
+			"drops-": 		// as array of strings
+			[	
+				"GS_DefaultItems",
+				"Soulsphere",
+				"Blursphere",
+			],
+			
+			"drops+":		// as array of objects/strings
+			[
+				"Megasphere",
+				
+				// Superfluous version of the above string to demonstrate the objects.
+				{	"actor": "Megasphere",	"count": 1, "chance": 256, "amount": -1	},
+				
+				// However, objects are the only way to customize their drop parameters.
+				{	"actor": "Backpack",	"count": 1		}, 
+				{	"actor": "Backpack",	"count": 5,	"chance": 51	}, // 1/5 chance to drop 5 extra backpacks
+				
+				// Alternatively, count can also be used as a size 2 array.
+				{	"actor": "Backpack",	"count": [1,4]		}, 
+			],
+			
+			// Same as doing DamageFactor "FactorName", <value> in ZScript
+			"factors":	
+			{
+				"creeperboo":	0.2, // resistant to creeper jumpscare
+				"jitter":		0.2, // jitterskull damage
+				"holy":			2.0, // weak to holy damage
+			},
+			
+			// Applicable traits for this ghoul (Not yet implemented)
+			"traits":
+			[
+			],
+			
+			// Usually not needed if the classname GS_<actorname> and GSL_<actorname> 
+			// strings match, ignoring the prefix of GS(L)_. In this case, the ghoul name
+			// is GS_ExampleGhoul and the string is GSL_EXAMPLEGHOUL, meaning they match.
+			"lore":			"$GSL_EXAMPLEGHOUL_LORE",
+			"desc":			"$GSL_EXAMPLEGHOUL_DESC",
+			"tips":			"$GSL_EXAMPLEGHOUL_TIPS"
+			
+		},
+		
+		//----------------------------------------------------------------------
+		// The Ghouls
+		//----------------------------------------------------------------------
+		{
+			"actor":		"GS_Sjas",
+			"drops":		"GS_DefaultItems", // one actor that drops 3 backpacks + 1 megasphere
+			"factors":		
 			{
 				"creeperboo":	0.2,
-				"jitter":		0.2
-			},
-			"drops":		"GS_DefaultItems"
+				"jitter":		0.2,
+				"holy":			2.0,
+			}
 		},
 		{
 			"actor": 		"GS_Jitterskull",
+			"drops":		"GS_DefaultItems",
 			"factors":
 			{
-				"creeperboo":	0.25
-			},
-			"drops":		"GS_DefaultItems"
+				"creeperboo":	0.25,
+				"holy":			2.0,
+			}
 		},
 		{
 			"actor": 		"GS_Creeper",
+			"drops":		"GS_DefaultItems",
 			"factors":
 			{
 				"sjas":			0.6,
-				"jitter":		0.25
+				"jitter":		0.25,
+				"holy":			2.0
 			},
-			"weight":		-5, // n + 1 notation, requiring six different ghouls to spawn
-			"drops":		"GS_DefaultItems"
+			"weight":		-5,
 			
 		},
 		{
 			"actor": 		"GS_Choke",
+			"drops":		"GS_DefaultItems",
 			"factors":
 			{
 				"sjas":			0.4,
 				"jitter":		0.3,
-				"creeperboo":	0.25
-			},
-			"drops":		"GS_DefaultItems"
+				"creeperboo":	0.25,
+				"holy":			2.0
+			}
 		},
 		{
 			"actor": 		"GS_Frostbite",
-			"drops":		"GS_DefaultItems"
+			"drops":		"GS_DefaultItems",
+			"factors":
+			{
+				"holy":			2.0
+			}
 		},
 		{
 			"actor":		"GS_Misty",
-			"drops":		"GS_DefaultItems"
+			"drops":		"GS_DefaultItems",
+			"factors":
+			{
+				"holy":			2.0
+			}
 		},
 		{
 			"actor":		"GS_Clowny",
-			"drops":		"GS_DefaultItems"
+			"drops":		"GS_DefaultItems",
+			"factors":
+			{
+				"holy":			2.0
+			}
 		},
 		{
 			"actor":		"GS_SoulHarvester",
-			"drops":		"GS_DefaultItems"
+			"drops":		"GS_DefaultItems",
+			"factors":
+			{
+				"holy":			2.0
+			}
 		},
 		{
 			"actor":		"GS_Yurei",
-			"drops":		"GS_DefaultItems"
+			"drops":		"GS_DefaultItems",
+			"factors":
+			{
+				"holy":			2.0
+			}
 		},
 	],
 	
 	/*--------------------------------------------------------------------------
-	Trait Data
+	Trait Data 
+	
+	(NOT YET IMPLEMENTED PLEASE IGNORE)
 	
 	* langstr - The LANGUAGE lump string to look up, which will cover name, icon,
 		desc and long. Take note how the traits only have GST_<TraitName> WITHOUT
@@ -201,10 +260,11 @@ variableNames must be in lower case!
 	
 	* long - Expanded definition for reading in the codex.
 	
-	* rank - Can be 'normal' (default), 'uncommon', 'rare' or 'legendary'.
-		Alternatively can supply a number between [0,3] respectively.
+	* rank - Can be 'normal' (default), 'uncommon', 'rare', 'myth', or 'legendary'.
+		Alternatively can supply a number between [0,4] respectively.
+		Legendary traits automatically apply boss behavior!
 		
-	* levelreq - An array of 1 or 2 numbers, which defines the level range the
+	* levelreq - An int or array of 1 or 2 numbers, which defines the level range the
 		ghoul must be within to have a chance at receiving this trait. Default is
 		[0].
 		Accepted syntax:
@@ -223,20 +283,18 @@ variableNames must be in lower case!
 		the items/behaviors can be removed. Use inventory/behaviors for one-off 
 		events, etc.
 		
-	* classes - String array of whitelisted actor classes. Leave blank or don't
-		specify to allow all to receive it. Alternatively, "remove:<class>" or 
-		"remove:all" can be used to override previous definitions, useful for
-		addon developers. 
-		
-		**NOTE** 
-		This is processed in order, top to bottom!
-		
 	* traitreq - Object array of traits needed to be applicable.
 		* name - Base name of the trait (not the nice name)
 		* power - Int variable/array similar to 'levelreq'. If set to 0, means
 			the trait is cannot apply if the listed one is present. Defaults to 1.
 	--------------------------------------------------------------------------*/
 	
+	// NOT YET IMPLEMENTED PLEASE IGNORE
+	// NOT YET IMPLEMENTED PLEASE IGNORE
+	// NOT YET IMPLEMENTED PLEASE IGNORE
+	// NOT YET IMPLEMENTED PLEASE IGNORE
+	// NOT YET IMPLEMENTED PLEASE IGNORE
+	// NOT YET IMPLEMENTED PLEASE IGNORE
 	"traits":
 	[
 		// All default values are seen with each definition.
@@ -254,9 +312,6 @@ variableNames must be in lower case!
 			"items":
 			[
 				
-			],
-			"classes": // list of applicable classes. If left blank, applies to all of them.
-			[
 			],
 			"traitreq":
 			[

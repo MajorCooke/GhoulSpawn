@@ -55,7 +55,7 @@ class GS_EventStatic : StaticEventHandler
 				Weights.Delete(i--);
 				continue;
 			}
-		//	Weights[i] = max(GS_SPAWN_WEIGHT, Weights[i]);
+			
 			if (Weights[i] > 0)
 			{
 				total += Weights[i];
@@ -85,7 +85,7 @@ class GS_EventStatic : StaticEventHandler
 		// weight reset, while everyone else is bumped up.
 		int i = 0;
 		int n = random[rs](0, total - 1);
-		int timeout = 100;
+		int timeout = 500;
 		while (n > -1 && timeout-- > 0)
 		{
 			// Factor out ghouls that don't exist or RNG went over.
@@ -100,8 +100,14 @@ class GS_EventStatic : StaticEventHandler
 				Weights[i] = GetResetWeight(Ghouls[i].GetClassName());
 				
 				for (int j = 0; j < Weights.Size(); j++)
+				{
 					if (j != i)
+					{
 						Weights[j] += GS_SPAWN_ADD;
+						if (Weights[j] == 0)
+							Weights[j] = 1;
+					}
+				}
 				return Ghouls[i];
 			}
 		}

@@ -70,7 +70,7 @@ Class GS_DropData
 		}
 	}
 	
-	void Clear(bool destruct = true)
+	void Clear(bool destruct = false)
 	{	
 		if (destruct)
 			for (int i = 0; i < Items.Size(); i++)
@@ -85,6 +85,8 @@ Class GS_DropItem
 	internal readonly bool copied;
 	internal readonly Name ID;		// Name of thing to spawn
 	internal readonly int Count; 		// # drops to spawn
+	internal readonly int CMax;
+	internal readonly int Amount;
 	internal readonly int Chance;
 		
 	static GS_DropItem MakeDropItem(Name _id)
@@ -96,8 +98,9 @@ Class GS_DropItem
 	void Init()
 	{
 		ID = '';
-		Count = 1;
+		Count = CMax = 1;
 		Chance = 256;
+		Amount = -1;
 	}
 	
 	GS_DropItem CloneDropItem(GS_DropItem it)
@@ -106,7 +109,159 @@ Class GS_DropItem
 		if (!it) return null;
 		copy.copied = true;
 		copy.Count = Count;
+		copy.CMax = CMax;
 		copy.Chance = Chance;
+		copy.Amount = Amount;
 		return copy;
+	}
+}
+
+extend Class GS_GhoulData
+{
+	/*--------------------------------------------------------------------------
+	----------------------------------------------------------------------------
+	Drop Info Handling
+	----------------------------------------------------------------------------
+	--------------------------------------------------------------------------*/
+	
+	private GS_DropData HandleDropInfo(Name GID, GS_JsonObject obj = null, GS_JsonString st = null, GS_JsonArray arr = null)
+	{
+		Name DID;
+		let Drop = GS_DropData.MakeDropData(GID);
+		// process a single string
+		if (st) // "drops": "<actorName>"
+		{
+			// "drops": "" means remove all items
+			if (st.s == "" || st.s == " ")
+			{
+				Console.Printf("Removing all drops from ghoul "..GID);
+				Drop.Clear();
+			}
+			else
+			{
+				ProcessDropString(Drop, st);
+			}
+		}
+		// process an object like this:
+		// "drops": { "actor": "<actorName>", "count": 1, "chance": 256 }
+		else if (obj)
+		{
+			if (obj.IsEmpty()) // "drops": {} means remove all items
+			{
+				Console.Printf("Removing all drops from ghoul "..GID);
+				Drop.Clear();
+			}
+			else
+			{
+				ProcessDropObject(Drop, obj);
+			}
+		}
+		// array of drops for either strings or objects.
+		/*
+			"drops":
+			[
+				"actorName",
+				{ "actor": "<actorName>", "count": 1,		"amount": 1, "chance": 256 },
+				{ "actor": "<actorName>", "count": [1,4],	"amount": 1, "chance": 256 }
+			]
+		*/
+		else if (arr)
+		{
+			if (arr.Size() < 1) // "drops": [] means remove all items
+			{
+				Console.Printf("Removing all drops from ghoul "..GID);
+				Drop.Clear();
+			}
+			else
+			{
+				for (uint i = 0; i < arr.Size(); i++)
+				{
+					let elem = arr.Get(i);
+					if (!elem)	ThrowAbortException("GS_GhoulData: Expected 'drops' array to have strings or objects or empty, got null");
+					st = GS_JsonString(elem);
+					obj = GS_JsonObject(elem);
+					if (st)			ProcessDropString(Drop, st);
+					else if (obj)	ProcessDropObject(Drop, obj);
+					else		ThrowAbortException("GS_GhoulData: Expected 'drops' array to have strings or objects or empty, got "..elem.GetClassName());
+					
+					
+				}
+			}
+		}
+		return Drop;
+	}
+	
+	private void ProcessDropString(GS_DropData Drop, GS_JsonString st)
+	{
+		Class<Actor> cls = st.s;
+		if (!cls)	
+		{
+			Console.Printf("WARNING: "..st.s.." isn't a valid class! Skipping.");
+			return;
+		}
+		Console.Printf("Adding "..st.s.." to "..ID);
+		
+		let it = GS_DropItem.MakeDropItem(st.s);
+		it.ID = st.s;
+		Drop.Push(it);
+	}
+	
+	private void ProcessDropObject(GS_DropData Drop, GS_JsonObject obj)
+	{
+		GS_JsonElement elem = obj.Get("actor");
+		if (!elem)	ThrowAbortException("GS_GhoulData: Expected 'drops' object to have 'actor' string, is missing");
+		let st = GS_JsonString(elem);
+		if (!st)	ThrowAbortException("GS_GhoulData: Expected 'drops' object to have 'actor' string, got "..elem.GetClassName());
+		
+		let it = GS_DropItem.MakeDropItem(st.s);
+		
+		elem = obj.Get("count");
+		if (elem)
+		{
+			let arr = GS_JsonArray(elem);
+			let num = GS_JsonInt(elem);
+			if (num)
+				it.Count = it.CMax = num.AsInt();
+			else if (arr)
+			{
+				if (arr.Size() < 1 || arr.Size() > 2)
+					ThrowAbortException("GS_GhoulData: 'drops' object member in "..st.s.." 'count' array size expected to be size [1,2], got %d", arr.Size());
+					
+				for (int i = 0; i < arr.Size(); i++)
+				{
+					elem = arr.Get(i);
+					if (!elem)	ThrowAbortException("GS_GhoulData: 'drops' object member in "..st.s.." 'count' array members expected as int, got null");
+					num = GS_JsonInt(elem);
+					if (!num)	ThrowAbortException("GS_GhoulData: 'drops' object member in "..st.s.." 'count' array members expected as int, got "..elem.GetClassName());
+					
+					int nn = Max(0, num.AsInt());
+					Switch (i)
+					{
+						Case 0: it.Count = nn; break;
+						Case 1: it.CMax = nn;	break;
+					}
+					//Ugh. Fixed arrays dont work with `internal readonly` at the moment.
+				//	count[i] = Max(0, num.AsInt());
+				}
+			}
+			else	ThrowAbortException("GS_GhoulData: 'drops' object member in "..st.s.." 'count' expected as int (or array of), got "..elem.GetClassName());
+		}
+		
+		elem = obj.Get("amount");
+		if (elem)
+		{
+			let num = GS_JsonInt(elem);
+			if (!num)	ThrowAbortException("GS_GhoulData: Expected 'drops' object member in "..st.s.." 'amount' as int, got "..elem.GetClassName());
+			it.Amount = num.AsInt();
+		}
+		
+		elem = obj.Get("chance");
+		if (elem)
+		{
+			let num = GS_JsonInt(elem);
+			if (!num)	ThrowAbortException("GS_GhoulData: Expected 'drops' object member in "..st.s.." 'chance' as int, got "..elem.GetClassName());
+			it.Chance = num.AsInt();
+		}
+		Drop.Push(it);
 	}
 }
