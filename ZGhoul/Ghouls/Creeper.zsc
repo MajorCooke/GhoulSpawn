@@ -165,14 +165,6 @@ class GS_Creeper : GS_GhoulBase
 				return 0;
 		return Super.TakeSpecialDamage(i, s, damage, dtype);
 	}
-	// Deals more damage to non-players (called by the popup)
-	override int DoSpecialDamage(Actor target, int damage, Name dtype)
-	{
-		if (!(target is 'PlayerPawn') && dtype == 'CreeperBoo')
-			damage *= 20;
-			
-		return Super.DoSpecialDamage(target, damage, dtype);
-	}
 	
 	private void SetFear(bool on)
 	{
@@ -503,7 +495,8 @@ class GS_CreeperPopup : Actor
 	{
 		if (!Tracer)	return;
 		isalive = (primary && !Tracer.bKILLED);
-		int dmg = Tracer.DamageMobj(self, target, 50, DamageType, DMG_THRUSTLESS);
+		int dmg = (tracer is "PlayerPawn") ? 50 : 1000;
+		dmg = Tracer.DamageMobj(self, target, dmg, DamageType, DMG_THRUSTLESS);
 		if (heal && dmg > 0 && Target && !Target.bKILLED)	Target.GiveBody(10);
 		killcheck = (isalive && Tracer.bKILLED);
 	}

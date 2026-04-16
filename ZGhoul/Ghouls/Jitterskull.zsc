@@ -414,9 +414,9 @@ class GS_JitterSkull : GS_GhoulBase
 		foreach (mo : Corpses)
 		{
 			if (!mo)	continue;
+			mo.A_ChangeLinkFlags(0,0);
 			mo.SetOrigin(pos + (0,0,frandom[rng](15, 30)), false);
 			mo.VelFromAngle(frandom[rng](5,10), angle + frandom[rng](-70,70));
-			mo.A_ChangeLinkFlags(0,0);
 		}
 		Corpses.Clear();
 		CanChew = Lunging = false;
@@ -622,7 +622,7 @@ class GS_JitterSkull : GS_GhoulBase
 	bool AddCorpse(Actor mo, bool fresh = false)
 	{
 		if (!(mo is 'PlayerPawn') && !(mo is 'GS_GhoulBase') &&
-			!mo.bNOBLOOD &&
+			!mo.bNOBLOOD && !mo.bNOBLOCKMAP && !mo.bNOSECTOR && 
 			(mo.bCORPSE || mo.bKILLED || fresh) &&
 			mo.Radius < 100 && mo.Height < 100 &&
 			/*mo.pos.z <= pos.z + height * 0.5 &&*/
@@ -689,9 +689,11 @@ class GS_JitterSkull : GS_GhoulBase
 		}
 	}
 	
+	// Spawn bone chips.
 	override int DamageMobj(Actor i, Actor s, int damage, Name mod, int flags, double angle)
 	{
-		if (damage > 0 && !bKILLED && !(flags & DMG_EXPLOSION))
+		int dmg = Super.DamageMobj(i, s, damage, mod, flags, angle);
+		if (dmg > 0 && !bKILLED && !(flags & DMG_EXPLOSION))
 		{
 			Actor who = null;
 			if (i)		who = i;
@@ -699,7 +701,15 @@ class GS_JitterSkull : GS_GhoulBase
 				
 			if (who && !who.bBLOODLESSIMPACT)
 			{
-				let bone = SpawnBlood(who.pos, who.angle, damage);
+				Vector3 ps = who.pos;
+				double rad = radius * 1.5;
+				double ang = AngleTo(who);
+				if (Distance2DSquared(who) > rad)
+				{
+					ps = Vec3Angle(rad, ang, 0);
+					ps.z = Clamp(who.pos.z, pos.z, pos.z + height);
+				}
+				let bone = SpawnBlood(ps, ang, dmg);
 				if (bone && bone.bMISSILE)
 				{
 					Vector3 v = bone.vel;
@@ -708,7 +718,6 @@ class GS_JitterSkull : GS_GhoulBase
 				}
 			}
 		}
-		int dmg = Super.DamageMobj(i, s, damage, mod, flags, angle);
 		return dmg;
 	}
 	
@@ -878,7 +887,6 @@ class GS_JitterskullAttack : GS_Missile
 		dmg = Super.DoSpecialDamage(trg, dmg, dtype);
 		
 		return (trg is 'PlayerPawn') ? -1 : dmg;
-			
 	}
 	States
 	{
